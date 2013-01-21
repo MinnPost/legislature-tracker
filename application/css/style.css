@@ -1,0 +1,26 @@
+/**
+ * Main CSS for Legislature Tracker
+ */
+.ls .clear {
+  clear: both;
+}
+.ls .js-dependent,
+.ls .hidden {
+  display: none;
+}
+.ls .loading-general {
+  width: 100%;
+  text-align: center;
+  padding: 2em 2em;
+  color: #ABABAB;
+  vertical-align: middle;
+  height: 100%;
+  line-height: 100%;
+}
+.ls .loading-general span {
+  padding: 10px 5px 10px 40px;
+  background: transparent url('https://s3.amazonaws.com/data.minnpost/projects/2012-mn-election-results/images/ajax-loader.gif') center left no-repeat;
+  vertical-align: middle;
+  height: 100%;
+  line-height: 100%;
+}
