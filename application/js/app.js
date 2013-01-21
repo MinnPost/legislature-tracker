@@ -33,6 +33,7 @@ var LTApplication = Backbone.Router.extend({
   
   // Function to call when bill data is loaded
   loadEBills: function(data, tabletop) {
+    this.dataCache.eBills = data;
     
     // Start handling routing and history
     Backbone.history.start();
@@ -41,6 +42,8 @@ var LTApplication = Backbone.Router.extend({
   // Function to parse out any data from the spreadsheet
   // for the bills
   parseEBills: function(row) {
+    row.categories = row.categories.split(',');
+    row.categories = _.map(row.categories, _.trim);
     return row; 
   },
 
@@ -71,7 +74,7 @@ var LTApplication = Backbone.Router.extend({
       });
     }
     else {
-      callback.apply(this, [ this.dataCache[type][id], false ]);
+      callback.apply(this, [ this.dataCache[type][id], false, false ]);
     }
   },
   
