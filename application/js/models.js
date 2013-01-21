@@ -94,3 +94,12 @@ var OSLegislatorCommittee = Backbone.Model.extend({
     this.options = options;
   }
 });
+
+/**
+ * Model Legislature Tracker category
+ */
+var LSCategory = Backbone.Model.extend({
+  initialize: function(attr, options) {
+    this.options = options;
+  }
+});

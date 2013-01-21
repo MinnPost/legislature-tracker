@@ -33,10 +33,22 @@ var LTApplication = Backbone.Router.extend({
   
   // Function to call when bill data is loaded
   loadEBills: function(data, tabletop) {
+    var thisRouter = this;
+    this.categories = new LSCategories();;
     this.dataCache.eBills = data;
     
-    // Start handling routing and history
-    Backbone.history.start();
+    // Get categories
+    _.each(data, function(d) {
+      _.each(d.categories, function(c) {
+        thisRouter.categories.push({
+          id: c,
+          name: c
+        }); 
+      });
+    });
+    
+    // Start application/routing
+    this.start();
   },
   
   // Function to parse out any data from the spreadsheet
@@ -46,6 +58,12 @@ var LTApplication = Backbone.Router.extend({
     row.categories = _.map(row.categories, _.trim);
     return row; 
   },
+  
+  // Start application (after data has been loaded)
+  start: function() {
+    // Start handling routing and history
+    Backbone.history.start();
+  },
 
   // Default route
   defaultR: function() {
@@ -54,19 +72,19 @@ var LTApplication = Backbone.Router.extend({
   
   // Bill route
   bill: function(bill) {
-    this.loadModel('OSBillModel', 'bill_id', bill, function(bill, data, xhr) {
+    this.loadModel('OSBillModel', 'bills', 'bill_id', bill, function(bill, data, xhr) {
       
     });
   },
   
   // General load model method to use cache.
-  loadModel: function(type, idAttr, id, callback) {
+  loadModel: function(model, type, idAttr, id, callback) {
     var attrs = {};
     this.dataCache[type] = this.dataCache[type] || {};
     
     if (_.isUndefined(this.dataCache[type][id])) {
       attrs[idAttr] = id;
-      this.dataCache[type][id] = new window[type](
+      this.dataCache[type][id] = new window[model](
         attrs, this.options);
       this.dataCache[type][id].fetch({
         success: callback,
