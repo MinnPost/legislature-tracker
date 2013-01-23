@@ -32,11 +32,9 @@ LT.cache.models = {};
 LT.utils = {};
 
 // Make new model, and utilize cache
-LT.utils.getModel = function(model, idAttr, id, options) {
-  var hash = model + ':' + idAttr + ':' + id;
-  var attr = {};
-  attr[idAttr] = id;
-  
+LT.utils.getModel = function(model, idAttr, attr, options) {
+  var hash = model + ':' + idAttr + ':' + attr[idAttr];
+
   if (_.isUndefined(LT.cache.models[hash])) {
     LT.cache.models[hash] = new LT[model](attr, options);
   }
@@ -54,4 +52,15 @@ LT.utils.fetchModel = function(model, options) {
   else {
     options.success.apply(model, [ model, false, false ]);
   }
+};
+
+/**
+ * Translations for the Google docs data.
+ */
+LT.translations = {};
+LT.translations.eBills = {
+  'bill_id': 'bill',
+  'ecategories': 'categories',
+  'etitle': 'title',
+  'edescription': 'description',
 };

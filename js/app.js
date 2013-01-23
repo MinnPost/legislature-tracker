@@ -1,5 +1,7 @@
 /**
  * Main application container for the Legislature Tracker
+ *
+ * An 'e' prefix is referring to editorialized content.
  */
 LT.Application = Backbone.Router.extend({
   routes: {
@@ -35,16 +37,22 @@ LT.Application = Backbone.Router.extend({
   loadEBills: function(data, tabletop) {
     var thisRouter = this;
     this.categories = new LT.CategoriesCollection();
+    this.bills = new LT.BillsCollection();
     this.dataCache.eBills = data;
     
     // Get categories
     _.each(data, function(d) {
-      _.each(d.categories, function(c) {
+      _.each(d.ecategories, function(c) {
         thisRouter.categories.push({
           id: c,
           name: c
         }); 
       });
+    });
+    
+    // Load in bills
+    _.each(data, function(d) {
+      thisRouter.bills.push(LT.utils.getModel('OSBillModel', 'bill_id', d, thisRouter.options));
     });
     
     // Start application/routing
@@ -54,8 +62,14 @@ LT.Application = Backbone.Router.extend({
   // Function to parse out any data from the spreadsheet
   // for the bills
   parseEBills: function(row) {
-    row.categories = row.categories.split(',');
-    row.categories = _.map(row.categories, _.trim);
+    // Handle translation
+    _.each(LT.translations.eBills, function(input, output) {
+      row[output] = row[input];
+    });
+    
+    // Break up categories into an array
+    row.ecategories = row.ecategories.split(',');
+    row.ecategories = _.map(row.ecategories, _.trim);
     return row; 
   },
   
@@ -72,7 +86,7 @@ LT.Application = Backbone.Router.extend({
   
   // Bill route
   bill: function(bill) {
-    var model = LT.utils.getModel('OSBillModel', 'bill_id', bill, this.options);
+    var model = LT.utils.getModel('OSBillModel', 'bill_id', { bill_id: bill }, this.options);
     LT.utils.fetchModel(model, {
       success: function(bill, data, xhr) {
         //console.log(bill);
