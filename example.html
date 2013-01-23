@@ -85,8 +85,19 @@
     <script id="template-categories" type="text/template">
       <div class="categories-container">
         <ul>
-          <% console.log(categories); for (var c in categories) { %>
+          <% for (var c in categories) { %>
             <li><a href="#/category/<%= encodeURI(categories[c].name) %>"><%= categories[c].name %></li>
+          <% } %>
+        </ul>
+      </div>
+    </script>
+    
+    <script id="template-category" type="text/template">
+      <div class="category-container">
+        <h4><%= name %></h4>
+        <ul>
+          <% for (var b in bills) { %>
+            <li><a href="#/bill/<%= encodeURI(bills[b]) %>"><%= bills[b] %></li>
           <% } %>
         </ul>
       </div>

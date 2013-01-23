@@ -5,6 +5,8 @@
  */
 LT.Application = Backbone.Router.extend({
   routes: {
+    'categories': 'categories',
+    'category/:category': 'category',
     'bill/:bill': 'bill',
     '*defaultR': 'defaultR'
   },
@@ -39,10 +41,23 @@ LT.Application = Backbone.Router.extend({
     // Get categories
     _.each(data, function(d) {
       _.each(d.ecategories, function(c) {
-        thisRouter.categories.push({
-          id: c,
-          name: c
-        }); 
+        var bills;
+        
+        // Make category
+        var cat = LT.utils.getModel('CategoryModel', 'id', { id: c }, thisRouter.options);
+        cat.set('name', c);
+        
+        // Add reference to bills
+        bills = cat.get('bills');
+        if (_.isUndefined(bills)) {
+          cat.set('bills', [ d.bill_id ]);
+        }
+        else {
+          bills.push(d.bill_id);
+          cat.set('bills', bills);
+        }
+        
+        thisRouter.categories.push(cat);
       });
     });
     
@@ -77,11 +92,25 @@ LT.Application = Backbone.Router.extend({
 
   // Default route
   defaultR: function() {
+    this.navigate('/categories', { trigger: true, replace: true });
     this.mainView.render();
+  },
+
+  // Categories view
+  categories: function() {
+    this.mainView.renderCategories();
+  },
+
+  // Single Category view
+  category: function(category) {
+    category = decodeURI(category);
+    this.mainView.renderCategory(category);
   },
   
   // Bill route
   bill: function(bill) {
+    bill = decodeURI(bill);
+    
     var model = LT.utils.getModel('OSBillModel', 'bill_id', { bill_id: bill }, this.options);
     LT.utils.fetchModel(model, {
       success: function(bill, data, xhr) {
