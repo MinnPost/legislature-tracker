@@ -88,15 +88,31 @@
       <script type="text/javascript" src="./js/libs/es5-shim.v2.0.5.min.js"></script>
     <![endif]-->
     
+    <script type="text/javascript" src="./js/libs/jquery.1.8.3.min.js"></script>
+    <script type="text/javascript" src="./js/libs/jquery.jsonp-2.4.0.min.js"></script>
     <script type="text/javascript" src="./js/libs/underscore.1.4.3.min.js"></script>
     <script type="text/javascript" src="./js/libs/backbone.0.9.10.min.js"></script>
-    <script type="text/javascript" src="./js/libs/jquery.1.8.3.min.js"></script>
     <script type="text/javascript" src="./js/libs/tabletop.master-20130121.min.js"></script>
+    
+    <script type="text/javascript" src="./js/utils.js"></script>
+    <script type="text/javascript" src="./js/core.js"></script>
+    <script type="text/javascript" src="./js/models.js"></script>
+    <script type="text/javascript" src="./js/collections.js"></script>
+    <script type="text/javascript" src="./js/views.js"></script>
     <script type="text/javascript" src="./js/app.js"></script>
 
     
     <script type="text/javascript">
       (function($, w, undefined) {
+        var options = {
+          el: '#legislature-tracker-container',
+          state: 'MN', 
+          session: '2013-2014',
+          apiKey: '49c5c72c157d4b37892ddb52c63d06be',
+          billsSheet: '0AtX8MXQ89fOKdFNaY1Nzc3p6MjJQdll1VEZwSDkzWEE'
+        };
+        
+        var app = new LT.Application(options);
         
       })(jQuery, window);
     </script>

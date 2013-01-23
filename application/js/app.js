@@ -1,7 +1,7 @@
 /**
  * Main application container for the Legislature Tracker
  */
-var LTApplication = Backbone.Router.extend({
+LT.Application = Backbone.Router.extend({
   routes: {
     'bill/:bill': 'bill',
     '*defaultR': 'defaultR'
@@ -18,7 +18,7 @@ var LTApplication = Backbone.Router.extend({
     this.dataCache = {};
     
     // Main view for application
-    this.mainView = new LSApplicationView(options);
+    this.mainView = new LT.MainApplicationView(options);
     this.mainView.loading();
     
     // Get data from spreadsheets
@@ -34,7 +34,7 @@ var LTApplication = Backbone.Router.extend({
   // Function to call when bill data is loaded
   loadEBills: function(data, tabletop) {
     var thisRouter = this;
-    this.categories = new LSCategories();;
+    this.categories = new LT.CategoriesCollection();
     this.dataCache.eBills = data;
     
     // Get categories
@@ -84,7 +84,7 @@ var LTApplication = Backbone.Router.extend({
     
     if (_.isUndefined(this.dataCache[type][id])) {
       attrs[idAttr] = id;
-      this.dataCache[type][id] = new window[model](
+      this.dataCache[type][id] = new LT[model](
         attrs, this.options);
       this.dataCache[type][id].fetch({
         success: callback,

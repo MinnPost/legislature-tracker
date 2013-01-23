@@ -1,7 +1,7 @@
 /**
  * Views for the Legislator Tracker app
  */
-var LSApplicationView = Backbone.View.extend({
+LT.MainApplicationView = Backbone.View.extend({
   templates: {
     loading: $('#template-loading').html()
   },

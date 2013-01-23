@@ -5,7 +5,7 @@
 /**
  * Model for Open States Bill
  */
-var OSStateModel = Backbone.Model.extend({
+LT.OSStateModel = Backbone.Model.extend({
   url: function() {
     // This is slighlty faster than using +
     var url = [];
@@ -25,7 +25,7 @@ var OSStateModel = Backbone.Model.extend({
 /**
  * Model for Open States Bill
  */
-var OSBillModel = Backbone.Model.extend({
+LT.OSBillModel = Backbone.Model.extend({
   url: function() {
     var url = [];
     
@@ -60,7 +60,7 @@ var OSBillModel = Backbone.Model.extend({
 /**
  * Model for Open States Legislator
  */
-var OSLegislatorModel = Backbone.Model.extend({
+LT.OSLegislatorModel = Backbone.Model.extend({
   url: function() {
     var url = [];
     url.push('http://openstates.org/api/v1/legislators/');
@@ -79,7 +79,7 @@ var OSLegislatorModel = Backbone.Model.extend({
 /**
  * Model for Open States Committee
  */
-var OSLegislatorCommittee = Backbone.Model.extend({
+LT.OSCommitteeModel = Backbone.Model.extend({
   url: function() {
     var url = [];
     url.push('http://openstates.org/api/v1/committees/');
@@ -98,7 +98,7 @@ var OSLegislatorCommittee = Backbone.Model.extend({
 /**
  * Model Legislature Tracker category
  */
-var LSCategory = Backbone.Model.extend({
+LT.CategoryModel = Backbone.Model.extend({
   initialize: function(attr, options) {
     this.options = options;
   }

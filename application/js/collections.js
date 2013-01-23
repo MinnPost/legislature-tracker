@@ -1,6 +1,6 @@
 /**
  * Collections for Legislature Tracker
  */
-var LSCategories = Backbone.Collection.extend({
-  model: LSCategory
+LT.CategoriesCollection = Backbone.Collection.extend({
+  model: LT.CategoryModel
 });
