@@ -6,3 +6,7 @@ An application to keep track of what is going on in a state legislature.  Using 
 
 * [Open States](http://openstates.org/)
 * [Editorial curation data with Google Docs](https://docs.google.com/)
+
+## Building
+
+Install [grunt](http://gruntjs.com/): ```npm install -g grunt```
