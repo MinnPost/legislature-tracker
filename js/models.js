@@ -11,11 +11,12 @@ LT.OSModel = Backbone.Model.extend({
   },
   
   urlEnd: function() {
-    return '/?apikey=' + this.options.apiKey + '&callback=?';
+    return '/?apikey=' + encodeURI(this.options.apiKey) + '&callback=?';
   },
   
   url: function() {
-    return this.urlBase() + '/' + this.osType + '/'  + this.id + this.urlEnd();
+    return this.urlBase() + '/' + encodeURI(this.osType) + '/' + 
+      encodeURI(this.id) + this.urlEnd();
   },
   
   initialize: function(attr, options) {
@@ -33,7 +34,8 @@ LT.OSModel = Backbone.Model.extend({
  */
 LT.OSStateModel = LT.OSModel.extend({
   url: function() {
-    return this.urlBase() + '/metadata/'  + this.options.state + this.urlEnd();
+    return this.urlBase() + '/metadata/'  + encodeURI(this.options.state) + 
+      this.urlEnd();
   }
 });
 
@@ -46,9 +48,9 @@ LT.OSBillModel = LT.OSModel.extend({
       return this.urlBase() + '/bills/'  + this.id + this.urlEnd();
     }
     else {
-      return this.urlBase() + '/bills/'  + this.options.state + '/' +
-        this.options.session + '/' +
-        this.get('bill_id') + this.urlEnd();
+      return this.urlBase() + '/bills/'  + encodeURI(this.options.state) + '/' +
+        encodeURI(this.options.session) + '/' +
+        encodeURI(this.get('bill_id')) + this.urlEnd();
     }
   }
 });

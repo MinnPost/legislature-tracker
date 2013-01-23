@@ -17,6 +17,7 @@ LT.Application = Backbone.Router.extend({
     
     // Main view for application
     this.mainView = new LT.MainApplicationView(options);
+    this.mainView.router = this;
     this.mainView.loading();
     
     // Get data from spreadsheets
@@ -76,7 +77,7 @@ LT.Application = Backbone.Router.extend({
 
   // Default route
   defaultR: function() {
-    
+    this.mainView.render();
   },
   
   // Bill route

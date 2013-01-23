@@ -81,6 +81,16 @@
         <div class="loading-general"><span>Loading...</span></div>
       </div>
     </script>
+    
+    <script id="template-categories" type="text/template">
+      <div class="categories-container">
+        <ul>
+          <% console.log(categories); for (var c in categories) { %>
+            <li><a href="#/category/<%= encodeURI(categories[c].name) %>"><%= categories[c].name %></li>
+          <% } %>
+        </ul>
+      </div>
+    </script>
         
     
     <!-- Application libraries and JS -->
