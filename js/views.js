@@ -5,7 +5,8 @@ LT.MainApplicationView = Backbone.View.extend({
   templates: {
     loading: $('#template-loading').html(),
     categories: $('#template-categories').html(),
-    category: $('#template-category').html()
+    category: $('#template-category').html(),
+    bill: $('#template-bill').html()
   },
   
   initialize: function(options) {
@@ -19,7 +20,6 @@ LT.MainApplicationView = Backbone.View.extend({
   },
   
   renderCategories: function() {
-    // Default view render
     this.$el.html(_.template(this.templates.categories, {
       categories: this.router.categories.toJSON(),
       bills: this.router.bills.toJSON()
@@ -27,8 +27,16 @@ LT.MainApplicationView = Backbone.View.extend({
   },
   
   renderCategory: function(category) {
-    var cat = this.router.categories.get(category);
-    // Default view render
-    this.$el.html(_.template(this.templates.category, cat.toJSON()));
+    if (!_.isObject(category)) {
+      category = this.router.categories.get(category);
+    }
+    this.$el.html(_.template(this.templates.category, category.toJSON()));
+  },
+  
+  renderBill: function(bill) {
+    if (!_.isObject(bill)) {
+      bill = this.router.bills.get(bill);
+    }
+    this.$el.html(_.template(this.templates.bill, bill.toJSON()));
   }
 });

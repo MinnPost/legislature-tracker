@@ -109,12 +109,13 @@ LT.Application = Backbone.Router.extend({
   
   // Bill route
   bill: function(bill) {
+    var thisRouter = this;
     bill = decodeURI(bill);
     
     var model = LT.utils.getModel('OSBillModel', 'bill_id', { bill_id: bill }, this.options);
     LT.utils.fetchModel(model, {
       success: function(bill, data, xhr) {
-        //console.log(bill);
+        thisRouter.mainView.renderBill(bill);
       },
       error: this.error
     });
