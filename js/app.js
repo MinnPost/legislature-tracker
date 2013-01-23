@@ -15,10 +15,6 @@ LT.Application = Backbone.Router.extend({
     // Bind to help with some event callbacks
     _.bindAll(this);
     
-    // Data cache is used to store loaded models
-    // as this data does not change that often
-    this.dataCache = {};
-    
     // Main view for application
     this.mainView = new LT.MainApplicationView(options);
     this.mainView.loading();
@@ -38,7 +34,6 @@ LT.Application = Backbone.Router.extend({
     var thisRouter = this;
     this.categories = new LT.CategoriesCollection();
     this.bills = new LT.BillsCollection();
-    this.dataCache.eBills = data;
     
     // Get categories
     _.each(data, function(d) {
