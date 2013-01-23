@@ -72,28 +72,13 @@ LT.Application = Backbone.Router.extend({
   
   // Bill route
   bill: function(bill) {
-    this.loadModel('OSBillModel', 'bills', 'bill_id', bill, function(bill, data, xhr) {
-      
+    var model = LT.utils.getModel('OSBillModel', 'bill_id', bill, this.options);
+    LT.utils.fetchModel(model, {
+      success: function(bill, data, xhr) {
+        //console.log(bill);
+      },
+      error: this.error
     });
-  },
-  
-  // General load model method to use cache.
-  loadModel: function(model, type, idAttr, id, callback) {
-    var attrs = {};
-    this.dataCache[type] = this.dataCache[type] || {};
-    
-    if (_.isUndefined(this.dataCache[type][id])) {
-      attrs[idAttr] = id;
-      this.dataCache[type][id] = new LT[model](
-        attrs, this.options);
-      this.dataCache[type][id].fetch({
-        success: callback,
-        error: this.error
-      });
-    }
-    else {
-      callback.apply(this, [ this.dataCache[type][id], false, false ]);
-    }
   },
   
   error: function(e) {

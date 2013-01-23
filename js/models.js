@@ -3,96 +3,68 @@
  */
 
 /**
- * Model for Open States Bill
+ * Base Model for Open States items
  */
-LT.OSStateModel = Backbone.Model.extend({
+LT.OSModel = Backbone.Model.extend({
+  urlBase: function() {
+    return 'http://openstates.org/api/v1/';
+  },
+  
+  urlEnd: function() {
+    return '/?apikey=' + this.options.apiKey + '&callback=?';
+  },
+  
   url: function() {
-    // This is slighlty faster than using +
-    var url = [];
-    url.push('http://openstates.org/api/v1/metadata/');
-    url.push(encodeURI(this.options.state));
-    url.push('/?apikey=');
-    url.push(this.options.apiKey);
-    url.push('&callback=?');
-    return url.join('');
+    return this.urlBase() + '/' + this.osType + '/'  + this.id + this.urlEnd();
   },
   
   initialize: function(attr, options) {
     this.options = options;
+    
+    this.on('sync', function(model, resp, options) {
+      // Mark as fetched so we can use some caching
+      model.set('fetched', true);
+    });
   }
 });
 
 /**
  * Model for Open States Bill
  */
-LT.OSBillModel = Backbone.Model.extend({
+LT.OSStateModel = LT.OSModel.extend({
   url: function() {
-    var url = [];
-    
-    // If id is given, then use that, otherwise use
-    // bill ID and other options
+    return this.urlBase() + '/metadata/'  + this.options.state + this.urlEnd();
+  }
+});
+
+/**
+ * Model for Open States Bill
+ */
+LT.OSBillModel = LT.OSModel.extend({
+  url: function() {
     if (!_.isUndefined(this.id)) {
-      url.push('http://openstates.org/api/v1/bills/');
-      url.push(encodeURI(this.id));
-      url.push('/?apikey=');
-      url.push(this.options.apiKey);
-      url.push('&callback=?');
+      return this.urlBase() + '/bills/'  + this.id + this.urlEnd();
     }
     else {
-      url.push('http://openstates.org/api/v1/bills/');
-      url.push(encodeURI(this.options.state));
-      url.push('/');
-      url.push(encodeURI(this.options.session));
-      url.push('/');
-      url.push(encodeURI(this.get('bill_id')));
-      url.push('/?apikey=');
-      url.push(this.options.apiKey);
-      url.push('&callback=?');
+      return this.urlBase() + '/bills/'  + this.options.state + '/' +
+        this.options.session + '/' +
+        this.get('bill_id') + this.urlEnd();
     }
-    return url.join('');
-  },
-  
-  initialize: function(attr, options) {
-    this.options = options;
   }
 });
 
 /**
  * Model for Open States Legislator
  */
-LT.OSLegislatorModel = Backbone.Model.extend({
-  url: function() {
-    var url = [];
-    url.push('http://openstates.org/api/v1/legislators/');
-    url.push(encodeURI(this.id));
-    url.push('/?apikey=');
-    url.push(this.options.apiKey);
-    url.push('&callback=?');
-    return url.join('');
-  },
-  
-  initialize: function(attr, options) {
-    this.options = options;
-  }
+LT.OSLegislatorModel = LT.OSModel.extend({
+  osType: 'legislators'
 });
 
 /**
  * Model for Open States Committee
  */
-LT.OSCommitteeModel = Backbone.Model.extend({
-  url: function() {
-    var url = [];
-    url.push('http://openstates.org/api/v1/committees/');
-    url.push(encodeURI(this.id));
-    url.push('/?apikey=');
-    url.push(this.options.apiKey);
-    url.push('&callback=?');
-    return url.join('');
-  },
-  
-  initialize: function(attr, options) {
-    this.options = options;
-  }
+LT.OSCommitteeModel = LT.OSModel.extend({
+  osType: 'committees'
 });
 
 /**

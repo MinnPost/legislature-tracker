@@ -1,6 +1,8 @@
 /**
  * Utility functions for Legislature Tracker application.
- *
+ */
+
+/**
  * These will just extend underscore since that is the
  * utility library already being used.
  */
