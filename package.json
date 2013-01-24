@@ -20,7 +20,8 @@
   ],
   "dependencies" : {
     "grunt": "*",
-    "grunt-contrib-copy": "*"
+    "grunt-contrib-copy": "*",
+    "grunt-s3": "*"
   }, 
   "licenses": [
     {

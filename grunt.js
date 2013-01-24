@@ -64,13 +64,29 @@ module.exports = function(grunt) {
         LT: true
       }
     },
-    uglify: {}
+    uglify: {},
+    s3: {
+      // These are assumed to be environment variables
+      // See https://npmjs.org/package/grunt-s3
+      //
+      // This is specific to MinnPost
+      bucket: 'data.minnpost',
+      access: 'public-read',
+      upload: [
+        {
+          src: 'dist/*',
+          dest: 'projects/legislature-tracker/'
+        }
+      ]
+    }
   });
   
   // Load plugin tasks
   grunt.loadNpmTasks('grunt-contrib-copy');
+  grunt.loadNpmTasks('grunt-s3');
 
   // Default task.
   grunt.registerTask('default', 'lint concat min copy');
+  grunt.registerTask('mp-deploy', 's3');
 
 };
