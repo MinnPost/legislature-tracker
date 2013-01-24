@@ -2,30 +2,32 @@
  * Utility functions for Legislature Tracker application.
  */
 
-/**
- * These will just extend underscore since that is the
- * utility library already being used.
- */
-(function() {
+(function($, w, undefined) {
+
+  /**
+   * These will just extend underscore since that is the
+   * utility library already being used.
+   */
   _.mixin({
     trim: function(str) {
       if (!String.prototype.trim) {
-        return str.replace(/^\s+|\s+$/g, '');;
+        str = str.replace(/^\s+|\s+$/g, '');
       }
       else {
-        return str.trim();
+        str = str.trim();
       }
+      
+      return str;
     }
-  })
-})();
+  });
+  
 
-/**
- * Override Backbone's ajax function to use $.jsonp
- */
-(function($, Backbone, undefined) {
+  /**
+   * Override Backbone's ajax function to use $.jsonp
+   */
   if (_.isFunction(Backbone.$.jsonp)) {
     Backbone.ajax = function() {
       return Backbone.$.jsonp.apply(Backbone.$, arguments);
     };
   }
-})(jQuery, Backbone);
+})(jQuery, window);
