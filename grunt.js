@@ -37,8 +37,9 @@ module.exports = function(grunt) {
         dest: 'dist/<%= pkg.name %>.latest.js'
       },
       libs: {
-        src: ['js/lib/jquery.1.8.3.min.js', 'jquery.jsonp-2.4.0.min.js', 'underscore.1.4.3.min.js', 'backbone.0.9.10.min.js', 'tabletop.master-20130121.min.js'],
-        dest: 'dist/<%= pkg.name %>.libs.js'
+        src: ['js/lib/underscore.1.4.3.min.js', 'js/lib/jquery.1.8.3.min.js', 'js/lib/jquery.jsonp-2.4.0.min.js', 'js/lib/backbone.0.9.10.min.js', 'js/lib/tabletop.master-20130121.min.js'],
+        dest: 'dist/<%= pkg.name %>.libs.js',
+        separator: ';\r\n\r\n'
       }
     },
     min: {
