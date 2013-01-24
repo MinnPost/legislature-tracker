@@ -14,10 +14,17 @@ module.exports = function(grunt) {
     lint: {
       files: ['grunt.js', 'js/app/*.js']
     },
+    clean: {
+      folder: 'dist/'
+    },
     concat: {
       dist: {
         src: ['js/app/utils.js', 'js/app/core.js', 'js/app/models.js', 'js/app/collections.js', 'js/app/views.js', 'js/app/app.js'],
         dest: 'dist/<%= pkg.name %>.<%= pkg.version %>.js'
+      },
+      dist_latest: {
+        src: '<config:concat.dist.src>',
+        dest: 'dist/<%= pkg.name %>.latest.js'
       },
       libs: {
         src: ['js/lib/jquery.1.8.3.min.js', 'jquery.jsonp-2.4.0.min.js', 'underscore.1.4.3.min.js', 'backbone.0.9.10.min.js', 'tabletop.master-20130121.min.js'],
@@ -28,13 +35,23 @@ module.exports = function(grunt) {
       dist: {
         src: ['<banner:meta.banner>', '<config:concat.dist.dest>'],
         dest: 'dist/<%= pkg.name %>.<%= pkg.version %>.min.js'
+      },
+      dist_latest: {
+        src: ['<banner:meta.banner>', '<config:concat.dist_latest.dest>'],
+        dest: 'dist/<%= pkg.name %>.latest.min.js'
       }
     },
     copy: {
       dist: {
         files: {
           'dist/<%= pkg.name %>.<%= pkg.version %>.css': 'css/style.css',
-          'dist/<%= pkg.name %>.<%= pkg.version %>.ie.css': 'css/style.ie.css',
+          'dist/<%= pkg.name %>.<%= pkg.version %>.ie.css': 'css/style.ie.css'
+        }
+      },
+      dist_latest: {
+        files: {
+          'dist/<%= pkg.name %>.latest.css': 'css/style.css',
+          'dist/<%= pkg.name %>.latest.ie.css': 'css/style.ie.css'
         }
       }
     },
@@ -84,11 +101,12 @@ module.exports = function(grunt) {
   });
   
   // Load plugin tasks
+  grunt.loadNpmTasks('grunt-clean');
   grunt.loadNpmTasks('grunt-contrib-copy');
   grunt.loadNpmTasks('grunt-s3');
 
   // Default task.
-  grunt.registerTask('default', 'lint concat min copy');
+  grunt.registerTask('default', 'lint clean concat min copy');
   grunt.registerTask('mp-deploy', 's3');
 
 };
