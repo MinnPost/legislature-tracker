@@ -19,7 +19,8 @@
     "curation"
   ],
   "dependencies" : {
-    "grunt"   :  "*"
+    "grunt": "*",
+    "grunt-contrib-copy": "*"
   }, 
   "licenses": [
     {

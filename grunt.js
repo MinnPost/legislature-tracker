@@ -30,6 +30,14 @@ module.exports = function(grunt) {
         dest: 'dist/<%= pkg.name %>.<%= pkg.version %>.min.js'
       }
     },
+    copy: {
+      dist: {
+        files: {
+          'dist/<%= pkg.name %>.<%= pkg.version %>.css': 'css/style.css',
+          'dist/<%= pkg.name %>.<%= pkg.version %>.ie.css': 'css/style.ie.css',
+        }
+      }
+    },
     watch: {
       files: '<config:lint.files>',
       tasks: 'lint'
@@ -58,8 +66,11 @@ module.exports = function(grunt) {
     },
     uglify: {}
   });
+  
+  // Load plugin tasks
+  grunt.loadNpmTasks('grunt-contrib-copy');
 
   // Default task.
-  grunt.registerTask('default', 'lint concat min');
+  grunt.registerTask('default', 'lint concat min copy');
 
 };
