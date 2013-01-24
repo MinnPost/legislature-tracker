@@ -22,7 +22,8 @@
     "grunt": "*",
     "grunt-contrib-copy": "*",
     "grunt-s3": "*",
-    "grunt-clean": "*"
+    "grunt-clean": "*",
+    "grunt-contrib-jst": "*"
   }, 
   "licenses": [
     {

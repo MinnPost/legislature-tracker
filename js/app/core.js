@@ -76,21 +76,20 @@ else {
    */
   LT.templates = LT.templates || {};
   LT.utils.getTemplate = function(name, assignment, property, callback) {
-    var templateDir = './js/app/templates/';
-    var templateExt = 'html';
+    var templatePath = 'js/app/templates/' + name + '.html';
     
-    if (!_.isUndefined(LT.templates[name])) {
-      assignment[property] = LT.templates[name];
+    if (!_.isUndefined(LT.templates[templatePath])) {
+      assignment[property] = LT.templates[templatePath];
     }
     else {
       $.ajax({
-        url: templateDir + name + '.' + templateExt,
+        url: templatePath,
         method: 'GET',
         async: false,
         contentType: 'text',
         success: function(data) {
-          LT.templates[name] = data;
-          assignment[property] = LT.templates[name];
+          LT.templates[templatePath] = data;
+          assignment[property] = LT.templates[templatePath];
           
           if (_.isFunction(callback)) {
             callback.apply(this, [ data ]);

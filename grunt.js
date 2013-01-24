@@ -17,9 +17,19 @@ module.exports = function(grunt) {
     clean: {
       folder: 'dist/'
     },
+    jst: {
+      compile: {
+        options: {
+          namespace: 'LT.templates'
+        },
+        files: {
+          'dist/templates.js': ['js/app/templates/*.html']
+        }
+      }
+    },
     concat: {
       dist: {
-        src: ['js/app/utils.js', 'js/app/core.js', 'js/app/models.js', 'js/app/collections.js', 'js/app/views.js', 'js/app/app.js'],
+        src: ['js/app/utils.js', 'js/app/core.js', 'dist/templates/js', 'js/app/models.js', 'js/app/collections.js', 'js/app/views.js', 'js/app/app.js'],
         dest: 'dist/<%= pkg.name %>.<%= pkg.version %>.js'
       },
       dist_latest: {
@@ -104,9 +114,10 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-clean');
   grunt.loadNpmTasks('grunt-contrib-copy');
   grunt.loadNpmTasks('grunt-s3');
+  grunt.loadNpmTasks('grunt-contrib-jst');
 
   // Default task.
-  grunt.registerTask('default', 'lint clean concat min copy');
+  grunt.registerTask('default', 'lint clean jst concat min copy');
   grunt.registerTask('mp-deploy', 's3');
 
 };
