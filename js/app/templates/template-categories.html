@@ -1,0 +1,8 @@
+
+<div class="categories-container">
+  <ul>
+    <% for (var c in categories) { %>
+      <li><a href="#/category/<%= encodeURI(categories[c].name) %>"><%= categories[c].name %></li>
+    <% } %>
+  </ul>
+</div>

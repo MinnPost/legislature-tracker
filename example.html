@@ -73,50 +73,9 @@
         <p>Data provided by <a href="" target="_blank"></a>.</p>
       </div>
     </div>
-    
-    
-    <!-- Templates to be used in client side processing. -->
-    <script id="template-loading" type="text/template">
-      <div class="loading-general-container">
-        <div class="loading-general"><span>Loading...</span></div>
-      </div>
-    </script>
-    
-    <script id="template-categories" type="text/template">
-      <div class="categories-container">
-        <ul>
-          <% for (var c in categories) { %>
-            <li><a href="#/category/<%= encodeURI(categories[c].name) %>"><%= categories[c].name %></li>
-          <% } %>
-        </ul>
-      </div>
-    </script>
-    
-    <script id="template-category" type="text/template">
-      <div class="category-container">
-        <h4><%= name %></h4>
-        <ul>
-          <% for (var b in bills) { %>
-            <li><a href="#/bill/<%= encodeURI(bills[b]) %>"><%= bills[b] %></li>
-          <% } %>
-        </ul>
-      </div>
-    </script>
-    
-    <script id="template-bill" type="text/template">
-      <div class="bill-container">
-        <h4><%= bill_id %></h4>
-        <h5><%= etitle %></h5>
-        <p><%= edescription %></p>
-      </div>
-    </script>
         
     
     <!-- Application libraries and JS -->
-    <!--[if lte IE 8]>
-      <script type="text/javascript" src="./js/lib/es5-shim.v2.0.5.min.js"></script>
-    <![endif]-->
-    
     <script type="text/javascript" src="./js/lib/jquery.1.8.3.min.js"></script>
     <script type="text/javascript" src="./js/lib/jquery.jsonp-2.4.0.min.js"></script>
     <script type="text/javascript" src="./js/lib/underscore.1.4.3.min.js"></script>

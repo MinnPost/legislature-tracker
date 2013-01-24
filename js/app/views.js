@@ -8,17 +8,17 @@
    * Main View for application.
    */
   LT.MainApplicationView = Backbone.View.extend({
-    templates: {
-      loading: $('#template-loading').html(),
-      categories: $('#template-categories').html(),
-      category: $('#template-category').html(),
-      bill: $('#template-bill').html()
-    },
-    
     initialize: function(options) {
       // Add class to ensure our styling does
       // not mess with other stuff
       this.$el.addClass('ls');
+      
+      // Get templates
+      this.templates = this.templates || {};
+      LT.utils.getTemplate('template-loading', this.templates, 'loading');
+      LT.utils.getTemplate('template-bill', this.templates, 'bill');
+      LT.utils.getTemplate('template-category', this.templates, 'category');
+      LT.utils.getTemplate('template-categories', this.templates, 'categories');
     },
   
     loading: function() {
@@ -43,6 +43,7 @@
       if (!_.isObject(bill)) {
         bill = this.router.bills.get(bill);
       }
+      
       this.$el.html(_.template(this.templates.bill, bill.toJSON()));
     }
   });

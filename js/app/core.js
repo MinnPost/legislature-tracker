@@ -67,4 +67,37 @@ else {
     'edescription': 'description'
   };
   
+  /**
+   * Template handling.  For development, we want to use
+   * the template files directly, but for build, they should be
+   * compiled into JS.
+   *
+   * Assigment is used to not worry about asyncronomonity
+   */
+  LT.templates = LT.templates || {};
+  LT.utils.getTemplate = function(name, assignment, property, callback) {
+    var templateDir = './js/app/templates/';
+    var templateExt = 'html';
+    
+    if (!_.isUndefined(LT.templates[name])) {
+      assignment[property] = LT.templates[name];
+    }
+    else {
+      $.ajax({
+        url: templateDir + name + '.' + templateExt,
+        method: 'GET',
+        async: false,
+        contentType: 'text',
+        success: function(data) {
+          LT.templates[name] = data;
+          assignment[property] = LT.templates[name];
+          
+          if (_.isFunction(callback)) {
+            callback.apply(this, [ data ]);
+          }
+        }
+      });
+    }
+  };
+  
 })(jQuery, window);
