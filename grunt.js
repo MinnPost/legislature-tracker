@@ -29,7 +29,7 @@ module.exports = function(grunt) {
     },
     concat: {
       dist: {
-        src: ['js/app/utils.js', 'js/app/core.js', 'dist/templates/js', 'js/app/models.js', 'js/app/collections.js', 'js/app/views.js', 'js/app/app.js'],
+        src: ['js/app/utils.js', 'js/app/core.js', 'dist/templates.js', 'js/app/models.js', 'js/app/collections.js', 'js/app/views.js', 'js/app/app.js'],
         dest: 'dist/<%= pkg.name %>.<%= pkg.version %>.js'
       },
       dist_latest: {

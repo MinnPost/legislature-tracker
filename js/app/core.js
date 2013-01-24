@@ -88,9 +88,9 @@ else {
         async: false,
         contentType: 'text',
         success: function(data) {
-          LT.templates[templatePath] = data;
+          LT.templates[templatePath] = _.template(data);
           assignment[property] = LT.templates[templatePath];
-          
+
           if (_.isFunction(callback)) {
             callback.apply(this, [ data ]);
           }
