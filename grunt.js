@@ -17,7 +17,7 @@ module.exports = function(grunt) {
     concat: {
       dist: {
         src: ['js/app/utils.js', 'js/app/core.js', 'js/app/models.js', 'js/app/collections.js', 'js/app/views.js', 'js/app/app.js'],
-        dest: 'dist/<%= pkg.name %>.js'
+        dest: 'dist/<%= pkg.name %>.<%= pkg.version %>.js'
       },
       libs: {
         src: ['js/lib/jquery.1.8.3.min.js', 'jquery.jsonp-2.4.0.min.js', 'underscore.1.4.3.min.js', 'backbone.0.9.10.min.js', 'tabletop.master-20130121.min.js'],
@@ -27,7 +27,7 @@ module.exports = function(grunt) {
     min: {
       dist: {
         src: ['<banner:meta.banner>', '<config:concat.dist.dest>'],
-        dest: 'dist/<%= pkg.name %>.min.js'
+        dest: 'dist/<%= pkg.name %>.<%= pkg.version %>.min.js'
       }
     },
     watch: {

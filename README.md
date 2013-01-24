@@ -9,4 +9,6 @@ An application to keep track of what is going on in a state legislature.  Using 
 
 ## Building
 
-Install [grunt](http://gruntjs.com/): ```npm install -g grunt```
+1. Install [grunt](http://gruntjs.com/): ```npm install -g grunt```
+`. Update version in: ```package.json```
+1. Run: ```grunt```
