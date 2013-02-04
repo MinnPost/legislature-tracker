@@ -77,6 +77,16 @@
   LT.CategoryModel = Backbone.Model.extend({
     initialize: function(attr, options) {
       this.options = options;
+    },
+    
+    bills: function() {
+      var thisModel = this;
+      var bills = [];
+
+      _.each(this.get('bills'), function(b) {
+        bills.push(LT.utils.getModel('OSBillModel', 'bill_id', b, thisModel.options));
+      });
+      return bills;
     }
   });
 

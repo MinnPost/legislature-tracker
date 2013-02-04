@@ -13,6 +13,7 @@ LT.Application = Backbone.Router.extend({
 
   initialize: function(options) {
     this.options = options;
+    this.options.app = this;
     
     // Bind to help with some event callbacks
     _.bindAll(this);
@@ -35,8 +36,8 @@ LT.Application = Backbone.Router.extend({
   // Function to call when bill data is loaded
   loadEBills: function(data, tabletop) {
     var thisRouter = this;
-    this.categories = new LT.CategoriesCollection();
-    this.bills = new LT.BillsCollection();
+    this.categories = new LT.CategoriesCollection(null, this.options);
+    this.bills = new LT.BillsCollection(null, this.options);
     
     // Get categories
     _.each(data, function(d) {
