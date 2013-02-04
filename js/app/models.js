@@ -17,7 +17,7 @@
     },
     
     url: function() {
-      return this.urlBase() + '/' + encodeURI(this.osType) + '/' + 
+      return this.urlBase() + encodeURI(this.osType) + '/' + 
         encodeURI(this.id) + this.urlEnd();
     },
     
@@ -36,7 +36,7 @@
    */
   LT.OSStateModel = LT.OSModel.extend({
     url: function() {
-      return this.urlBase() + '/metadata/'  + encodeURI(this.options.state) + 
+      return this.urlBase() + 'metadata/'  + encodeURI(this.options.state) + 
         this.urlEnd();
     }
   });
@@ -47,10 +47,10 @@
   LT.OSBillModel = LT.OSModel.extend({
     url: function() {
       if (!_.isUndefined(this.id)) {
-        return this.urlBase() + '/bills/'  + this.id + this.urlEnd();
+        return this.urlBase() + 'bills/'  + this.id + this.urlEnd();
       }
       else {
-        return this.urlBase() + '/bills/'  + encodeURI(this.options.state) + '/' +
+        return this.urlBase() + 'bills/'  + encodeURI(this.options.state) + '/' +
           encodeURI(this.options.session) + '/' +
           encodeURI(this.get('bill_id')) + this.urlEnd();
       }
