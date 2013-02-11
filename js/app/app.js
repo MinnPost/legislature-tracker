@@ -12,6 +12,7 @@ LT.Application = Backbone.Router.extend({
   },
 
   initialize: function(options) {
+    options = _.extend(LT.defaultOptions, options);
     this.options = options;
     this.options.app = this;
     
@@ -25,17 +26,21 @@ LT.Application = Backbone.Router.extend({
     
     // Get data from spreadsheets
     this.tabletop = Tabletop.init({
-      key: this.options.billsSheet,
-      simpleSheet: true,
-      postProcess: this.parseEBills,
+      key: this.options.dataKey,
       callback: this.loadEBills,
-      callbackContext: this
+      callbackContext: this,
+      wanted: this.options.eBillsWanted
     });
   },
   
   // Function to call when bill data is loaded
   loadEBills: function(data, tabletop) {
     var thisRouter = this;
+    
+    // Parse out sheets
+    data = this.parseEBills(tabletop.sheets('Bills').all());
+    
+    // Set up collections
     this.categories = new LT.CategoriesCollection(null, this.options);
     this.bills = new LT.BillsCollection(null, this.options);
     
@@ -73,16 +78,20 @@ LT.Application = Backbone.Router.extend({
   
   // Function to parse out any data from the spreadsheet
   // for the bills
-  parseEBills: function(row) {
-    // Handle translation
-    _.each(LT.translations.eBills, function(input, output) {
-      row[output] = row[input];
-    });
+  parseEBills: function(bills) {
+    var thisRouter = this;
     
-    // Break up categories into an array
-    row.ecategories = row.ecategories.split(',');
-    row.ecategories = _.map(row.ecategories, _.trim);
-    return row; 
+    return _.map(bills, function(row) {
+      // Handle translation
+      _.each(thisRouter.options.translations.eBills, function(input, output) {
+        row[output] = row[input];
+      });
+      
+      // Break up categories into an array
+      row.ecategories = row.ecategories.split(',');
+      row.ecategories = _.map(row.ecategories, _.trim);
+      return row;
+    });
   },
   
   // Start application (after data has been loaded)

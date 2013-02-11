@@ -57,17 +57,6 @@ else {
   };
   
   /**
-   * Translations for the Google docs data.
-   */
-  LT.translations = {};
-  LT.translations.eBills = {
-    'bill_id': 'bill',
-    'ecategories': 'categories',
-    'etitle': 'title',
-    'edescription': 'description'
-  };
-  
-  /**
    * Template handling.  For development, we want to use
    * the template files directly, but for build, they should be
    * compiled into JS.
@@ -96,6 +85,20 @@ else {
           }
         }
       });
+    }
+  };
+  
+  // Default options
+  LT.defaultOptions = {
+    title: 'Legislature Tracker',
+    eBillsWanted: ['Categories', 'Bills', 'Events'],
+    translations: {
+      eBills: {
+        'bill_id': 'bill',
+        'ecategories': 'categories',
+        'etitle': 'title',
+        'edescription': 'description'
+      }
     }
   };
   
