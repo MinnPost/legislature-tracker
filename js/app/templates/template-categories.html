@@ -1,5 +1,7 @@
 
 <div class="categories-container">
+  <h1><%= options.title %></h1>
+
   <ul>
     <% for (var c in categories) { %>
       <li><a href="#/category/<%= encodeURI(categories[c].name) %>"><%= categories[c].name %></li>

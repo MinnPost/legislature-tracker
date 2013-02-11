@@ -28,7 +28,8 @@
     renderCategories: function() {
       this.$el.html(this.templates.categories({
         categories: this.router.categories.toJSON(),
-        bills: this.router.bills.toJSON()
+        bills: this.router.bills.toJSON(),
+        options: this.options
       }));
     },
     
@@ -43,6 +44,7 @@
       if (!_.isObject(bill)) {
         bill = this.router.bills.get(bill);
       }
+      console.log(bill);
       this.$el.html(this.templates.bill(bill.toJSON()));
     }
   });
