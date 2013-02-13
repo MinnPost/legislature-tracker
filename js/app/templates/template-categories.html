@@ -1,10 +1,17 @@
 
 <div class="categories-container">
-  <h1><%= options.title %></h1>
+  <% if (options.title) { %>
+    <h2><%= options.title %></h2>
+  <% } %>
 
-  <ul>
+  <ul class="clear-block">
     <% for (var c in categories) { %>
-      <li><a href="#/category/<%= encodeURI(categories[c].name) %>"><%= categories[c].name %></li>
+      <li>
+        <div class="category-inner">
+          <h3><a href="#/category/<%= encodeURI(categories[c].id) %>"><%= categories[c].title %></a></h3>
+          <p><%= categories[c].description %></p>
+        </div>
+      </li>
     <% } %>
   </ul>
 </div>

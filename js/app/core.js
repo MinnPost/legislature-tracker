@@ -189,7 +189,7 @@ else {
     eBillsWanted: ['Categories', 'Bills', 'Events'],
     translations: {
       eCategories: {
-        'category_id': 'categoryid',
+        'id': 'categoryid',
         'open_states_subjects': 'openstatessubjects'
       },
       eBills: {

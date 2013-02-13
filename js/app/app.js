@@ -39,37 +39,18 @@ LT.Application = Backbone.Router.extend({
     
     // Parse out data from sheets
     var parsed = LT.parse.eData(tabletop, this.options);
-    data = parsed.bills;
     
     // Set up collections
     this.categories = new LT.CategoriesCollection(null, this.options);
     this.bills = new LT.BillsCollection(null, this.options);
     
-    // Get categories
-    _.each(data, function(d) {
-      _.each(d.ecategories, function(c) {
-        var bills;
-        
-        // Make category
-        var cat = LT.utils.getModel('CategoryModel', 'id', { id: c }, thisRouter.options);
-        cat.set('name', c);
-        
-        // Add reference to bills
-        bills = cat.get('bills');
-        if (_.isUndefined(bills)) {
-          cat.set('bills', [ d.bill_id ]);
-        }
-        else {
-          bills.push(d.bill_id);
-          cat.set('bills', bills);
-        }
-        
-        thisRouter.categories.push(cat);
-      });
+    // Add category models
+    _.each(parsed.categories, function(c) {
+      thisRouter.categories.push(LT.utils.getModel('CategoryModel', 'id', c, thisRouter.options));
     });
     
-    // Load in bills
-    _.each(data, function(d) {
+    // Add bill models
+    _.each(parsed.bills, function(d) {
       thisRouter.bills.push(LT.utils.getModel('OSBillModel', 'bill_id', d, thisRouter.options));
     });
     

@@ -1,6 +1,23 @@
 /**
  * Main CSS for Legislature Tracker
  */
+
+/**
+ * Element styles
+ */
+.ls h2 {
+  font-size: 3em;
+  line-height: 1.25em;
+  margin: 1em auto;
+}
+.ls h3 {
+  font-size: 2em;
+  margin-bottom: 1em;
+}
+
+/**
+ * General styles
+ */
 .ls .clear {
   clear: both;
 }
@@ -8,6 +25,10 @@
 .ls .hidden {
   display: none;
 }
+
+/**
+ * Loading styles
+ */
 .ls .loading-general {
   width: 100%;
   text-align: center;
@@ -23,4 +44,26 @@
   vertical-align: middle;
   height: 100%;
   line-height: 100%;
+}
+
+/**
+ * Category list styles
+ */
+.ls .categories-container ul {
+  margin: .5em 0 2em 0;
+  padding: 0;
+}
+.ls .categories-container ul li {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: block;
+  width: 25%;
+  min-height: 200px;
+  float: left;
+}
+.ls .categories-container ul li .category-inner {
+  padding: 2.5% 5%;
+  margin: 2.5% 5%;
+  border: 1px solid #DDDDDD;
 }
