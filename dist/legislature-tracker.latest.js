@@ -90,17 +90,214 @@ else {
   };
   
   /**
-   * Translations for the Google docs data.
+   * Template handling.  For development, we want to use
+   * the template files directly, but for build, they should be
+   * compiled into JS.
+   *
+   * Assigment is used to not worry about asyncronomonity
    */
-  LT.translations = {};
-  LT.translations.eBills = {
-    'bill_id': 'bill',
-    'ecategories': 'categories',
-    'etitle': 'title',
-    'edescription': 'description'
+  LT.templates = LT.templates || {};
+  LT.utils.getTemplate = function(name, assignment, property, callback) {
+    var templatePath = 'js/app/templates/' + name + '.html';
+    
+    if (!_.isUndefined(LT.templates[templatePath])) {
+      assignment[property] = LT.templates[templatePath];
+    }
+    else {
+      $.ajax({
+        url: templatePath,
+        method: 'GET',
+        async: false,
+        contentType: 'text',
+        success: function(data) {
+          LT.templates[templatePath] = _.template(data);
+          assignment[property] = LT.templates[templatePath];
+
+          if (_.isFunction(callback)) {
+            callback.apply(this, [ data ]);
+          }
+        }
+      });
+    }
+  };
+  
+  /**
+   * Parsing out data from spreadsheet.
+   *
+   * Collection of functions for parsing
+   */
+  LT.parse = LT.parse || {};
+  LT.parse.eData = function(tabletop, options) {
+    var parsed = {};
+    parsed.categories = LT.parse.eCategories(tabletop.sheets('Categories').all(), options);
+    parsed.bills = LT.parse.eBills(tabletop.sheets('Bills').all(), options);
+    parsed.events = LT.parse.eEvents(tabletop.sheets('Events').all(), options);
+    return parsed;
+  };
+  
+  LT.parse.eBills = function(bills, options) {
+    return _.map(bills, function(row) {
+      // Handle translation
+      _.each(options.translations.eBills, function(input, output) {
+        row[output] = row[input];
+      });
+      
+      // Break up categories into an array
+      row.ecategories = row.ecategories.split(',');
+      row.ecategories = _.map(row.ecategories, _.trim);
+      
+      row.links = LT.parse.eLinks(row.links);
+      return row;
+    });
+  };
+  
+  LT.parse.eCategories = function(categories, options) {
+    return _.map(categories, function(row) {
+      // Handle translation
+      _.each(options.translations.eCategories, function(input, output) {
+        row[output] = row[input];
+      });
+      row.links = LT.parse.eLinks(row.links);
+      row.open_states_subjects = LT.parse.osCategories(row.open_states_subjects);
+      return row;
+    });
+  };
+  
+  LT.parse.eEvents = function(events, options) {
+    return _.map(events, function(row) {
+      // Handle translation
+      _.each(options.translations.eEvents, function(input, output) {
+        row[output] = row[input];
+      });
+      row.links = LT.parse.eLinks(row.links);
+      row.date = moment(row.date);
+      return row;
+    });
+  };
+  
+  // "Title to link|http://minnpost.com", "Another link|http://minnpost.com"
+  LT.parse.eLinks = function(link, options) {
+    var links = [];
+    link = _.trim(link);
+    
+    if (link.length === 0) {
+      return links;
+    }
+    
+    // Remove first and last quotes
+    link = (link.substring(0, 1) === '"') ? link.substring(1) : link;
+    link = (link.substring(link.length - 1, link.length) === '"') ? link.slice(0, -1) : link;
+    
+    // Separate out the parts
+    links = link.split('", "');
+    links = _.map(links, function(l) {
+      return {
+        title: l.split('|')[0],
+        url: l.split('|')[1]
+      };
+    });
+    
+    return links;
+  };
+  
+  // "Environmental", "Energy"
+  LT.parse.osCategories = function(category, options) {
+    category = _.trim(category);
+    if (category.length === 0) {
+      return [];
+    }
+    
+    // Remove first and last quotes
+    category = (category.substring(0, 1) === '"') ? category.substring(1) : category;
+    category = (category.substring(category.length - 1, category.length) === '"') ? 
+      category.slice(0, -1) : category;
+    
+    // Separate out the parts
+    return category.split('", "');
+  };
+  
+  // Default options
+  LT.defaultOptions = {
+    title: 'Legislature Tracker',
+    eBillsWanted: ['Categories', 'Bills', 'Events'],
+    translations: {
+      eCategories: {
+        'category_id': 'categoryid',
+        'open_states_subjects': 'openstatessubjects'
+      },
+      eBills: {
+        'bill_id': 'bill',
+        'ecategories': 'categories',
+        'etitle': 'title',
+        'edescription': 'description'
+      },
+      eEvents: {
+        'bill_id': 'bill'
+      }
+    }
   };
   
 })(jQuery, window);
+this["LT"] = this["LT"] || {};
+this["LT"]["templates"] = this["LT"]["templates"] || {};
+
+this["LT"]["templates"]["js/app/templates/template-bill.html"] = function(obj){
+var __p='';var print=function(){__p+=Array.prototype.join.call(arguments, '')};
+with(obj||{}){
+__p+='\n<div class="bill-container">\n  <h4>'+
+( bill_id )+
+'</h4>\n  <h5>'+
+( etitle )+
+'</h5>\n  <p>'+
+( edescription )+
+'</p>\n</div>';
+}
+return __p;
+};
+
+this["LT"]["templates"]["js/app/templates/template-categories.html"] = function(obj){
+var __p='';var print=function(){__p+=Array.prototype.join.call(arguments, '')};
+with(obj||{}){
+__p+='\n<div class="categories-container">\n  <h1>'+
+( options.title )+
+'</h1>\n\n  <ul>\n    ';
+ for (var c in categories) { 
+;__p+='\n      <li><a href="#/category/'+
+( encodeURI(categories[c].name) )+
+'">'+
+( categories[c].name )+
+'</li>\n    ';
+ } 
+;__p+='\n  </ul>\n</div>';
+}
+return __p;
+};
+
+this["LT"]["templates"]["js/app/templates/template-category.html"] = function(obj){
+var __p='';var print=function(){__p+=Array.prototype.join.call(arguments, '')};
+with(obj||{}){
+__p+='\n<div class="category-container">\n  <h4>'+
+( name )+
+'</h4>\n  <ul>\n    ';
+ for (var b in bills) { 
+;__p+='\n      <li><a href="#/bill/'+
+( encodeURI(bills[b]) )+
+'">'+
+( bills[b] )+
+'</li>\n    ';
+ } 
+;__p+='\n  </ul>\n</div>';
+}
+return __p;
+};
+
+this["LT"]["templates"]["js/app/templates/template-loading.html"] = function(obj){
+var __p='';var print=function(){__p+=Array.prototype.join.call(arguments, '')};
+with(obj||{}){
+__p+='<div class="loading-general-container">\n  <div class="loading-general"><span>Loading...</span></div>\n</div>';
+}
+return __p;
+};
 /**
  * Models for the Legislature Tracker app.
  */
@@ -120,7 +317,7 @@ else {
     },
     
     url: function() {
-      return this.urlBase() + '/' + encodeURI(this.osType) + '/' + 
+      return this.urlBase() + encodeURI(this.osType) + '/' + 
         encodeURI(this.id) + this.urlEnd();
     },
     
@@ -139,7 +336,7 @@ else {
    */
   LT.OSStateModel = LT.OSModel.extend({
     url: function() {
-      return this.urlBase() + '/metadata/'  + encodeURI(this.options.state) + 
+      return this.urlBase() + 'metadata/'  + encodeURI(this.options.state) + 
         this.urlEnd();
     }
   });
@@ -150,10 +347,10 @@ else {
   LT.OSBillModel = LT.OSModel.extend({
     url: function() {
       if (!_.isUndefined(this.id)) {
-        return this.urlBase() + '/bills/'  + this.id + this.urlEnd();
+        return this.urlBase() + 'bills/'  + this.id + this.urlEnd();
       }
       else {
-        return this.urlBase() + '/bills/'  + encodeURI(this.options.state) + '/' +
+        return this.urlBase() + 'bills/'  + encodeURI(this.options.state) + '/' +
           encodeURI(this.options.session) + '/' +
           encodeURI(this.get('bill_id')) + this.urlEnd();
       }
@@ -180,6 +377,16 @@ else {
   LT.CategoryModel = Backbone.Model.extend({
     initialize: function(attr, options) {
       this.options = options;
+    },
+    
+    bills: function() {
+      var thisModel = this;
+      var bills = [];
+
+      _.each(this.get('bills'), function(b) {
+        bills.push(LT.utils.getModel('OSBillModel', 'bill_id', b, thisModel.options));
+      });
+      return bills;
     }
   });
 
@@ -215,27 +422,28 @@ else {
    * Main View for application.
    */
   LT.MainApplicationView = Backbone.View.extend({
-    templates: {
-      loading: $('#template-loading').html(),
-      categories: $('#template-categories').html(),
-      category: $('#template-category').html(),
-      bill: $('#template-bill').html()
-    },
-    
     initialize: function(options) {
       // Add class to ensure our styling does
       // not mess with other stuff
       this.$el.addClass('ls');
+      
+      // Get templates
+      this.templates = this.templates || {};
+      LT.utils.getTemplate('template-loading', this.templates, 'loading');
+      LT.utils.getTemplate('template-bill', this.templates, 'bill');
+      LT.utils.getTemplate('template-category', this.templates, 'category');
+      LT.utils.getTemplate('template-categories', this.templates, 'categories');
     },
   
     loading: function() {
-      this.$el.html(_.template(this.templates.loading, {}));
+      this.$el.html(this.templates.loading({}));
     },
     
     renderCategories: function() {
-      this.$el.html(_.template(this.templates.categories, {
+      this.$el.html(this.templates.categories({
         categories: this.router.categories.toJSON(),
-        bills: this.router.bills.toJSON()
+        bills: this.router.bills.toJSON(),
+        options: this.options
       }));
     },
     
@@ -243,14 +451,14 @@ else {
       if (!_.isObject(category)) {
         category = this.router.categories.get(category);
       }
-      this.$el.html(_.template(this.templates.category, category.toJSON()));
+      this.$el.html(this.templates.category(category.toJSON()));
     },
     
     renderBill: function(bill) {
       if (!_.isObject(bill)) {
         bill = this.router.bills.get(bill);
       }
-      this.$el.html(_.template(this.templates.bill, bill.toJSON()));
+      this.$el.html(this.templates.bill(bill.toJSON()));
     }
   });
   
@@ -269,7 +477,9 @@ LT.Application = Backbone.Router.extend({
   },
 
   initialize: function(options) {
+    options = _.extend(LT.defaultOptions, options);
     this.options = options;
+    this.options.app = this;
     
     // Bind to help with some event callbacks
     _.bindAll(this);
@@ -281,19 +491,24 @@ LT.Application = Backbone.Router.extend({
     
     // Get data from spreadsheets
     this.tabletop = Tabletop.init({
-      key: this.options.billsSheet,
-      simpleSheet: true,
-      postProcess: this.parseEBills,
+      key: this.options.dataKey,
       callback: this.loadEBills,
-      callbackContext: this
+      callbackContext: this,
+      wanted: this.options.eBillsWanted
     });
   },
   
   // Function to call when bill data is loaded
   loadEBills: function(data, tabletop) {
     var thisRouter = this;
-    this.categories = new LT.CategoriesCollection();
-    this.bills = new LT.BillsCollection();
+    
+    // Parse out data from sheets
+    var parsed = LT.parse.eData(tabletop, this.options);
+    data = parsed.bills;
+    
+    // Set up collections
+    this.categories = new LT.CategoriesCollection(null, this.options);
+    this.bills = new LT.BillsCollection(null, this.options);
     
     // Get categories
     _.each(data, function(d) {
@@ -325,20 +540,6 @@ LT.Application = Backbone.Router.extend({
     
     // Start application/routing
     this.start();
-  },
-  
-  // Function to parse out any data from the spreadsheet
-  // for the bills
-  parseEBills: function(row) {
-    // Handle translation
-    _.each(LT.translations.eBills, function(input, output) {
-      row[output] = row[input];
-    });
-    
-    // Break up categories into an array
-    row.ecategories = row.ecategories.split(',');
-    row.ecategories = _.map(row.ecategories, _.trim);
-    return row; 
   },
   
   // Start application (after data has been loaded)
