@@ -1,9 +1,15 @@
 
 <div class="category-container">
-  <h4><%= name %></h4>
-  <ul>
-    <% for (var b in bills) { %>
-      <li><a href="#/bill/<%= encodeURI(bills[b]) %>"><%= bills[b] %></li>
+  <h2><%= title %></h2>
+  
+  <ul class="clear-block">
+    <% bills = bills.toJSON(); for (var b in bills) { %>
+      <li>
+        <div class="category-inner">
+          <h3><a href="#/bill/<%= encodeURI(bills[b].bill_id) %>"><%= bills[b].title %></a></h3>
+          <p><%= bills[b].edescription %></p>
+        </div>
+      </li>
     <% } %>
   </ul>
 </div>

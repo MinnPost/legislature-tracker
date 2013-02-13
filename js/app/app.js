@@ -44,14 +44,14 @@ LT.Application = Backbone.Router.extend({
     this.categories = new LT.CategoriesCollection(null, this.options);
     this.bills = new LT.BillsCollection(null, this.options);
     
-    // Add category models
-    _.each(parsed.categories, function(c) {
-      thisRouter.categories.push(LT.utils.getModel('CategoryModel', 'id', c, thisRouter.options));
-    });
-    
     // Add bill models
     _.each(parsed.bills, function(d) {
       thisRouter.bills.push(LT.utils.getModel('OSBillModel', 'bill_id', d, thisRouter.options));
+    });
+    
+    // Add category models
+    _.each(parsed.categories, function(c) {
+      thisRouter.categories.push(LT.utils.getModel('CategoryModel', 'id', c, thisRouter.options));
     });
     
     // Start application/routing

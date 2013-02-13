@@ -12,7 +12,7 @@
 }
 .ls h3 {
   font-size: 2em;
-  margin-bottom: 1em;
+  margin-bottom: .5em;
 }
 
 /**
@@ -25,6 +25,26 @@
 .ls .hidden {
   display: none;
 }
+
+.ls .clear-block:after {
+  content:".";
+  display:block;
+  height:0;
+  clear:both;
+  visibility:hidden;
+}
+.ls .clear-block {
+  display:inline-block;
+}
+/*_\*/
+* html .ls .clear-block {
+  height:1%;
+}
+.ls .clear-block{
+  display:block;
+}
+/* End hide from IE-mac */
+
 
 /**
  * Loading styles
@@ -66,4 +86,21 @@
   padding: 2.5% 5%;
   margin: 2.5% 5%;
   border: 1px solid #DDDDDD;
+}
+
+/**
+ * Indiviual category styles
+ */
+.ls .category-container ul {
+  margin: .5em 0 2em 0;
+  padding: 0;
+}
+.ls .category-container ul li {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: block;
+  border-bottom: 1px solid #DDDDDD;
+  padding-bottom: 1em;
+  margin-bottom: 1em;
 }

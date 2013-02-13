@@ -77,16 +77,21 @@
   LT.CategoryModel = Backbone.Model.extend({
     initialize: function(attr, options) {
       this.options = options;
+      this.set('bills', new LT.BillsCollection(null, this.options));
+      this.getBills();
     },
     
-    bills: function() {
+    getBills: function() {
+      // Gets reference to bills that are in the category
       var thisModel = this;
-      var bills = [];
+      var allBills = this.options.app.bills;
+      var cat = this.get('id');
 
-      _.each(this.get('bills'), function(b) {
-        bills.push(LT.utils.getModel('OSBillModel', 'bill_id', b, thisModel.options));
+      allBills.each(function(b) {
+        if (_.indexOf(b.get('ecategories'), cat) !== -1) {
+          thisModel.get('bills').push(LT.utils.getModel('OSBillModel', 'bill_id', b.attributes, thisModel.options));
+        }
       });
-      return bills;
     }
   });
 
