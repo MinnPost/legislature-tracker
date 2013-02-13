@@ -37,8 +37,9 @@ LT.Application = Backbone.Router.extend({
   loadEBills: function(data, tabletop) {
     var thisRouter = this;
     
-    // Parse out sheets
-    data = this.parseEBills(tabletop.sheets('Bills').all());
+    // Parse out data from sheets
+    var parsed = LT.parse.eData(tabletop, this.options);
+    data = parsed.bills;
     
     // Set up collections
     this.categories = new LT.CategoriesCollection(null, this.options);
@@ -74,24 +75,6 @@ LT.Application = Backbone.Router.extend({
     
     // Start application/routing
     this.start();
-  },
-  
-  // Function to parse out any data from the spreadsheet
-  // for the bills
-  parseEBills: function(bills) {
-    var thisRouter = this;
-    
-    return _.map(bills, function(row) {
-      // Handle translation
-      _.each(thisRouter.options.translations.eBills, function(input, output) {
-        row[output] = row[input];
-      });
-      
-      // Break up categories into an array
-      row.ecategories = row.ecategories.split(',');
-      row.ecategories = _.map(row.ecategories, _.trim);
-      return row;
-    });
   },
   
   // Start application (after data has been loaded)

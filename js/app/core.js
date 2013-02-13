@@ -88,16 +88,118 @@ else {
     }
   };
   
+  /**
+   * Parsing out data from spreadsheet.
+   *
+   * Collection of functions for parsing
+   */
+  LT.parse = LT.parse || {};
+  LT.parse.eData = function(tabletop, options) {
+    var parsed = {};
+    parsed.categories = LT.parse.eCategories(tabletop.sheets('Categories').all(), options);
+    parsed.bills = LT.parse.eBills(tabletop.sheets('Bills').all(), options);
+    parsed.events = LT.parse.eEvents(tabletop.sheets('Events').all(), options);
+    return parsed;
+  };
+  
+  LT.parse.eBills = function(bills, options) {
+    return _.map(bills, function(row) {
+      // Handle translation
+      _.each(options.translations.eBills, function(input, output) {
+        row[output] = row[input];
+      });
+      
+      // Break up categories into an array
+      row.ecategories = row.ecategories.split(',');
+      row.ecategories = _.map(row.ecategories, _.trim);
+      
+      row.links = LT.parse.eLinks(row.links);
+      return row;
+    });
+  };
+  
+  LT.parse.eCategories = function(categories, options) {
+    return _.map(categories, function(row) {
+      // Handle translation
+      _.each(options.translations.eCategories, function(input, output) {
+        row[output] = row[input];
+      });
+      row.links = LT.parse.eLinks(row.links);
+      row.open_states_subjects = LT.parse.osCategories(row.open_states_subjects);
+      return row;
+    });
+  };
+  
+  LT.parse.eEvents = function(events, options) {
+    return _.map(events, function(row) {
+      // Handle translation
+      _.each(options.translations.eEvents, function(input, output) {
+        row[output] = row[input];
+      });
+      row.links = LT.parse.eLinks(row.links);
+      row.date = moment(row.date);
+      return row;
+    });
+  };
+  
+  // "Title to link|http://minnpost.com", "Another link|http://minnpost.com"
+  LT.parse.eLinks = function(link, options) {
+    var links = [];
+    link = _.trim(link);
+    
+    if (link.length === 0) {
+      return links;
+    }
+    
+    // Remove first and last quotes
+    link = (link.substring(0, 1) === '"') ? link.substring(1) : link;
+    link = (link.substring(link.length - 1, link.length) === '"') ? link.slice(0, -1) : link;
+    
+    // Separate out the parts
+    links = link.split('", "');
+    links = _.map(links, function(l) {
+      return {
+        title: l.split('|')[0],
+        url: l.split('|')[1]
+      };
+    });
+    
+    return links;
+  };
+  
+  // "Environmental", "Energy"
+  LT.parse.osCategories = function(category, options) {
+    category = _.trim(category);
+    if (category.length === 0) {
+      return [];
+    }
+    
+    // Remove first and last quotes
+    category = (category.substring(0, 1) === '"') ? category.substring(1) : category;
+    category = (category.substring(category.length - 1, category.length) === '"') ? 
+      category.slice(0, -1) : category;
+    
+    // Separate out the parts
+    return category.split('", "');
+  };
+  
   // Default options
   LT.defaultOptions = {
     title: 'Legislature Tracker',
     eBillsWanted: ['Categories', 'Bills', 'Events'],
     translations: {
+      eCategories: {
+        'category_id': 'categoryid',
+        'open_states_subjects': 'openstatessubjects'
+      },
       eBills: {
         'bill_id': 'bill',
         'ecategories': 'categories',
         'etitle': 'title',
         'edescription': 'description'
+      },
+      eEvents: {
+        'bill_id': 'bill'
       }
     }
   };

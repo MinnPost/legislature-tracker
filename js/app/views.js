@@ -44,7 +44,6 @@
       if (!_.isObject(bill)) {
         bill = this.router.bills.get(bill);
       }
-      console.log(bill);
       this.$el.html(this.templates.bill(bill.toJSON()));
     }
   });
