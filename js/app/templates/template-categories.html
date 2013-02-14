@@ -8,7 +8,12 @@
     <% for (var c in categories) { %>
       <li>
         <div class="category-inner">
-          <h3><a href="#/category/<%= encodeURI(categories[c].id) %>"><%= categories[c].title %></a></h3>
+          <h3>
+            <a href="#/category/<%= encodeURI(categories[c].id) %>">
+              <%= categories[c].title %>
+            </a>
+          </h3>
+          
           <p><%= categories[c].description %></p>
         </div>
       </li>

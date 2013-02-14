@@ -77,25 +77,40 @@ LT.Application = Backbone.Router.extend({
 
   // Single Category view
   category: function(category) {
+    var thisRouter = this;
+    
     category = decodeURI(category);
-    this.mainView.renderCategory(category);
+    category = this.categories.get(category);
+    
+    // Load up bill data from open states
+    var bills = category.get('bills');
+    var defers = [];
+    bills.each(function(b) {
+      defers.push(LT.utils.fetchModel(b));
+    });
+    
+    $.when.apply(null, defers).then(function() {
+      thisRouter.mainView.renderCategory(category);
+    }, this.error);
+    
   },
   
   // Bill route
   bill: function(bill) {
     var thisRouter = this;
-    bill = decodeURI(bill);
     
-    var model = LT.utils.getModel('OSBillModel', 'bill_id', { bill_id: bill }, this.options);
-    LT.utils.fetchModel(model, {
-      success: function(bill, data, xhr) {
-        thisRouter.mainView.renderBill(bill);
-      },
-      error: this.error
-    });
+    bill = decodeURI(bill);
+    bill = this.bills.where({ bill_id: bill })[0];
+    
+    $.when(LT.utils.fetchModel(bill)).then(function() {
+      thisRouter.mainView.renderBill(bill);
+    }, this.error);
   },
   
   error: function(e) {
     // Handle error
+    if (console) {
+      console.log('app error', e);
+    }
   }
 });

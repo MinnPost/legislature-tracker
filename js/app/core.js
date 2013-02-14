@@ -48,11 +48,15 @@ else {
   // options should be the same options passed to
   // fetch().
   LT.utils.fetchModel = function(model, options) {
+    var defer;
+  
     if (model.get('fetched') !== true) {
-      model.fetch(options);
+      return model.fetch();
     }
     else {
-      options.success.apply(model, [ model, false, false ]);
+      defer = $.Deferred();
+      defer.resolve(model);
+      return defer;
     }
   };
   

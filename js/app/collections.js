@@ -15,7 +15,12 @@
    * Collection of bills.
    */
   LT.BillsCollection = Backbone.Collection.extend({
-    model: LT.OSBillModel
+    model: LT.OSBillModel,
+    
+    comparator: function(bill) {
+      console.log(bill);
+      return 0;
+    }
   });
 
 })(jQuery, window);

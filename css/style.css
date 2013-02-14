@@ -91,11 +91,11 @@
 /**
  * Indiviual category styles
  */
-.ls .category-container ul {
+.ls .category-container ul.bills-list {
   margin: .5em 0 2em 0;
   padding: 0;
 }
-.ls .category-container ul li {
+.ls .category-container ul.bills-list li {
   margin: 0;
   padding: 0;
   list-style: none;

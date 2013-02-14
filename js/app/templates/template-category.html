@@ -2,11 +2,33 @@
 <div class="category-container">
   <h2><%= title %></h2>
   
-  <ul class="clear-block">
+  <p><%= description %></p>
+  
+  <% if (_.isArray(links) && links.length > 0) { %>
+    <h4>Latest News</h4>
+    <ul>
+      <% for (var l in links) { %>
+        <li><a href="<%= links[l].url %>"><%= links[l].title %></a></li>
+      <% } %>
+    </ul>
+  <% } %>
+  
+  
+  <h4>Bills</h4>
+  <ul class="clear-block bills-list">
     <% bills = bills.toJSON(); for (var b in bills) { %>
       <li>
         <div class="category-inner">
-          <h3><a href="#/bill/<%= encodeURI(bills[b].bill_id) %>"><%= bills[b].title %></a></h3>
+          <h3>
+            <a href="#/bill/<%= encodeURI(bills[b].bill_id) %>">
+              <% if (bills[b].etitle) { %>
+                <%= bills[b].etitle %>
+              <% } else { %>
+                <%= bills[b].title %>
+              <% } %>
+            </a>
+          </h3>
+          
           <p><%= bills[b].edescription %></p>
         </div>
       </li>
