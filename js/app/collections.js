@@ -17,10 +17,7 @@
   LT.BillsCollection = Backbone.Collection.extend({
     model: LT.OSBillModel,
     
-    comparator: function(bill) {
-      console.log(bill);
-      return 0;
-    }
+    comparator: 'updated_at'
   });
 
 })(jQuery, window);
