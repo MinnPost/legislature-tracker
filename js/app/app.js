@@ -81,6 +81,7 @@ LT.Application = Backbone.Router.extend({
     
     category = decodeURI(category);
     category = this.categories.get(category);
+    this.mainView.loading();
     
     // Load up bill data from open states
     var bills = category.get('bills');
@@ -101,6 +102,7 @@ LT.Application = Backbone.Router.extend({
     
     bill = decodeURI(bill);
     bill = this.bills.where({ bill_id: bill })[0];
+    this.mainView.loading();
     
     $.when(LT.utils.fetchModel(bill)).then(function() {
       thisRouter.mainView.renderBill(bill);

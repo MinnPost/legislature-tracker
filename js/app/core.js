@@ -111,6 +111,7 @@ else {
       // Handle translation
       _.each(options.translations.eBills, function(input, output) {
         row[output] = row[input];
+        delete row[input];
       });
       
       // Break up categories into an array

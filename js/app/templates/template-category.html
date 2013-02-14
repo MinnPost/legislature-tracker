@@ -1,11 +1,13 @@
 
+<a href="#/">All Categories</a>
+
 <div class="category-container">
   <h2><%= title %></h2>
   
   <p><%= description %></p>
   
   <% if (_.isArray(links) && links.length > 0) { %>
-    <h4>Latest News</h4>
+    <h3>Latest News</h3>
     <ul>
       <% for (var l in links) { %>
         <li><a href="<%= links[l].url %>"><%= links[l].title %></a></li>
@@ -14,12 +16,12 @@
   <% } %>
   
   
-  <h4>Bills</h4>
+  <h3>Bills</h3>
   <ul class="clear-block bills-list">
     <% bills = bills.toJSON(); for (var b in bills) { %>
       <li>
         <div class="category-inner">
-          <h3>
+          <h4>
             <a href="#/bill/<%= encodeURI(bills[b].bill_id) %>">
               <% if (bills[b].etitle) { %>
                 <%= bills[b].etitle %>
@@ -27,9 +29,31 @@
                 <%= bills[b].title %>
               <% } %>
             </a>
-          </h3>
+            (<%= bills[b].bill_id %>)
+          </h4>
           
           <p><%= bills[b].edescription %></p>
+          
+          <strong>Sponsors</strong>
+          <p>
+            <% for (var a in bills[b].sponsors) { %>
+              <%= bills[b].sponsors[a].name %> (<%= bills[b].sponsors[a].type %>) <br />
+            <% } %>
+          </p>
+          
+          <strong>Actions</strong>
+          <p>
+            <% for (var a in bills[b].actions) { %>
+              <%= bills[b].actions[a].action %> on <%= bills[b].actions[a].date %> <br />
+              <% } %>
+          </p>
+          
+          <strong>Sources</strong>
+          <p>
+            <% for (var a in bills[b].sources) { %>
+              <a href="<%= bills[b].sources[a].url %>"><%= bills[b].sources[a].url %></a> <br />
+            <% } %>
+          </p>
         </div>
       </li>
     <% } %>

@@ -7,7 +7,7 @@
 
 
   <!-- Include CSS -->
-  <link rel="stylesheet" href="./dist/legislature-tracker.latest.css" type="text/css">
+  <link rel="stylesheet" href="./css/style.css" type="text/css">
   <!--[if lte IE 8]>
     <link rel="stylesheet" href="./dist/legislature-tracker.latest.ie.css" type="text/css">
   <![endif]-->
@@ -26,6 +26,7 @@
   <script type="text/javascript" src="./js/lib/underscore.1.4.3.min.js"></script>
   <script type="text/javascript" src="./js/lib/backbone.0.9.10.min.js"></script>
   <script type="text/javascript" src="./js/lib/tabletop.master-20130121.min.js"></script>
+  <script type="text/javascript" src="./js/lib/moment.2.0.0.min.js"></script>
   
   <script type="text/javascript" src="./js/app/utils.js"></script>
   <script type="text/javascript" src="./js/app/core.js"></script>
@@ -43,7 +44,8 @@
         state: 'MN', 
         session: '2013-2014',
         apiKey: '49c5c72c157d4b37892ddb52c63d06be',
-        billsSheet: '0AtX8MXQ89fOKdFNaY1Nzc3p6MjJQdll1VEZwSDkzWEE'
+        dataKey: '0AtX8MXQ89fOKdFNaY1Nzc3p6MjJQdll1VEZwSDkzWEE',
+        title: 'Minnesota 2013 Legislative Session Tracker'
       };
       
       var app = new LT.Application(options);
