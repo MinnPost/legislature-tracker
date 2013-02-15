@@ -1,0 +1,112 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>Legislature Tracker</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1"></meta>
+
+  <!-- Used to help in aid a similar environment to MinnPost site -->
+  <link type="text/css" rel="stylesheet" media="all" href="http://www.minnpost.com/sites/default/files/css/css_0a3256cafaacbbd745a887aea1e06065.css" />
+  <link type="text/css" rel="stylesheet" media="screen" href="http://www.minnpost.com/sites/default/files/css/css_af7ebe348633c5f1b2a0e6fb63d61db8.css" />
+  <link type="text/css" rel="stylesheet" media="print" href="http://www.minnpost.com/sites/default/files/css/css_661c24623d6669afd5ba1b24560bc9c1.css" />
+  <!--[if IE]>
+    <link rel="stylesheet" href="http://www.minnpost.com/sites/default/themes/derma/inc/css/ie.css?n" type="text/css">
+  <![endif]-->
+  
+  <script type="text/javascript" src="http://www.minnpost.com/sites/default/files/js/js_b87774ad419fc0ad9306e7988b22c562.js"></script>
+  <script type="text/javascript">
+  <!--//--><![CDATA[//><!--
+  jQuery.extend(Drupal.settings, {"basePath":"\/","combineBlocks":[["#block-views-most_viewed_by_taxonomy-block","#block-views-most_commented_articles-block_1"],["#block-views-most_viewed_by_node_type-block","#block-views-most_commented_blogs-block_1"],["#block-views-most_viewed_by_node_type-block","#block-views-most_commented_articles-block_1"]],"chartbeat":{"uid":27923,"domain":"minnpost.com","authors":"Tom Nehil,Alan Palazzolo","sections":"Data \u0026 Maps","title":"Build your own sales tax policy for Dayton\u0026#039;s new budget"},"googleanalytics":{"trackOutgoing":1,"trackMailto":1,"trackDownload":1,"trackDownloadExtensions":"7z|aac|arc|arj|asf|asx|avi|bin|csv|doc|exe|flv|gif|gz|gzip|hqx|jar|jpe?g|js|mp(2|3|4|e?g)|mov(ie)?|msi|msp|pdf|phps|png|ppt|qtm?|ra(m|r)?|sea|sit|tar|tgz|torrent|txt|wav|wma|wmv|wpd|xls|xml|z|zip"},"addthis":{"config_default":{"services_toolbox":"facebook_like_counter, tweet, print, email","services_compact":"","services_expanded":"","ui_cobrand":"","ui_header_color":"#000000","ui_header_background":"#FFFFFF","ui_click":true,"ui_delay":"","ui_use_addressbook":0,"pubid":"xa-4e2cfd1147868c4e","data_track_clickback":0,"data_ga_tracker":0,"ui_use_css":true,"data_use_cookies":true,"ui_language":"en","data_use_flash":true},"share_default":{"templates":{"twitter":""}}}});
+  //--><!]]>
+  </script>
+</head>
+
+<body class="not-front logged-in page-node node-type-article one-sidebar sidebar-right admin-nw admin-vertical admin-df  section-data section-data-id-2012 section-data-id-2012-id-05 section-data-id-2012-id-05-how-we-built-legislative-bill-explorer one-sidebar sidebar-right">
+
+  <!-- Used to help better standardize styles in MinnPost site -->
+  <div class="node-body fieldlayout node-field-body">
+    
+    <!-- Example specific CSS -->
+    <style type="text/css">
+      #minnpost-example-container {
+        max-width: 960px;
+        margin: 0 auto;
+      }
+      
+      .footnote {
+        font-size: .75em;
+        font-style: italic;
+        color: #414141;
+        margin-top: 3em;
+        border-top: 1px solid #BCBCBC;
+        padding-top: 1em;
+      }
+    </style>
+
+    <!-- Application CSS -->
+    <style type="text/css">
+      @import url('https://s3.amazonaws.com/data.minnpost/projects/legislature-tracker/legislature-tracker.latest.css');
+    </style>
+    <!--[if lte IE 8]>
+      <style type="text/css">
+        @import url('https://s3.amazonaws.com/data.minnpost/projects/legislature-tracker/legislature-tracker.latest.ie.css');
+      </style>
+    <![endif]-->
+    
+    
+    <!-- Example HTML -->
+    <div id="minnpost-example-container">
+      <noscript>
+        <p>This application requires Javascript which is used to make your web browser more interactive.  If this message does not go away, please consider enabling Javascript.  Here are <a href="http://www.enable-javascript.com/" target="_blank">instructions on how to enable JavaScript in your web browser</a>.</p>
+      </noscript>
+      
+      <!--[if lte IE 7]>
+        <div class="ie-upgrade-note">
+          <h4>Consider upgrading your browser</h4>
+          <p>Your <strong>Internet Browser</strong> is the application you use to navigate webpages on the internet.  You are currently using an older version of Internet Explorer.  This application may not be full-featured because you are using such an old browser.</p>
+          
+          <p><a href="http://browsehappy.com/" target="_blank">Click here to find out about upgrading to a newer browsers</a>.</p>
+        
+          <p>If you cannot install new applications on your computer (because it is not allowed at work, for example), consider using <a href="http://www.google.com/chromeframe" target="_blank">Google's Chrome Frame</a> for Internet Explorer.</p>
+        </div>
+      <![endif]-->
+      
+      <!-- Application HTML -->
+      <div id="legislature-tracker-container">
+      </div>
+      
+      <div class="footnote">
+        <p>Data provided by <a href="" target="_blank"></a>.</p>
+      </div>
+    </div>
+        
+    
+    <!-- Application libraries and JS (need to handle jQuery Custom) -->
+    <script type="text/javascript" src="https://s3.amazonaws.com/data.minnpost/projects/legislature-tracker/legislature-tracker.libs.js"></script>
+    <script type="text/javascript" src="https://s3.amazonaws.com/data.minnpost/projects/legislature-tracker/legislature-tracker.latest.min.js"></script>
+
+    
+    <script type="text/javascript">
+      (function($, w, undefined) {
+        var options = {
+          el: '#legislature-tracker-container',
+          state: 'MN', 
+          session: '2013-2014',
+          apiKey: '49c5c72c157d4b37892ddb52c63d06be',
+          dataKey: '0AtX8MXQ89fOKdFNaY1Nzc3p6MjJQdll1VEZwSDkzWEE',
+          title: 'Minnesota 2013 Legislative Session Tracker'
+        };
+        
+        var app = new LT.Application(options);
+        
+      })(jQuery, window);
+    </script>
+  </div>
+  <!-- END: Embeddable -->
+
+
+
+</div>
+</body>
+</html>
