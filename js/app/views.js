@@ -19,6 +19,13 @@
       LT.utils.getTemplate('template-bill', this.templates, 'bill');
       LT.utils.getTemplate('template-category', this.templates, 'category');
       LT.utils.getTemplate('template-categories', this.templates, 'categories');
+      
+      // Bind all
+      _.bindAll(this);
+    },
+    
+    events: {
+      'click .category-bill-expand': 'expandBill'
     },
   
     loading: function() {
@@ -45,6 +52,13 @@
         bill = this.router.bills.get(bill);
       }
       this.$el.html(this.templates.bill(bill.toJSON()));
+    },
+    
+    expandBill: function(e) {
+      e.preventDefault();
+      var $this = $(e.target);
+      
+      $this.parent().parent().find('.category-bill-bottom').slideToggle();
     }
   });
   

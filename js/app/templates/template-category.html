@@ -21,39 +21,45 @@
     <% bills = bills.toJSON(); for (var b in bills) { %>
       <li>
         <div class="category-inner">
-          <h4>
-            <a href="#/bill/<%= encodeURI(bills[b].bill_id) %>">
-              <% if (bills[b].etitle) { %>
-                <%= bills[b].etitle %>
-              <% } else { %>
-                <%= bills[b].title %>
+          <div class="category-bill-top">
+            <h4>
+              <a href="#/bill/<%= encodeURI(bills[b].bill_id) %>">
+                <% if (bills[b].etitle) { %>
+                  <%= bills[b].etitle %>
+                <% } else { %>
+                  <%= bills[b].title %>
+                <% } %>
+              </a>
+              (<%= bills[b].bill_id %>)
+            </h4>
+            
+            <p><%= bills[b].edescription %></p>
+            
+            <a href="#" class="category-bill-expand">Expand</a>
+          </div>
+          
+          <div class="category-bill-bottom hidden">
+            <strong>Sponsors</strong>
+            <p>
+              <% for (var a in bills[b].sponsors) { %>
+                <%= bills[b].sponsors[a].name %> (<%= bills[b].sponsors[a].type %>) <br />
               <% } %>
-            </a>
-            (<%= bills[b].bill_id %>)
-          </h4>
-          
-          <p><%= bills[b].edescription %></p>
-          
-          <strong>Sponsors</strong>
-          <p>
-            <% for (var a in bills[b].sponsors) { %>
-              <%= bills[b].sponsors[a].name %> (<%= bills[b].sponsors[a].type %>) <br />
-            <% } %>
-          </p>
-          
-          <strong>Actions</strong>
-          <p>
-            <% for (var a in bills[b].actions) { %>
-              <%= bills[b].actions[a].action %> on <%= bills[b].actions[a].date %> <br />
+            </p>
+            
+            <strong>Actions</strong>
+            <p>
+              <% for (var a in bills[b].actions) { %>
+                <%= bills[b].actions[a].action %> on <%= bills[b].actions[a].date %> <br />
+                <% } %>
+            </p>
+            
+            <strong>Sources</strong>
+            <p>
+              <% for (var a in bills[b].sources) { %>
+                <a href="<%= bills[b].sources[a].url %>"><%= bills[b].sources[a].url %></a> <br />
               <% } %>
-          </p>
-          
-          <strong>Sources</strong>
-          <p>
-            <% for (var a in bills[b].sources) { %>
-              <a href="<%= bills[b].sources[a].url %>"><%= bills[b].sources[a].url %></a> <br />
-            <% } %>
-          </p>
+            </p>
+          </div>
         </div>
       </li>
     <% } %>
