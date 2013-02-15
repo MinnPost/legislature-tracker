@@ -21,7 +21,6 @@
 .ls .clear {
   clear: both;
 }
-.ls .js-dependent,
 .ls .hidden {
   display: none;
 }
