@@ -111,6 +111,17 @@
         }
       });
       this.set('action_dates', swapper);
+      
+      // Add custom events to actions
+      swapper = this.get('custom_events');
+      if (_.isArray(swapper) && swapper.length > 0) {
+        this.set('actions', _.union(this.get('actions'), swapper));
+      }
+      
+      // Sort action
+      this.set('actions', _.sortBy(this.get('actions'), function(a) {
+        return a.date.unix();
+      }));
     }
   });
   

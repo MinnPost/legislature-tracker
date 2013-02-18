@@ -100,9 +100,20 @@ else {
   LT.parse = LT.parse || {};
   LT.parse.eData = function(tabletop, options) {
     var parsed = {};
+    
     parsed.categories = LT.parse.eCategories(tabletop.sheets('Categories').all(), options);
     parsed.bills = LT.parse.eBills(tabletop.sheets('Bills').all(), options);
     parsed.events = LT.parse.eEvents(tabletop.sheets('Events').all(), options);
+    
+    // Add events into bills
+    _.each(_.groupBy(parsed.events, 'bill_id'), function(e, b) {
+      _.each(parsed.bills, function(bill, i) {
+        if (bill.bill_id === b) {
+          parsed.bills[i].custom_events = e;
+        }
+      });
+    });
+    
     return parsed;
   };
   
@@ -128,7 +139,9 @@ else {
       // Handle translation
       _.each(options.translations.eCategories, function(input, output) {
         row[output] = row[input];
+        delete row[input];
       });
+      
       row.links = LT.parse.eLinks(row.links);
       row.open_states_subjects = LT.parse.osCategories(row.open_states_subjects);
       return row;
@@ -140,9 +153,15 @@ else {
       // Handle translation
       _.each(options.translations.eEvents, function(input, output) {
         row[output] = row[input];
+        delete row[input];
       });
+      
       row.links = LT.parse.eLinks(row.links);
       row.date = moment(row.date);
+      
+      // Add some things to fit format of Open States actions
+      row.type = [ 'custom' ];
+      
       return row;
     });
   };
@@ -204,7 +223,8 @@ else {
         'edescription': 'description'
       },
       eEvents: {
-        'bill_id': 'bill'
+        'bill_id': 'bill',
+        'actor': 'chamber'
       }
     }
   };
