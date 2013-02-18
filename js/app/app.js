@@ -14,7 +14,7 @@
     },
   
     initialize: function(options) {
-      options = _.extend(LT.defaultOptions, options);
+      options = LT.options = _.extend(LT.defaultOptions, options);
       this.options = options;
       this.options.app = this;
       

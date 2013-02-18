@@ -60,6 +60,20 @@ else {
     }
   };
   
+  // Translate words, usually for presentation
+  LT.utils.translate = function(section, input) {
+    var output = input;
+    section = section.toLowerCase();
+    input = input.toLowerCase();
+    
+    if (_.isObject(LT.options.wordingTranslations[section]) && 
+      _.isString(LT.options.wordingTranslations[section][input])) {
+      output = LT.options.wordingTranslations[section][input];
+    }
+    
+    return output;
+  };
+  
   /**
    * Template handling.  For development, we want to use
    * the template files directly, but for build, they should be
@@ -98,12 +112,12 @@ else {
    * Collection of functions for parsing
    */
   LT.parse = LT.parse || {};
-  LT.parse.eData = function(tabletop, options) {
+  LT.parse.eData = function(tabletop) {
     var parsed = {};
     
-    parsed.categories = LT.parse.eCategories(tabletop.sheets('Categories').all(), options);
-    parsed.bills = LT.parse.eBills(tabletop.sheets('Bills').all(), options);
-    parsed.events = LT.parse.eEvents(tabletop.sheets('Events').all(), options);
+    parsed.categories = LT.parse.eCategories(tabletop.sheets('Categories').all());
+    parsed.bills = LT.parse.eBills(tabletop.sheets('Bills').all());
+    parsed.events = LT.parse.eEvents(tabletop.sheets('Events').all());
     
     // Add events into bills
     _.each(_.groupBy(parsed.events, 'bill_id'), function(e, b) {
@@ -117,10 +131,10 @@ else {
     return parsed;
   };
   
-  LT.parse.eBills = function(bills, options) {
+  LT.parse.eBills = function(bills) {
     return _.map(bills, function(row) {
       // Handle translation
-      _.each(options.translations.eBills, function(input, output) {
+      _.each(LT.options.fieldTranslations.eBills, function(input, output) {
         row[output] = row[input];
         delete row[input];
       });
@@ -134,10 +148,10 @@ else {
     });
   };
   
-  LT.parse.eCategories = function(categories, options) {
+  LT.parse.eCategories = function(categories) {
     return _.map(categories, function(row) {
       // Handle translation
-      _.each(options.translations.eCategories, function(input, output) {
+      _.each(LT.options.fieldTranslations.eCategories, function(input, output) {
         row[output] = row[input];
         delete row[input];
       });
@@ -148,10 +162,10 @@ else {
     });
   };
   
-  LT.parse.eEvents = function(events, options) {
+  LT.parse.eEvents = function(events) {
     return _.map(events, function(row) {
       // Handle translation
-      _.each(options.translations.eEvents, function(input, output) {
+      _.each(LT.options.fieldTranslations.eEvents, function(input, output) {
         row[output] = row[input];
         delete row[input];
       });
@@ -167,7 +181,7 @@ else {
   };
   
   // "Title to link|http://minnpost.com", "Another link|http://minnpost.com"
-  LT.parse.eLinks = function(link, options) {
+  LT.parse.eLinks = function(link) {
     var links = [];
     link = _.trim(link);
     
@@ -211,7 +225,7 @@ else {
   LT.defaultOptions = {
     title: 'Legislature Tracker',
     eBillsWanted: ['Categories', 'Bills', 'Events'],
-    translations: {
+    fieldTranslations: {
       eCategories: {
         'id': 'categoryid',
         'open_states_subjects': 'openstatessubjects'
@@ -224,7 +238,14 @@ else {
       },
       eEvents: {
         'bill_id': 'bill',
-        'actor': 'chamber'
+        'actor': 'chamber',
+        'action': 'title'
+      }
+    },
+    wordingTranslations: {
+      chamber: {
+        upper: 'Senate',
+        lower: 'House'
       }
     }
   };

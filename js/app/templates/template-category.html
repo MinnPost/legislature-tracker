@@ -49,8 +49,9 @@
             <strong>Actions</strong>
             <p>
               <% for (var a in bills[b].actions) { %>
-                <%= bills[b].actions[a].action %> on <%= bills[b].actions[a].date %> <br />
-                <% } %>
+                <%= bills[b].actions[a].date.format('MMM DD, YYYY') %>: <%= bills[b].actions[a].action %>
+                (<%= LT.utils.translate('chamber', bills[b].actions[a].actor) %>)<br />
+              <% } %>
             </p>
             
             <strong>Sources</strong>
