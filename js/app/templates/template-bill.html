@@ -1,6 +1,45 @@
 
-<div class="bill-container">
-  <h2><%= bill_id %></h2>
-  <h3><%= etitle %></h3>
-  <p><%= edescription %></p>
+<div class="bill <% if (expandable) { %>is-expandable<% } %>">
+  <div class="bill-top">
+    <h3>
+      <a href="#/bill/<%= encodeURI(bill.bill_id) %>">
+        <% if (bill.etitle) { %>
+          <%= bill.etitle %>
+        <% } else { %>
+          <%= bill.title %>
+        <% } %>
+      </a>
+      (<%= bill.bill_id %>)
+    </h3>
+    
+    <p><%= bill.edescription %></p>
+    
+    <% if (expandable) { %>
+      <a href="#" class="bill-expand">Expand</a>
+    <% } %>
+  </div>
+  
+  <div class="bill-bottom">
+    <strong>Sponsors</strong>
+    <p>
+      <% for (var a in bill.sponsors) { %>
+        <%= bill.sponsors[a].name %> (<%= bill.sponsors[a].type %>) <br />
+      <% } %>
+    </p>
+    
+    <strong>Actions</strong>
+    <p>
+      <% for (var a in bill.actions) { %>
+        <%= bill.actions[a].date.format('MMM DD, YYYY') %>: <%= bill.actions[a].action %>
+        (<%= LT.utils.translate('chamber', bill.actions[a].actor) %>)<br />
+      <% } %>
+    </p>
+    
+    <strong>Sources</strong>
+    <p>
+      <% for (var a in bill.sources) { %>
+        <a href="<%= bill.sources[a].url %>"><%= bill.sources[a].url %></a> <br />
+      <% } %>
+    </p>
+  </div>
 </div>

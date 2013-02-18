@@ -19,13 +19,14 @@
       LT.utils.getTemplate('template-bill', this.templates, 'bill');
       LT.utils.getTemplate('template-category', this.templates, 'category');
       LT.utils.getTemplate('template-categories', this.templates, 'categories');
+      LT.utils.getTemplate('template-bill-progress', this.templates, 'bill-progress');
       
       // Bind all
       _.bindAll(this);
     },
     
     events: {
-      'click .category-bill-expand': 'expandBill'
+      'click .bill-expand': 'expandBill'
     },
   
     loading: function() {
@@ -41,24 +42,40 @@
     },
     
     renderCategory: function(category) {
+      var thisView = this;
+      var data;
+      
       if (!_.isObject(category)) {
         category = this.router.categories.get(category);
       }
-      this.$el.html(this.templates.category(category.toJSON()));
+      
+      // Render each bill
+      data = category.toJSON();
+      data.bills = data.bills.map(function(b) {
+        return thisView.templates.bill({
+          bill: b.toJSON(),
+          expandable: true
+        });
+      });
+      
+      this.$el.html(this.templates.category(data));
     },
     
     renderBill: function(bill) {
       if (!_.isObject(bill)) {
         bill = this.router.bills.get(bill);
       }
-      this.$el.html(this.templates.bill(bill.toJSON()));
+      this.$el.html(this.templates.bill({
+        bill: bill.toJSON(),
+        expandable: false
+      }));
     },
     
     expandBill: function(e) {
       e.preventDefault();
       var $this = $(e.target);
       
-      $this.parent().parent().find('.category-bill-bottom').slideToggle();
+      $this.parent().parent().find('.bill-bottom').slideToggle();
     }
   });
   
