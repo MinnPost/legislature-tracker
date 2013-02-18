@@ -61,6 +61,7 @@
       });
       
       this.$el.html(this.templates.category(data));
+      this.getLegislators();
     },
     
     renderBill: function(bill) {
@@ -74,6 +75,7 @@
         expandable: false,
         progress: this.templates.billProgress(json)
       }));
+      this.getLegislators();
     },
     
     expandBill: function(e) {
@@ -81,6 +83,46 @@
       var $this = $(e.target);
       
       $this.parent().parent().find('.bill-bottom').slideToggle();
+    },
+    
+    getLegislators: function() {
+      this.$el.find('.sponsor:not(.found)').each(function() {
+        var $this = $(this);
+        var data = $this.data();
+        data.id = data.legId;
+        
+        if (data.id) {
+          var leg = LT.utils.getModel('OSLegislatorModel', 'id', data);
+          $.when(LT.utils.fetchModel(leg)).then(function() {
+            var view = new LT.LegislatorView({
+              el: $this,
+              model: leg
+            }).render();
+          });
+        }
+      });
+    }
+  });
+
+  /**
+   * Legislator view.
+   */
+  LT.LegislatorView = Backbone.View.extend({
+    model: LT.OSLegislatorModel,
+    
+    initialize: function(options) {
+      // Get templates
+      this.templates = this.templates || {};
+      LT.utils.getTemplate('template-legislator', this.templates, 'legislator');
+      
+      // Bind all
+      _.bindAll(this);
+    },
+    
+    render: function() {
+      this.$el.addClass('found')
+        .html(this.templates.legislator(this.model.toJSON()));
+      return this;
     }
   });
   

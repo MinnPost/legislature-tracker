@@ -100,10 +100,35 @@
   padding-bottom: 1em;
   border-bottom: 1px solid #BBBBBB;
 }
+.ls .bill-expand {
+  padding: 3px 5px;
+  border: 1px solid #DDDDDD;
+  background-color: #EFEFEF;
+  border-radius: 5px;
+  margin-bottom: 1em;
+  display: inline-block;
+}
 .ls .is-expandable .bill-bottom {
   display: none;
 }
 
+
+/**
+ * Bill sponsors/legislators styles
+ */
+.ls .sponsors {
+  margin-bottom: 1em;
+}
+.ls .sponsors .sponsor {
+  width: 300px;
+  float: left;
+  margin-bottom: 1em;
+}
+.ls .legislator img {
+  max-width: 40px;
+  float: left;
+  margin: 0 5px 30px 0;
+}
 
 /**
  * Bill progress styles

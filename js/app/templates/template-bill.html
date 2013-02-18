@@ -23,11 +23,13 @@
   
   <div class="bill-bottom">
     <strong>Sponsors</strong>
-    <p>
+    <div class="sponsors clear-block">
       <% for (var a in bill.sponsors) { %>
-        <%= bill.sponsors[a].name %> (<%= bill.sponsors[a].type %>) <br />
+        <div class="sponsor" data-leg-id="<%= bill.sponsors[a].leg_id %>" data-sponsor-type="<%= bill.sponsors[a].type %>">
+          <%= bill.sponsors[a].name %> (<%= bill.sponsors[a].type %>)
+        </div>
       <% } %>
-    </p>
+    </div>
     
     <strong>Actions</strong>
     <p>

@@ -36,6 +36,7 @@ else {
   // Make new model, and utilize cache
   LT.utils.getModel = function(model, idAttr, attr, options) {
     var hash = model + ':' + idAttr + ':' + attr[idAttr];
+    options = options || LT.options;
   
     if (_.isUndefined(LT.cache.models[hash])) {
       LT.cache.models[hash] = new LT[model](attr, options);
@@ -45,9 +46,7 @@ else {
   };
   
   // Fetch model, unless has already been fetched.
-  // options should be the same options passed to
-  // fetch().
-  LT.utils.fetchModel = function(model, options) {
+  LT.utils.fetchModel = function(model) {
     var defer;
   
     if (model.get('fetched') !== true) {
