@@ -90,16 +90,35 @@
 /**
  * Indiviual category styles
  */
-.ls .category-container ul.bills-list {
-  margin: .5em 0 2em 0;
-  padding: 0;
-}
-.ls .category-container ul.bills-list li {
-  margin: 0;
-  padding: 0;
-  list-style: none;
-  display: block;
-  border-bottom: 1px solid #DDDDDD;
-  padding-bottom: 1em;
+
+
+/**
+ * Bill styles
+ */
+.ls .bills-list .bill {
   margin-bottom: 1em;
+  padding-bottom: 1em;
+  border-bottom: 1px solid #BBBBBB;
+}
+.ls .is-expandable .bill-bottom {
+  display: none;
+}
+
+
+/**
+ * Bill progress styles
+ */
+.ls .bill-progress {
+  width: 400px;
+  border: 1px solid #BBBBBB;
+  margin-bottom: 1em;
+}
+.ls .bill-progress .bill-progress-section {
+  width: 25%;
+  float: left;
+  background-color: #EFEFEF;
+  height: 30px;
+}
+.ls .bill-progress .bill-progress-section.completed {
+  background-color: green;
 }

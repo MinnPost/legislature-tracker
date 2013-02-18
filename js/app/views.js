@@ -19,7 +19,7 @@
       LT.utils.getTemplate('template-bill', this.templates, 'bill');
       LT.utils.getTemplate('template-category', this.templates, 'category');
       LT.utils.getTemplate('template-categories', this.templates, 'categories');
-      LT.utils.getTemplate('template-bill-progress', this.templates, 'bill-progress');
+      LT.utils.getTemplate('template-bill-progress', this.templates, 'billProgress');
       
       // Bind all
       _.bindAll(this);
@@ -52,9 +52,11 @@
       // Render each bill
       data = category.toJSON();
       data.bills = data.bills.map(function(b) {
+        var json = b.toJSON();
         return thisView.templates.bill({
-          bill: b.toJSON(),
-          expandable: true
+          bill: json,
+          expandable: true,
+          progress: thisView.templates.billProgress(json)
         });
       });
       
@@ -65,9 +67,12 @@
       if (!_.isObject(bill)) {
         bill = this.router.bills.get(bill);
       }
+      var json = bill.toJSON();
+      
       this.$el.html(this.templates.bill({
-        bill: bill.toJSON(),
-        expandable: false
+        bill: json,
+        expandable: false,
+        progress: this.templates.billProgress(json)
       }));
     },
     
