@@ -1,13 +1,53 @@
 /**
  * Main CSS for Legislature Tracker
  */
+
+/**
+ * Element styles
+ */
+.ls h2 {
+  font-size: 3em;
+  line-height: 1.25em;
+  margin: .5em auto;
+}
+.ls h3 {
+  font-size: 1.5em;
+  margin-bottom: .5em;
+}
+
+/**
+ * General styles
+ */
 .ls .clear {
   clear: both;
 }
-.ls .js-dependent,
 .ls .hidden {
   display: none;
 }
+
+.ls .clear-block:after {
+  content:".";
+  display:block;
+  height:0;
+  clear:both;
+  visibility:hidden;
+}
+.ls .clear-block {
+  display:inline-block;
+}
+/*_\*/
+* html .ls .clear-block {
+  height:1%;
+}
+.ls .clear-block{
+  display:block;
+}
+/* End hide from IE-mac */
+
+
+/**
+ * Loading styles
+ */
 .ls .loading-general {
   width: 100%;
   text-align: center;
@@ -23,4 +63,87 @@
   vertical-align: middle;
   height: 100%;
   line-height: 100%;
+}
+
+/**
+ * Category list styles
+ */
+.ls .categories-container ul {
+  margin: .5em 0 2em 0;
+  padding: 0;
+}
+.ls .categories-container ul li {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: block;
+  width: 25%;
+  min-height: 200px;
+  float: left;
+}
+.ls .categories-container ul li .category-inner {
+  padding: 2.5% 5%;
+  margin: 2.5% 5%;
+  border: 1px solid #DDDDDD;
+}
+
+/**
+ * Indiviual category styles
+ */
+
+
+/**
+ * Bill styles
+ */
+.ls .bills-list .bill {
+  margin-bottom: 1em;
+  padding-bottom: 1em;
+  border-bottom: 1px solid #BBBBBB;
+}
+.ls .bill-expand {
+  padding: 3px 5px;
+  border: 1px solid #DDDDDD;
+  background-color: #EFEFEF;
+  border-radius: 5px;
+  margin-bottom: 1em;
+  display: inline-block;
+}
+.ls .is-expandable .bill-bottom {
+  display: none;
+}
+
+
+/**
+ * Bill sponsors/legislators styles
+ */
+.ls .sponsors {
+  margin-bottom: 1em;
+}
+.ls .sponsors .sponsor {
+  width: 300px;
+  float: left;
+  margin-bottom: 1em;
+}
+.ls .legislator img {
+  max-width: 40px;
+  float: left;
+  margin: 0 5px 30px 0;
+}
+
+/**
+ * Bill progress styles
+ */
+.ls .bill-progress {
+  width: 400px;
+  border: 1px solid #BBBBBB;
+  margin-bottom: 1em;
+}
+.ls .bill-progress .bill-progress-section {
+  width: 25%;
+  float: left;
+  background-color: #EFEFEF;
+  height: 30px;
+}
+.ls .bill-progress .bill-progress-section.completed {
+  background-color: green;
 }

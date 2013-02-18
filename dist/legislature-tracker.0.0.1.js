@@ -69,6 +69,7 @@ else {
   // Make new model, and utilize cache
   LT.utils.getModel = function(model, idAttr, attr, options) {
     var hash = model + ':' + idAttr + ':' + attr[idAttr];
+    options = options || LT.options;
   
     if (_.isUndefined(LT.cache.models[hash])) {
       LT.cache.models[hash] = new LT[model](attr, options);
@@ -78,15 +79,31 @@ else {
   };
   
   // Fetch model, unless has already been fetched.
-  // options should be the same options passed to
-  // fetch().
-  LT.utils.fetchModel = function(model, options) {
+  LT.utils.fetchModel = function(model) {
+    var defer;
+  
     if (model.get('fetched') !== true) {
-      model.fetch(options);
+      return model.fetch();
     }
     else {
-      options.success.apply(model, [ model, false, false ]);
+      defer = $.Deferred();
+      defer.resolve(model);
+      return defer;
     }
+  };
+  
+  // Translate words, usually for presentation
+  LT.utils.translate = function(section, input) {
+    var output = input;
+    section = section.toLowerCase();
+    input = input.toLowerCase();
+    
+    if (_.isObject(LT.options.wordingTranslations[section]) && 
+      _.isString(LT.options.wordingTranslations[section][input])) {
+      output = LT.options.wordingTranslations[section][input];
+    }
+    
+    return output;
   };
   
   /**
@@ -127,19 +144,31 @@ else {
    * Collection of functions for parsing
    */
   LT.parse = LT.parse || {};
-  LT.parse.eData = function(tabletop, options) {
+  LT.parse.eData = function(tabletop) {
     var parsed = {};
-    parsed.categories = LT.parse.eCategories(tabletop.sheets('Categories').all(), options);
-    parsed.bills = LT.parse.eBills(tabletop.sheets('Bills').all(), options);
-    parsed.events = LT.parse.eEvents(tabletop.sheets('Events').all(), options);
+    
+    parsed.categories = LT.parse.eCategories(tabletop.sheets('Categories').all());
+    parsed.bills = LT.parse.eBills(tabletop.sheets('Bills').all());
+    parsed.events = LT.parse.eEvents(tabletop.sheets('Events').all());
+    
+    // Add events into bills
+    _.each(_.groupBy(parsed.events, 'bill_id'), function(e, b) {
+      _.each(parsed.bills, function(bill, i) {
+        if (bill.bill_id === b) {
+          parsed.bills[i].custom_events = e;
+        }
+      });
+    });
+    
     return parsed;
   };
   
-  LT.parse.eBills = function(bills, options) {
+  LT.parse.eBills = function(bills) {
     return _.map(bills, function(row) {
       // Handle translation
-      _.each(options.translations.eBills, function(input, output) {
+      _.each(LT.options.fieldTranslations.eBills, function(input, output) {
         row[output] = row[input];
+        delete row[input];
       });
       
       // Break up categories into an array
@@ -151,32 +180,40 @@ else {
     });
   };
   
-  LT.parse.eCategories = function(categories, options) {
+  LT.parse.eCategories = function(categories) {
     return _.map(categories, function(row) {
       // Handle translation
-      _.each(options.translations.eCategories, function(input, output) {
+      _.each(LT.options.fieldTranslations.eCategories, function(input, output) {
         row[output] = row[input];
+        delete row[input];
       });
+      
       row.links = LT.parse.eLinks(row.links);
       row.open_states_subjects = LT.parse.osCategories(row.open_states_subjects);
       return row;
     });
   };
   
-  LT.parse.eEvents = function(events, options) {
+  LT.parse.eEvents = function(events) {
     return _.map(events, function(row) {
       // Handle translation
-      _.each(options.translations.eEvents, function(input, output) {
+      _.each(LT.options.fieldTranslations.eEvents, function(input, output) {
         row[output] = row[input];
+        delete row[input];
       });
+      
       row.links = LT.parse.eLinks(row.links);
       row.date = moment(row.date);
+      
+      // Add some things to fit format of Open States actions
+      row.type = [ 'custom' ];
+      
       return row;
     });
   };
   
   // "Title to link|http://minnpost.com", "Another link|http://minnpost.com"
-  LT.parse.eLinks = function(link, options) {
+  LT.parse.eLinks = function(link) {
     var links = [];
     link = _.trim(link);
     
@@ -220,9 +257,9 @@ else {
   LT.defaultOptions = {
     title: 'Legislature Tracker',
     eBillsWanted: ['Categories', 'Bills', 'Events'],
-    translations: {
+    fieldTranslations: {
       eCategories: {
-        'category_id': 'categoryid',
+        'id': 'categoryid',
         'open_states_subjects': 'openstatessubjects'
       },
       eBills: {
@@ -232,7 +269,15 @@ else {
         'edescription': 'description'
       },
       eEvents: {
-        'bill_id': 'bill'
+        'bill_id': 'bill',
+        'actor': 'chamber',
+        'action': 'title'
+      }
+    },
+    wordingTranslations: {
+      chamber: {
+        upper: 'Senate',
+        lower: 'House'
       }
     }
   };
@@ -241,16 +286,114 @@ else {
 this["LT"] = this["LT"] || {};
 this["LT"]["templates"] = this["LT"]["templates"] || {};
 
+this["LT"]["templates"]["js/app/templates/template-bill-progress.html"] = function(obj){
+var __p='';var print=function(){__p+=Array.prototype.join.call(arguments, '')};
+with(obj||{}){
+__p+='\n<div class="bill-progress clear-block">\n  <div class="bill-progress-section bill-introduced ';
+ if (action_dates.introduced) { 
+;__p+='completed';
+ } 
+;__p+='"\n    title="Bill introduced';
+ if (action_dates.introduced) { 
+;__p+=' on '+
+( action_dates.introduced.format('MMM DD') )+
+'';
+ } 
+;__p+='">\n  </div>\n  \n  <div class="bill-progress-section bill-passed-lower ';
+ if (action_dates.passed_lower) { 
+;__p+='completed';
+ } 
+;__p+='"\n    title="Bill passed House';
+ if (action_dates.passed_lower) { 
+;__p+=' on '+
+( action_dates.passed_lower.format('MMM DD') )+
+'';
+ } 
+;__p+='">\n  </div>\n  \n  <div class="bill-progress-section bill-passed-upper ';
+ if (action_dates.passed_upper) { 
+;__p+='completed';
+ } 
+;__p+='"\n    title="Bill passed Senate';
+ if (action_dates.passed_upper) { 
+;__p+=' on '+
+( action_dates.passed_upper.format('MMM DD') )+
+'';
+ } 
+;__p+='">\n  </div>\n  \n  <div class="bill-progress-section bill-signed ';
+ if (action_dates.signed) { 
+;__p+='completed';
+ } 
+;__p+='"\n    title="Bill signed';
+ if (action_dates.signed) { 
+;__p+=' on '+
+( action_dates.signed.format('MMM DD') )+
+'';
+ } 
+;__p+='">\n  </div>\n</div>';
+}
+return __p;
+};
+
 this["LT"]["templates"]["js/app/templates/template-bill.html"] = function(obj){
 var __p='';var print=function(){__p+=Array.prototype.join.call(arguments, '')};
 with(obj||{}){
-__p+='\n<div class="bill-container">\n  <h4>'+
-( bill_id )+
-'</h4>\n  <h5>'+
-( etitle )+
-'</h5>\n  <p>'+
-( edescription )+
-'</p>\n</div>';
+__p+='\n<div class="bill ';
+ if (expandable) { 
+;__p+='is-expandable';
+ } 
+;__p+='">\n  <div class="bill-top">\n    <h3>\n      <a href="#/bill/'+
+( encodeURI(bill.bill_id) )+
+'">\n        ';
+ if (bill.etitle) { 
+;__p+='\n          '+
+( bill.etitle )+
+'\n        ';
+ } else { 
+;__p+='\n          '+
+( bill.title )+
+'\n        ';
+ } 
+;__p+='\n      </a>\n      ('+
+( bill.bill_id )+
+')\n    </h3>\n    \n    <p>'+
+( bill.edescription )+
+'</p>\n    \n    '+
+( progress )+
+'\n    \n    ';
+ if (expandable) { 
+;__p+='\n      <a href="#" class="bill-expand">Expand</a>\n    ';
+ } 
+;__p+='\n  </div>\n  \n  <div class="bill-bottom">\n    <strong>Sponsors</strong>\n    <div class="sponsors clear-block">\n      ';
+ for (var a in bill.sponsors) { 
+;__p+='\n        <div class="sponsor" data-leg-id="'+
+( bill.sponsors[a].leg_id )+
+'" data-sponsor-type="'+
+( bill.sponsors[a].type )+
+'">\n          '+
+( bill.sponsors[a].name )+
+' ('+
+( bill.sponsors[a].type )+
+')\n        </div>\n      ';
+ } 
+;__p+='\n    </div>\n    \n    <strong>Actions</strong>\n    <p>\n      ';
+ for (var a in bill.actions) { 
+;__p+='\n        '+
+( bill.actions[a].date.format('MMM DD, YYYY') )+
+': '+
+( bill.actions[a].action )+
+'\n        ('+
+( LT.utils.translate('chamber', bill.actions[a].actor) )+
+')<br />\n      ';
+ } 
+;__p+='\n    </p>\n    \n    <strong>Sources</strong>\n    <p>\n      ';
+ for (var a in bill.sources) { 
+;__p+='\n        <a href="'+
+( bill.sources[a].url )+
+'">'+
+( bill.sources[a].url )+
+'</a> <br />\n      ';
+ } 
+;__p+='\n    </p>\n  </div>\n</div>';
 }
 return __p;
 };
@@ -258,15 +401,23 @@ return __p;
 this["LT"]["templates"]["js/app/templates/template-categories.html"] = function(obj){
 var __p='';var print=function(){__p+=Array.prototype.join.call(arguments, '')};
 with(obj||{}){
-__p+='\n<div class="categories-container">\n  <h1>'+
+__p+='\n<div class="categories-container">\n  ';
+ if (options.title) { 
+;__p+='\n    <h2>'+
 ( options.title )+
-'</h1>\n\n  <ul>\n    ';
+'</h2>\n  ';
+ } 
+;__p+='\n\n  <ul class="clear-block">\n    ';
  for (var c in categories) { 
-;__p+='\n      <li><a href="#/category/'+
-( encodeURI(categories[c].name) )+
-'">'+
-( categories[c].name )+
-'</li>\n    ';
+;__p+='\n      <li>\n        <div class="category-inner">\n          <h3>\n            <a href="#/category/'+
+( encodeURI(categories[c].id) )+
+'">\n              '+
+( categories[c].title )+
+'\n            </a>\n          </h3>\n          \n          <p>'+
+( categories[c].description )+
+'</p>\n           \n          <p>Watching <strong>'+
+( categories[c].bills.length )+
+'</strong> bills.</p>\n        </div>\n      </li>\n    ';
  } 
 ;__p+='\n  </ul>\n</div>';
 }
@@ -276,17 +427,49 @@ return __p;
 this["LT"]["templates"]["js/app/templates/template-category.html"] = function(obj){
 var __p='';var print=function(){__p+=Array.prototype.join.call(arguments, '')};
 with(obj||{}){
-__p+='\n<div class="category-container">\n  <h4>'+
-( name )+
-'</h4>\n  <ul>\n    ';
- for (var b in bills) { 
-;__p+='\n      <li><a href="#/bill/'+
-( encodeURI(bills[b]) )+
+__p+='\n<a href="#/">All Categories</a>\n\n<div class="category-container">\n  <h2>'+
+( title )+
+'</h2>\n  \n  <p>'+
+( description )+
+'</p>\n  \n  ';
+ if (_.isArray(links) && links.length > 0) { 
+;__p+='\n    <h3>Latest News</h3>\n    <ul>\n      ';
+ for (var l in links) { 
+;__p+='\n        <li><a href="'+
+( links[l].url )+
 '">'+
-( bills[b] )+
-'</li>\n    ';
+( links[l].title )+
+'</a></li>\n      ';
  } 
-;__p+='\n  </ul>\n</div>';
+;__p+='\n    </ul>\n  ';
+ } 
+;__p+='\n  \n  \n  <h3>Bills</h3>\n  <div class="clear-block bills-list">\n    ';
+ for (var b in bills) { 
+;__p+='\n      '+
+( bills[b] )+
+'\n    ';
+ } 
+;__p+='\n  </div>\n</div>';
+}
+return __p;
+};
+
+this["LT"]["templates"]["js/app/templates/template-legislator.html"] = function(obj){
+var __p='';var print=function(){__p+=Array.prototype.join.call(arguments, '')};
+with(obj||{}){
+__p+='\n<div class="legislator">\n  <img src="'+
+( photo_url )+
+'" />\n  \n  <div class="legislator-info">\n    '+
+( full_name )+
+' ('+
+( sponsorType )+
+')<br />\n    '+
+( party )+
+' <br />\n    District '+
+( district )+
+' <br />\n    '+
+( LT.utils.translate('chamber', chamber) )+
+'\n  </div>\n</div>';
 }
 return __p;
 };
@@ -328,6 +511,17 @@ return __p;
         // Mark as fetched so we can use some caching
         model.set('fetched', true);
       });
+    },
+    
+    parseOSData: function() {
+      // Get some aggregate data from the Open State data
+      
+      // Parse some dates
+      this.set('created_at', moment(this.get('created_at')));
+      this.set('updated_at', moment(this.get('updated_at')));
+      
+      // Figure out newest
+      this.set('newest_action', this.get('actions')[0]);
     }
   });
   
@@ -354,6 +548,61 @@ return __p;
           encodeURI(this.options.session) + '/' +
           encodeURI(this.get('bill_id')) + this.urlEnd();
       }
+    },
+    
+    initialize: function(attr, options) {
+      LT.OSBillModel.__super__.initialize.apply(this, arguments);
+      
+      this.on('sync', function(model, resp, options) {
+        this.parseOSData();
+      });
+    },
+    
+    parseOSData: function() {
+      // Get some aggregate data from the Open State data
+      var swapper;
+      
+      // Parse some dates
+      this.set('created_at', moment(this.get('created_at')));
+      this.set('updated_at', moment(this.get('updated_at')));
+      
+      // Action dates
+      swapper = this.get('action_dates');
+      _.each(swapper, function(a, i) {
+        swapper[i] = (a) ? moment(a) : a;
+      });
+      this.set('action_dates', swapper);
+      
+      // Actions
+      swapper = this.get('actions');
+      _.each(swapper, function(a, i) {
+        swapper[i].date = (a.date) ? moment(a.date) : a.date;
+      });
+      this.set('actions', swapper);
+      
+      // Figure out newest
+      this.set('newest_action', this.get('actions')[0]);
+      
+      // Mark as introduced.  Not sure if this can be assumed
+      // to be true
+      swapper = this.get('action_dates');
+      _.each(this.get('actions'), function(a) {
+        if (a.type.indexOf('bill:introduced') !== -1) {
+          swapper.introduced = a.date;
+        }
+      });
+      this.set('action_dates', swapper);
+      
+      // Add custom events to actions
+      swapper = this.get('custom_events');
+      if (_.isArray(swapper) && swapper.length > 0) {
+        this.set('actions', _.union(this.get('actions'), swapper));
+      }
+      
+      // Sort action
+      this.set('actions', _.sortBy(this.get('actions'), function(a) {
+        return a.date.unix();
+      }));
     }
   });
   
@@ -377,16 +626,21 @@ return __p;
   LT.CategoryModel = Backbone.Model.extend({
     initialize: function(attr, options) {
       this.options = options;
+      this.set('bills', new LT.BillsCollection(null, this.options));
+      this.getBills();
     },
     
-    bills: function() {
+    getBills: function() {
+      // Gets reference to bills that are in the category
       var thisModel = this;
-      var bills = [];
+      var allBills = this.options.app.bills;
+      var cat = this.get('id');
 
-      _.each(this.get('bills'), function(b) {
-        bills.push(LT.utils.getModel('OSBillModel', 'bill_id', b, thisModel.options));
+      allBills.each(function(b) {
+        if (_.indexOf(b.get('ecategories'), cat) !== -1) {
+          thisModel.get('bills').push(LT.utils.getModel('OSBillModel', 'bill_id', b.attributes, thisModel.options));
+        }
       });
-      return bills;
     }
   });
 
@@ -408,7 +662,9 @@ return __p;
    * Collection of bills.
    */
   LT.BillsCollection = Backbone.Collection.extend({
-    model: LT.OSBillModel
+    model: LT.OSBillModel,
+    
+    comparator: 'updated_at'
   });
 
 })(jQuery, window);
@@ -433,6 +689,14 @@ return __p;
       LT.utils.getTemplate('template-bill', this.templates, 'bill');
       LT.utils.getTemplate('template-category', this.templates, 'category');
       LT.utils.getTemplate('template-categories', this.templates, 'categories');
+      LT.utils.getTemplate('template-bill-progress', this.templates, 'billProgress');
+      
+      // Bind all
+      _.bindAll(this);
+    },
+    
+    events: {
+      'click .bill-expand': 'expandBill'
     },
   
     loading: function() {
@@ -448,17 +712,87 @@ return __p;
     },
     
     renderCategory: function(category) {
+      var thisView = this;
+      var data;
+      
       if (!_.isObject(category)) {
         category = this.router.categories.get(category);
       }
-      this.$el.html(this.templates.category(category.toJSON()));
+      
+      // Render each bill
+      data = category.toJSON();
+      data.bills = data.bills.map(function(b) {
+        var json = b.toJSON();
+        return thisView.templates.bill({
+          bill: json,
+          expandable: true,
+          progress: thisView.templates.billProgress(json)
+        });
+      });
+      
+      this.$el.html(this.templates.category(data));
+      this.getLegislators();
     },
     
     renderBill: function(bill) {
       if (!_.isObject(bill)) {
         bill = this.router.bills.get(bill);
       }
-      this.$el.html(this.templates.bill(bill.toJSON()));
+      var json = bill.toJSON();
+      
+      this.$el.html(this.templates.bill({
+        bill: json,
+        expandable: false,
+        progress: this.templates.billProgress(json)
+      }));
+      this.getLegislators();
+    },
+    
+    expandBill: function(e) {
+      e.preventDefault();
+      var $this = $(e.target);
+      
+      $this.parent().parent().find('.bill-bottom').slideToggle();
+    },
+    
+    getLegislators: function() {
+      this.$el.find('.sponsor:not(.found)').each(function() {
+        var $this = $(this);
+        var data = $this.data();
+        data.id = data.legId;
+        
+        if (data.id) {
+          var leg = LT.utils.getModel('OSLegislatorModel', 'id', data);
+          $.when(LT.utils.fetchModel(leg)).then(function() {
+            var view = new LT.LegislatorView({
+              el: $this,
+              model: leg
+            }).render();
+          });
+        }
+      });
+    }
+  });
+
+  /**
+   * Legislator view.
+   */
+  LT.LegislatorView = Backbone.View.extend({
+    model: LT.OSLegislatorModel,
+    
+    initialize: function(options) {
+      // Get templates
+      this.templates = this.templates || {};
+      LT.utils.getTemplate('template-legislator', this.templates, 'legislator');
+      
+      // Bind all
+      _.bindAll(this);
+    },
+    
+    render: function() {
+      this.$el.addClass('found')
+        .html(this.templates.legislator(this.model.toJSON()));
+      return this;
     }
   });
   
@@ -468,118 +802,118 @@ return __p;
  *
  * An 'e' prefix is referring to editorialized content.
  */
-LT.Application = Backbone.Router.extend({
-  routes: {
-    'categories': 'categories',
-    'category/:category': 'category',
-    'bill/:bill': 'bill',
-    '*defaultR': 'defaultR'
-  },
+(function($, w, undefined) {
 
-  initialize: function(options) {
-    options = _.extend(LT.defaultOptions, options);
-    this.options = options;
-    this.options.app = this;
-    
-    // Bind to help with some event callbacks
-    _.bindAll(this);
-    
-    // Main view for application
-    this.mainView = new LT.MainApplicationView(options);
-    this.mainView.router = this;
-    this.mainView.loading();
-    
-    // Get data from spreadsheets
-    this.tabletop = Tabletop.init({
-      key: this.options.dataKey,
-      callback: this.loadEBills,
-      callbackContext: this,
-      wanted: this.options.eBillsWanted
-    });
-  },
+  LT.Application = Backbone.Router.extend({
+    routes: {
+      'categories': 'categories',
+      'category/:category': 'category',
+      'bill/:bill': 'bill',
+      '*defaultR': 'defaultR'
+    },
   
-  // Function to call when bill data is loaded
-  loadEBills: function(data, tabletop) {
-    var thisRouter = this;
-    
-    // Parse out data from sheets
-    var parsed = LT.parse.eData(tabletop, this.options);
-    data = parsed.bills;
-    
-    // Set up collections
-    this.categories = new LT.CategoriesCollection(null, this.options);
-    this.bills = new LT.BillsCollection(null, this.options);
-    
-    // Get categories
-    _.each(data, function(d) {
-      _.each(d.ecategories, function(c) {
-        var bills;
-        
-        // Make category
-        var cat = LT.utils.getModel('CategoryModel', 'id', { id: c }, thisRouter.options);
-        cat.set('name', c);
-        
-        // Add reference to bills
-        bills = cat.get('bills');
-        if (_.isUndefined(bills)) {
-          cat.set('bills', [ d.bill_id ]);
-        }
-        else {
-          bills.push(d.bill_id);
-          cat.set('bills', bills);
-        }
-        
-        thisRouter.categories.push(cat);
+    initialize: function(options) {
+      options = LT.options = _.extend(LT.defaultOptions, options);
+      this.options = options;
+      this.options.app = this;
+      
+      // Bind to help with some event callbacks
+      _.bindAll(this);
+      
+      // Main view for application
+      this.mainView = new LT.MainApplicationView(options);
+      this.mainView.router = this;
+      this.mainView.loading();
+      
+      // Get data from spreadsheets
+      this.tabletop = Tabletop.init({
+        key: this.options.dataKey,
+        callback: this.loadEBills,
+        callbackContext: this,
+        wanted: this.options.eBillsWanted
       });
-    });
+    },
     
-    // Load in bills
-    _.each(data, function(d) {
-      thisRouter.bills.push(LT.utils.getModel('OSBillModel', 'bill_id', d, thisRouter.options));
-    });
+    // Function to call when bill data is loaded
+    loadEBills: function(data, tabletop) {
+      var thisRouter = this;
+      
+      // Parse out data from sheets
+      var parsed = LT.parse.eData(tabletop, this.options);
+      
+      // Set up collections
+      this.categories = new LT.CategoriesCollection(null, this.options);
+      this.bills = new LT.BillsCollection(null, this.options);
+      
+      // Add bill models
+      _.each(parsed.bills, function(d) {
+        thisRouter.bills.push(LT.utils.getModel('OSBillModel', 'bill_id', d, thisRouter.options));
+      });
+      
+      // Add category models
+      _.each(parsed.categories, function(c) {
+        thisRouter.categories.push(LT.utils.getModel('CategoryModel', 'id', c, thisRouter.options));
+      });
+      
+      // Start application/routing
+      this.start();
+    },
     
-    // Start application/routing
-    this.start();
-  },
+    // Start application (after data has been loaded)
+    start: function() {
+      // Start handling routing and history
+      Backbone.history.start();
+    },
   
-  // Start application (after data has been loaded)
-  start: function() {
-    // Start handling routing and history
-    Backbone.history.start();
-  },
-
-  // Default route
-  defaultR: function() {
-    this.navigate('/categories', { trigger: true, replace: true });
-    this.mainView.render();
-  },
-
-  // Categories view
-  categories: function() {
-    this.mainView.renderCategories();
-  },
-
-  // Single Category view
-  category: function(category) {
-    category = decodeURI(category);
-    this.mainView.renderCategory(category);
-  },
+    // Default route
+    defaultR: function() {
+      this.navigate('/categories', { trigger: true, replace: true });
+      this.mainView.render();
+    },
   
-  // Bill route
-  bill: function(bill) {
-    var thisRouter = this;
-    bill = decodeURI(bill);
+    // Categories view
+    categories: function() {
+      this.mainView.renderCategories();
+    },
+  
+    // Single Category view
+    category: function(category) {
+      var thisRouter = this;
+      
+      category = decodeURI(category);
+      category = this.categories.get(category);
+      this.mainView.loading();
+      
+      // Load up bill data from open states
+      var bills = category.get('bills');
+      var defers = [];
+      bills.each(function(b) {
+        defers.push(LT.utils.fetchModel(b));
+      });
+      
+      $.when.apply(null, defers).then(function() {
+        thisRouter.mainView.renderCategory(category);
+      }, this.error);
+      
+    },
     
-    var model = LT.utils.getModel('OSBillModel', 'bill_id', { bill_id: bill }, this.options);
-    LT.utils.fetchModel(model, {
-      success: function(bill, data, xhr) {
+    // Bill route
+    bill: function(bill) {
+      var thisRouter = this;
+      
+      bill = decodeURI(bill);
+      bill = this.bills.where({ bill_id: bill })[0];
+      this.mainView.loading();
+      
+      $.when(LT.utils.fetchModel(bill)).then(function() {
         thisRouter.mainView.renderBill(bill);
-      },
-      error: this.error
-    });
-  },
+      }, this.error);
+    },
+    
+    error: function(e) {
+      // Handle error
+
+    }
+  });
   
-  error: function(e) {
-    // Handle error
-  }
-});
+})(jQuery, window);
