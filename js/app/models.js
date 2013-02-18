@@ -39,8 +39,6 @@
       
       // Figure out newest
       this.set('newest_action', this.get('actions')[0]);
-      
-      console.log(this);
     }
   });
   
