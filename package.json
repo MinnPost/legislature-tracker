@@ -19,7 +19,7 @@
     "curation"
   ],
   "dependencies" : {
-    "grunt": "*",
+    "grunt": "0.3.x",
     "grunt-contrib-copy": "*",
     "grunt-s3": "*",
     "grunt-clean": "*",
