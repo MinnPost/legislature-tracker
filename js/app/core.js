@@ -156,7 +156,8 @@ else {
       });
       
       row.links = LT.parse.eLinks(row.links);
-      row.open_states_subjects = LT.parse.osCategories(row.open_states_subjects);
+      row.open_states_subjects = LT.parse.csvCategories(row.open_states_subjects);
+      row.legislator_subjects = LT.parse.csvCategories(row.legislator_subjects);
       return row;
     });
   };
@@ -205,7 +206,7 @@ else {
   };
   
   // "Environmental", "Energy"
-  LT.parse.osCategories = function(category, options) {
+  LT.parse.csvCategories = function(category, options) {
     category = _.trim(category);
     if (category.length === 0) {
       return [];
@@ -227,7 +228,8 @@ else {
     fieldTranslations: {
       eCategories: {
         'id': 'categoryid',
-        'open_states_subjects': 'openstatessubjects'
+        'open_states_subjects': 'openstatessubjects',
+        'legislator_subjects': 'legislatorsubjects'
       },
       eBills: {
         'bill_id': 'bill',

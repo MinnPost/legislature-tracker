@@ -106,7 +106,8 @@
           session: '2013-2014',
           apiKey: '49c5c72c157d4b37892ddb52c63d06be',
           dataKey: '0AtX8MXQ89fOKdFNaY1Nzc3p6MjJQdll1VEZwSDkzWEE',
-          title: 'Minnesota 2013 Legislative Session Tracker'
+          title: 'Minnesota 2013 Legislative Session Tracker',
+          billCountDataSource: 'https://api.scraperwiki.com/api/1.0/datastore/sqlite?format=jsondict&name=mn-scrape-bills-by-topic2&query=SELECT%20topic%2C%20bill_count%20FROM%20%60swdata%60%20ORDER%20BY%20topic&callback=?'
         };
         
         var app = new LT.Application(options);

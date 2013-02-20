@@ -82,7 +82,7 @@
       e.preventDefault();
       var $this = $(e.target);
       
-      $this.parent().parent().find('.bill-bottom').slideToggle();
+      $this.parent().parent().toggleClass('expanded').find('.bill-bottom').slideToggle();
     },
     
     getLegislators: function() {

@@ -16,7 +16,14 @@
           
           <p><%= categories[c].description %></p>
            
-          <p>Watching <strong><%= categories[c].bills.length %></strong> bills.</p>
+          <div>
+            Watching 
+            <strong><%= categories[c].bills.length %></strong>
+            <% if (categories[c].total_bill_count) { %>
+              of <%= categories[c].total_bill_count %>
+            <% } %>
+            bills.
+          </div>
         </div>
       </li>
     <% } %>

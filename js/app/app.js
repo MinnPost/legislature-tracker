@@ -56,6 +56,35 @@
         thisRouter.categories.push(LT.utils.getModel('CategoryModel', 'id', c, thisRouter.options));
       });
       
+      // Load up bill count
+      if (this.options.billCountDataSource) {
+        $.jsonp({
+          url: this.options.billCountDataSource,
+          success: this.loadBillCounts
+        });
+      }
+      else {
+        // Start application/routing
+        this.start();
+      }
+    },
+    
+    // Function to call when bill data is loaded
+    loadBillCounts: function(billCountData) {
+      this.categories.each(function(c) {
+        var cats = c.get('legislator_subjects');
+        var billCount = 0;
+        
+        if (_.isArray(cats) && cats.length > 0) {
+          _.each(cats, function(cat) {
+            var catData = _.find(billCountData, function(b) { return b.topic === cat; });
+            billCount += catData.bill_count;
+          });
+          
+          c.set('total_bill_count', billCount);
+        }
+      });
+      
       // Start application/routing
       this.start();
     },

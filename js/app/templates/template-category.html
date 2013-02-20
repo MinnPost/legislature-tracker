@@ -7,16 +7,13 @@
   <p><%= description %></p>
   
   <% if (_.isArray(links) && links.length > 0) { %>
-    <h3>Latest News</h3>
-    <ul>
+    <ul class="e-links">
       <% for (var l in links) { %>
         <li><a href="<%= links[l].url %>"><%= links[l].title %></a></li>
       <% } %>
     </ul>
   <% } %>
   
-  
-  <h3>Bills</h3>
   <div class="clear-block bills-list">
     <% for (var b in bills) { %>
       <%= bills[b] %>

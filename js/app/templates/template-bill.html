@@ -1,24 +1,29 @@
+<% if (!expandable && _.isArray(bill.ecategories) && bill.ecategories.length > 0) { %>
+  <% for (var c in bill.ecategories) { %>
+    <a href="#/category/<%= encodeURI(bill.ecategories[c]) %>"><%= bill.ecategories[c] %></a>
+  <% } %>
+<% } %>
 
 <div class="bill <% if (expandable) { %>is-expandable<% } %>">
   <div class="bill-top">
-    <h3>
-      <a href="#/bill/<%= encodeURI(bill.bill_id) %>">
-        <% if (bill.etitle) { %>
-          <%= bill.etitle %>
-        <% } else { %>
-          <%= bill.title %>
-        <% } %>
-      </a>
-      (<%= bill.bill_id %>)
-    </h3>
+    <% if (expandable) { %><h3><% } else { %><h2><% } %>
+      <% if (bill.etitle) { %>
+        <%= bill.etitle %>
+      <% } else { %>
+        <%= bill.title %>
+      <% } %>
+        
+      (<%= bill.bill_id %>) 
+      <a class="permalink" title="Permanent link to bill" href="#/bill/<%= encodeURI(bill.bill_id) %>"></a>
+    <% if (expandable) { %></h3><% } else { %></h2><% } %>
+    
+    <%= progress %>
     
     <div class="bill-updated">
       Last updated <%= bill.newest_action.date.diff(moment(), 'days') * -1 %> day(s) ago
     </div>
     
     <p><%= bill.edescription %></p>
-    
-    <%= progress %>
     
     <% if (expandable) { %>
       <a href="#" class="bill-expand">Expand</a>
@@ -36,18 +41,20 @@
     </div>
     
     <strong>Actions</strong>
-    <p>
+    <div class="actions">
       <% for (var a in bill.actions) { %>
-        <%= bill.actions[a].date.format('MMM DD, YYYY') %>: <%= bill.actions[a].action %>
-        (<%= LT.utils.translate('chamber', bill.actions[a].actor) %>)<br />
+        <div>
+          <%= bill.actions[a].date.format('MMM DD, YYYY') %>: <%= bill.actions[a].action %>
+          (<%= LT.utils.translate('chamber', bill.actions[a].actor) %>)
+        </div>
       <% } %>
-    </p>
+    </div>
     
     <strong>Sources</strong>
-    <p>
+    <div class="sources">
       <% for (var a in bill.sources) { %>
         <a href="<%= bill.sources[a].url %>"><%= bill.sources[a].url %></a> <br />
       <% } %>
-    </p>
+    </div>
   </div>
 </div>
