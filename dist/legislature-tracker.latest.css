@@ -2,17 +2,26 @@
  * Main CSS for Legislature Tracker
  */
 
+
+.ls {
+  margin: 1em auto;
+  font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
+}
+
 /**
  * Element styles
  */
 .ls h2 {
-  font-size: 3em;
+  font-size: 2em;
   line-height: 1.25em;
-  margin: .5em auto;
 }
 .ls h3 {
   font-size: 1.5em;
   margin-bottom: .5em;
+}
+
+.ls p {
+  font-family: Georgia, "Times New Roman", Times,serif;
 }
 
 /**
@@ -44,6 +53,17 @@
 }
 /* End hide from IE-mac */
 
+.ls a.permalink {
+  font-size: .5em;
+  background: transparent url('https://s3.amazonaws.com/data.minnpost/projects/2012-mn-election-results/images/link-16x8.png') center right no-repeat;
+  height: 8px;
+  width: 16px;
+  display: -moz-inline-stack;
+  display: inline-block;
+  zoom: 1;
+  *display: inline;
+  margin-left: 1em;
+}
 
 /**
  * Loading styles
@@ -90,60 +110,95 @@
 /**
  * Indiviual category styles
  */
+.ls .e-links {
+  margin-bottom: 1em;
+}
 
+.ls .total-bill {
+  text-align: right;
+}
 
 /**
  * Bill styles
  */
-.ls .bills-list .bill {
-  margin-bottom: 1em;
-  padding-bottom: 1em;
-  border-bottom: 1px solid #BBBBBB;
+.ls .bill h3 {
+  margin-bottom: 0;
+  margin-top: 0;
 }
+
+.ls .bill .bill-updated,
+.ls .bill .actions,
+.ls .bill .sponsors,
+.ls .bill .sources {
+  margin-bottom: 1em;
+}
+
+.ls .bill .description {
+  margin-bottom: 1em;
+}
+
+.ls .bill .bill-update {
+  font-size: .85em;
+}
+
 .ls .bill-expand {
   padding: 3px 5px;
   border: 1px solid #DDDDDD;
   background-color: #EFEFEF;
   border-radius: 5px;
-  margin-bottom: 1em;
   display: inline-block;
 }
+
+.ls .expanded .bill-expand {
+  margin-bottom: 1em;
+}
+
 .ls .is-expandable .bill-bottom {
   display: none;
+}
+
+.ls .bills-list .bill {
+  margin-bottom: 1em;
+  padding-bottom: 1em;
+  border-bottom: 1px solid #BBBBBB;
+}
+
+.ls .bills-list .bill.is-expandable {
+  border: 1px solid #DDDDDD;
+  padding: 2.5%;
 }
 
 
 /**
  * Bill sponsors/legislators styles
  */
-.ls .sponsors {
-  margin-bottom: 1em;
-}
 .ls .sponsors .sponsor {
-  width: 300px;
+  width: 200px;
   float: left;
   margin-bottom: 1em;
+  font-size: .85em;
 }
 .ls .legislator img {
-  max-width: 40px;
+  max-width: 50px;
   float: left;
-  margin: 0 5px 30px 0;
+  margin: 0 .5em 2em 0;
 }
 
 /**
  * Bill progress styles
  */
 .ls .bill-progress {
-  width: 400px;
+  width: 200px;
   border: 1px solid #BBBBBB;
   margin-bottom: 1em;
+  float: right;
 }
 .ls .bill-progress .bill-progress-section {
   width: 25%;
   float: left;
   background-color: #EFEFEF;
-  height: 30px;
+  height: 1.5em;
 }
 .ls .bill-progress .bill-progress-section.completed {
-  background-color: green;
+  background-color: #517F10;
 }

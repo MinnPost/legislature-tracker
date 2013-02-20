@@ -95,8 +95,6 @@ else {
   // Translate words, usually for presentation
   LT.utils.translate = function(section, input) {
     var output = input;
-    section = section.toLowerCase();
-    input = input.toLowerCase();
     
     if (_.isObject(LT.options.wordingTranslations[section]) && 
       _.isString(LT.options.wordingTranslations[section][input])) {
@@ -189,7 +187,8 @@ else {
       });
       
       row.links = LT.parse.eLinks(row.links);
-      row.open_states_subjects = LT.parse.osCategories(row.open_states_subjects);
+      row.open_states_subjects = LT.parse.csvCategories(row.open_states_subjects);
+      row.legislator_subjects = LT.parse.csvCategories(row.legislator_subjects);
       return row;
     });
   };
@@ -238,7 +237,7 @@ else {
   };
   
   // "Environmental", "Energy"
-  LT.parse.osCategories = function(category, options) {
+  LT.parse.csvCategories = function(category, options) {
     category = _.trim(category);
     if (category.length === 0) {
       return [];
@@ -260,7 +259,8 @@ else {
     fieldTranslations: {
       eCategories: {
         'id': 'categoryid',
-        'open_states_subjects': 'openstatessubjects'
+        'open_states_subjects': 'openstatessubjects',
+        'legislator_subjects': 'legislatorsubjects'
       },
       eBills: {
         'bill_id': 'bill',
@@ -276,8 +276,13 @@ else {
     },
     wordingTranslations: {
       chamber: {
-        upper: 'Senate',
-        lower: 'House'
+        'upper': 'Senate',
+        'lower': 'House'
+      },
+      partyAbbr: {
+        'Democratic-Farmer-Labor': 'DFL',
+        'Democratic': 'D',
+        'Republican': 'R'
       }
     }
   };
@@ -337,29 +342,55 @@ return __p;
 this["LT"]["templates"]["js/app/templates/template-bill.html"] = function(obj){
 var __p='';var print=function(){__p+=Array.prototype.join.call(arguments, '')};
 with(obj||{}){
-__p+='\n<div class="bill ';
+__p+='';
+ if (!expandable && _.isArray(bill.ecategories) && bill.ecategories.length > 0) { 
+;__p+='\n  ';
+ for (var c in bill.ecategories) { 
+;__p+='\n    <a href="#/category/'+
+( encodeURI(bill.ecategories[c]) )+
+'">'+
+( bill.ecategories[c] )+
+'</a>\n  ';
+ } 
+;__p+='\n';
+ } 
+;__p+='\n\n<div class="bill ';
  if (expandable) { 
 ;__p+='is-expandable';
  } 
-;__p+='">\n  <div class="bill-top">\n    <h3>\n      <a href="#/bill/'+
-( encodeURI(bill.bill_id) )+
-'">\n        ';
- if (bill.etitle) { 
-;__p+='\n          '+
-( bill.etitle )+
-'\n        ';
+;__p+='">\n  <div class="bill-top">\n    ';
+ if (expandable) { 
+;__p+='<h3>';
  } else { 
-;__p+='\n          '+
-( bill.title )+
-'\n        ';
+;__p+='<h2>';
  } 
-;__p+='\n      </a>\n      ('+
+;__p+='\n      ';
+ if (bill.etitle) { 
+;__p+='\n        '+
+( bill.etitle )+
+'\n      ';
+ } else { 
+;__p+='\n        '+
+( bill.title )+
+'\n      ';
+ } 
+;__p+='\n        \n      ('+
 ( bill.bill_id )+
-')\n    </h3>\n    \n    <p>'+
-( bill.edescription )+
-'</p>\n    \n    '+
+') \n      <a class="permalink" title="Permanent link to bill" href="#/bill/'+
+( encodeURI(bill.bill_id) )+
+'"></a>\n    ';
+ if (expandable) { 
+;__p+='</h3>';
+ } else { 
+;__p+='</h2>';
+ } 
+;__p+='\n    \n    '+
 ( progress )+
-'\n    \n    ';
+'\n    \n    <div class="bill-updated">\n      Last updated '+
+( bill.newest_action.date.diff(moment(), 'days') * -1 )+
+' day(s) ago\n    </div>\n    \n    <p class="description">'+
+( bill.edescription )+
+'</p>\n    \n    ';
  if (expandable) { 
 ;__p+='\n      <a href="#" class="bill-expand">Expand</a>\n    ';
  } 
@@ -375,17 +406,17 @@ __p+='\n<div class="bill ';
 ( bill.sponsors[a].type )+
 ')\n        </div>\n      ';
  } 
-;__p+='\n    </div>\n    \n    <strong>Actions</strong>\n    <p>\n      ';
+;__p+='\n    </div>\n    \n    <strong>Actions</strong>\n    <div class="actions">\n      ';
  for (var a in bill.actions) { 
-;__p+='\n        '+
+;__p+='\n        <div>\n          '+
 ( bill.actions[a].date.format('MMM DD, YYYY') )+
 ': '+
 ( bill.actions[a].action )+
-'\n        ('+
+'\n          ('+
 ( LT.utils.translate('chamber', bill.actions[a].actor) )+
-')<br />\n      ';
+')\n        </div>\n      ';
  } 
-;__p+='\n    </p>\n    \n    <strong>Sources</strong>\n    <p>\n      ';
+;__p+='\n    </div>\n    \n    <strong>Sources</strong>\n    <div class="sources">\n      ';
  for (var a in bill.sources) { 
 ;__p+='\n        <a href="'+
 ( bill.sources[a].url )+
@@ -393,7 +424,7 @@ __p+='\n<div class="bill ';
 ( bill.sources[a].url )+
 '</a> <br />\n      ';
  } 
-;__p+='\n    </p>\n  </div>\n</div>';
+;__p+='\n    </div>\n  </div>\n</div>';
 }
 return __p;
 };
@@ -415,9 +446,15 @@ __p+='\n<div class="categories-container">\n  ';
 ( categories[c].title )+
 '\n            </a>\n          </h3>\n          \n          <p>'+
 ( categories[c].description )+
-'</p>\n           \n          <p>Watching <strong>'+
+'</p>\n           \n          <div>\n            Watching \n            <strong>'+
 ( categories[c].bills.length )+
-'</strong> bills.</p>\n        </div>\n      </li>\n    ';
+'</strong>\n            ';
+ if (categories[c].total_bill_count) { 
+;__p+='\n              of '+
+( categories[c].total_bill_count )+
+'\n            ';
+ } 
+;__p+='\n            bills.\n          </div>\n        </div>\n      </li>\n    ';
  } 
 ;__p+='\n  </ul>\n</div>';
 }
@@ -433,7 +470,7 @@ __p+='\n<a href="#/">All Categories</a>\n\n<div class="category-container">\n  <
 ( description )+
 '</p>\n  \n  ';
  if (_.isArray(links) && links.length > 0) { 
-;__p+='\n    <h3>Latest News</h3>\n    <ul>\n      ';
+;__p+='\n    <ul class="e-links">\n      ';
  for (var l in links) { 
 ;__p+='\n        <li><a href="'+
 ( links[l].url )+
@@ -443,13 +480,23 @@ __p+='\n<a href="#/">All Categories</a>\n\n<div class="category-container">\n  <
  } 
 ;__p+='\n    </ul>\n  ';
  } 
-;__p+='\n  \n  \n  <h3>Bills</h3>\n  <div class="clear-block bills-list">\n    ';
+;__p+='\n  \n  <div class="clear-block bills-list">\n    ';
  for (var b in bills) { 
 ;__p+='\n      '+
 ( bills[b] )+
 '\n    ';
  } 
-;__p+='\n  </div>\n</div>';
+;__p+='\n  </div>\n  \n  <div class="clear-block total-bill">\n    Watching \n    <strong>'+
+( bills.length )+
+'</strong>\n    ';
+ if (typeof total_bill_count != 'undefined') { 
+;__p+='\n      of '+
+( total_bill_count )+
+'\n    ';
+ } 
+;__p+='\n    bills in the '+
+( title )+
+' category.\n  </div>\n</div>';
 }
 return __p;
 };
@@ -459,15 +506,15 @@ var __p='';var print=function(){__p+=Array.prototype.join.call(arguments, '')};
 with(obj||{}){
 __p+='\n<div class="legislator">\n  <img src="'+
 ( photo_url )+
-'" />\n  \n  <div class="legislator-info">\n    '+
+'" />\n\n  <div class="legislator-info">\n    '+
 ( full_name )+
 ' ('+
 ( sponsorType )+
-')<br />\n    '+
-( party )+
-' <br />\n    District '+
+')<br />\n    District '+
 ( district )+
-' <br />\n    '+
+' ('+
+( LT.utils.translate('partyAbbr', party) )+
+') <br />\n    '+
 ( LT.utils.translate('chamber', chamber) )+
 '\n  </div>\n</div>';
 }
@@ -752,7 +799,7 @@ return __p;
       e.preventDefault();
       var $this = $(e.target);
       
-      $this.parent().parent().find('.bill-bottom').slideToggle();
+      $this.parent().parent().toggleClass('expanded').find('.bill-bottom').slideToggle();
     },
     
     getLegislators: function() {
@@ -853,6 +900,35 @@ return __p;
       // Add category models
       _.each(parsed.categories, function(c) {
         thisRouter.categories.push(LT.utils.getModel('CategoryModel', 'id', c, thisRouter.options));
+      });
+      
+      // Load up bill count
+      if (this.options.billCountDataSource) {
+        $.jsonp({
+          url: this.options.billCountDataSource,
+          success: this.loadBillCounts
+        });
+      }
+      else {
+        // Start application/routing
+        this.start();
+      }
+    },
+    
+    // Function to call when bill data is loaded
+    loadBillCounts: function(billCountData) {
+      this.categories.each(function(c) {
+        var cats = c.get('legislator_subjects');
+        var billCount = 0;
+        
+        if (_.isArray(cats) && cats.length > 0) {
+          _.each(cats, function(cat) {
+            var catData = _.find(billCountData, function(b) { return b.topic === cat; });
+            billCount += catData.bill_count;
+          });
+          
+          c.set('total_bill_count', billCount);
+        }
       });
       
       // Start application/routing
