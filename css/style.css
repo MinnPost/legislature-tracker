@@ -114,6 +114,10 @@
   margin-bottom: 1em;
 }
 
+.ls .total-bill {
+  text-align: right;
+}
+
 /**
  * Bill styles
  */
@@ -127,6 +131,14 @@
 .ls .bill .sponsors,
 .ls .bill .sources {
   margin-bottom: 1em;
+}
+
+.ls .bill .description {
+  margin-bottom: 1em;
+}
+
+.ls .bill .bill-update {
+  font-size: .85em;
 }
 
 .ls .bill-expand {
@@ -167,9 +179,9 @@
   font-size: .85em;
 }
 .ls .legislator img {
-  max-width: 40px;
+  max-width: 50px;
   float: left;
-  margin: 0 5px 30px 0;
+  margin: 0 .5em 2em 0;
 }
 
 /**

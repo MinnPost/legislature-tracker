@@ -1,11 +1,10 @@
 
 <div class="legislator">
   <img src="<%= photo_url %>" />
-  
+
   <div class="legislator-info">
     <%= full_name %> (<%= sponsorType %>)<br />
-    <%= party %> <br />
-    District <%= district %> <br />
+    District <%= district %> (<%= LT.utils.translate('partyAbbr', party) %>) <br />
     <%= LT.utils.translate('chamber', chamber) %>
   </div>
 </div>

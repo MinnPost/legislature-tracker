@@ -23,7 +23,7 @@
       Last updated <%= bill.newest_action.date.diff(moment(), 'days') * -1 %> day(s) ago
     </div>
     
-    <p><%= bill.edescription %></p>
+    <p class="description"><%= bill.edescription %></p>
     
     <% if (expandable) { %>
       <a href="#" class="bill-expand">Expand</a>

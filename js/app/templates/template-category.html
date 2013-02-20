@@ -19,4 +19,13 @@
       <%= bills[b] %>
     <% } %>
   </div>
+  
+  <div class="clear-block total-bill">
+    Watching 
+    <strong><%= bills.length %></strong>
+    <% if (typeof total_bill_count != 'undefined') { %>
+      of <%= total_bill_count %>
+    <% } %>
+    bills in the <%= title %> category.
+  </div>
 </div>

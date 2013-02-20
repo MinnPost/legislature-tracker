@@ -62,8 +62,6 @@ else {
   // Translate words, usually for presentation
   LT.utils.translate = function(section, input) {
     var output = input;
-    section = section.toLowerCase();
-    input = input.toLowerCase();
     
     if (_.isObject(LT.options.wordingTranslations[section]) && 
       _.isString(LT.options.wordingTranslations[section][input])) {
@@ -245,8 +243,13 @@ else {
     },
     wordingTranslations: {
       chamber: {
-        upper: 'Senate',
-        lower: 'House'
+        'upper': 'Senate',
+        'lower': 'House'
+      },
+      partyAbbr: {
+        'Democratic-Farmer-Labor': 'DFL',
+        'Democratic': 'D',
+        'Republican': 'R'
       }
     }
   };
