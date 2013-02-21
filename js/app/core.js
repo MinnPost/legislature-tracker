@@ -63,9 +63,9 @@ else {
   LT.utils.translate = function(section, input) {
     var output = input;
     
-    if (_.isObject(LT.options.wordingTranslations[section]) && 
-      _.isString(LT.options.wordingTranslations[section][input])) {
-      output = LT.options.wordingTranslations[section][input];
+    if (_.isObject(LT.options.wordTranslations[section]) && 
+      _.isString(LT.options.wordTranslations[section][input])) {
+      output = LT.options.wordTranslations[section][input];
     }
     
     return output;
@@ -241,7 +241,7 @@ else {
         'action': 'title'
       }
     },
-    wordingTranslations: {
+    wordTranslations: {
       chamber: {
         'upper': 'Senate',
         'lower': 'House'

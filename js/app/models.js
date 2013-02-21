@@ -28,17 +28,6 @@
         // Mark as fetched so we can use some caching
         model.set('fetched', true);
       });
-    },
-    
-    parseOSData: function() {
-      // Get some aggregate data from the Open State data
-      
-      // Parse some dates
-      this.set('created_at', moment(this.get('created_at')));
-      this.set('updated_at', moment(this.get('updated_at')));
-      
-      // Figure out newest
-      this.set('newest_action', this.get('actions')[0]);
     }
   });
   
@@ -97,9 +86,6 @@
       });
       this.set('actions', swapper);
       
-      // Figure out newest
-      this.set('newest_action', this.get('actions')[0]);
-      
       // Mark as introduced.  Not sure if this can be assumed
       // to be true
       swapper = this.get('action_dates');
@@ -117,9 +103,12 @@
       }
       
       // Sort action
-      this.set('actions', _.sortBy(this.get('actions'), function(a) {
-        return a.date.unix();
+      this.set('actions', _.sortBy(this.get('actions'), function(a, i) {
+        return (a.date.unix() + i) * -1;
       }));
+      
+      // Figure out newest
+      this.set('newest_action', this.get('actions')[0]);
     }
   });
   

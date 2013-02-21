@@ -51,7 +51,7 @@
       
       // Render each bill
       data = category.toJSON();
-      data.bills = data.bills.map(function(b) {
+      data.bills = data.bills.sort().map(function(b) {
         var json = b.toJSON();
         return thisView.templates.bill({
           bill: json,

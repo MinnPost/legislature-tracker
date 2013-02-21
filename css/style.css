@@ -65,6 +65,10 @@
   margin-left: 1em;
 }
 
+.ls .number {
+  font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
+}
+
 /**
  * Loading styles
  */
@@ -133,7 +137,8 @@
   margin-bottom: 1em;
 }
 
-.ls .bill .description {
+.ls .bill .description,
+.ls .bill .latest-action {
   margin-bottom: 1em;
 }
 

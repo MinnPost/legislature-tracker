@@ -25,6 +25,17 @@
     
     <p class="description"><%= bill.edescription %></p>
     
+    <% if (bill.newest_action) { %>
+      <p class="latest-action">
+        <strong>Latest action</strong>:
+        <span class="number">
+          <%= bill.newest_action.action %>
+          (<%= LT.utils.translate('chamber', bill.newest_action.actor) %>)
+           on <%= bill.newest_action.date.format('MMM DD, YYYY') %>
+        </span>
+      </p>
+    <% } %>
+    
     <% if (expandable) { %>
       <a href="#" class="bill-expand">Expand</a>
     <% } %>

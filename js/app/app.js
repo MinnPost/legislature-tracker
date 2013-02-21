@@ -48,12 +48,12 @@
       
       // Add bill models
       _.each(parsed.bills, function(d) {
-        thisRouter.bills.push(LT.utils.getModel('OSBillModel', 'bill_id', d, thisRouter.options));
+        thisRouter.bills.add(LT.utils.getModel('OSBillModel', 'bill_id', d, thisRouter.options));
       });
       
       // Add category models
       _.each(parsed.categories, function(c) {
-        thisRouter.categories.push(LT.utils.getModel('CategoryModel', 'id', c, thisRouter.options));
+        thisRouter.categories.add(LT.utils.getModel('CategoryModel', 'id', c, thisRouter.options));
       });
       
       // Load up bill count
