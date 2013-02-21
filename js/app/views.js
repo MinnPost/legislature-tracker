@@ -62,6 +62,7 @@
       
       this.$el.html(this.templates.category(data));
       this.getLegislators();
+      this.addTooltips();
     },
     
     renderBill: function(bill) {
@@ -76,6 +77,7 @@
         progress: this.templates.billProgress(json)
       }));
       this.getLegislators();
+      this.addTooltips();
     },
     
     expandBill: function(e) {
@@ -99,6 +101,18 @@
               model: leg
             }).render();
           });
+        }
+      });
+    },
+    
+    addTooltips: function() {
+      this.$el.find('.bill-progress .bill-progress-section.completed').qtip({
+        style: {
+          classes: 'qtip-shadow qtip-light'
+        },
+        position: {
+          my: 'bottom center',
+          at: 'top center'
         }
       });
     }
