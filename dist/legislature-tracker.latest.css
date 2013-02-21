@@ -65,6 +65,10 @@
   margin-left: 1em;
 }
 
+.ls .number {
+  font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
+}
+
 /**
  * Loading styles
  */
@@ -133,7 +137,8 @@
   margin-bottom: 1em;
 }
 
-.ls .bill .description {
+.ls .bill .description,
+.ls .bill .latest-action {
   margin-bottom: 1em;
 }
 
@@ -199,6 +204,15 @@
   background-color: #EFEFEF;
   height: 1.5em;
 }
-.ls .bill-progress .bill-progress-section.completed {
-  background-color: #517F10;
+.ls .bill-progress .bill-progress-section.bill-introduced.completed {
+  background-color: #10517F;
+}
+.ls .bill-progress .bill-progress-section.bill-passed-lower.completed {
+  background-color: #107F76;
+}
+.ls .bill-progress .bill-progress-section.bill-passed-upper.completed {
+  background-color: #107F3E;
+}
+.ls .bill-progress .bill-progress-section.bill-signed.completed {
+  background-color: #197F10;
 }

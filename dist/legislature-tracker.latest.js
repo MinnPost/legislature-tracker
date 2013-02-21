@@ -96,9 +96,9 @@ else {
   LT.utils.translate = function(section, input) {
     var output = input;
     
-    if (_.isObject(LT.options.wordingTranslations[section]) && 
-      _.isString(LT.options.wordingTranslations[section][input])) {
-      output = LT.options.wordingTranslations[section][input];
+    if (_.isObject(LT.options.wordTranslations[section]) && 
+      _.isString(LT.options.wordTranslations[section][input])) {
+      output = LT.options.wordTranslations[section][input];
     }
     
     return output;
@@ -274,7 +274,7 @@ else {
         'action': 'title'
       }
     },
-    wordingTranslations: {
+    wordTranslations: {
       chamber: {
         'upper': 'Senate',
         'lower': 'House'
@@ -391,6 +391,16 @@ __p+='';
 ' day(s) ago\n    </div>\n    \n    <p class="description">'+
 ( bill.edescription )+
 '</p>\n    \n    ';
+ if (bill.newest_action) { 
+;__p+='\n      <p class="latest-action">\n        <strong>Latest action</strong>:\n        <span class="number">\n          '+
+( bill.newest_action.action )+
+'\n          ('+
+( LT.utils.translate('chamber', bill.newest_action.actor) )+
+')\n           on '+
+( bill.newest_action.date.format('MMM DD, YYYY') )+
+'\n        </span>\n      </p>\n    ';
+ } 
+;__p+='\n    \n    ';
  if (expandable) { 
 ;__p+='\n      <a href="#" class="bill-expand">Expand</a>\n    ';
  } 
@@ -558,17 +568,6 @@ return __p;
         // Mark as fetched so we can use some caching
         model.set('fetched', true);
       });
-    },
-    
-    parseOSData: function() {
-      // Get some aggregate data from the Open State data
-      
-      // Parse some dates
-      this.set('created_at', moment(this.get('created_at')));
-      this.set('updated_at', moment(this.get('updated_at')));
-      
-      // Figure out newest
-      this.set('newest_action', this.get('actions')[0]);
     }
   });
   
@@ -627,9 +626,6 @@ return __p;
       });
       this.set('actions', swapper);
       
-      // Figure out newest
-      this.set('newest_action', this.get('actions')[0]);
-      
       // Mark as introduced.  Not sure if this can be assumed
       // to be true
       swapper = this.get('action_dates');
@@ -647,9 +643,12 @@ return __p;
       }
       
       // Sort action
-      this.set('actions', _.sortBy(this.get('actions'), function(a) {
-        return a.date.unix();
+      this.set('actions', _.sortBy(this.get('actions'), function(a, i) {
+        return (a.date.unix() + i) * -1;
       }));
+      
+      // Figure out newest
+      this.set('newest_action', this.get('actions')[0]);
     }
   });
   
@@ -711,7 +710,14 @@ return __p;
   LT.BillsCollection = Backbone.Collection.extend({
     model: LT.OSBillModel,
     
-    comparator: 'updated_at'
+    comparator: function(bill) {
+      var last_action = bill.get('newest_action');
+      
+      if (last_action) {
+        last_action = last_action.date.unix() * -1;
+      }
+      return last_action;
+    }
   });
 
 })(jQuery, window);
@@ -768,7 +774,7 @@ return __p;
       
       // Render each bill
       data = category.toJSON();
-      data.bills = data.bills.map(function(b) {
+      data.bills = data.bills.sort().map(function(b) {
         var json = b.toJSON();
         return thisView.templates.bill({
           bill: json,
@@ -779,6 +785,7 @@ return __p;
       
       this.$el.html(this.templates.category(data));
       this.getLegislators();
+      this.addTooltips();
     },
     
     renderBill: function(bill) {
@@ -793,6 +800,7 @@ return __p;
         progress: this.templates.billProgress(json)
       }));
       this.getLegislators();
+      this.addTooltips();
     },
     
     expandBill: function(e) {
@@ -816,6 +824,18 @@ return __p;
               model: leg
             }).render();
           });
+        }
+      });
+    },
+    
+    addTooltips: function() {
+      this.$el.find('.bill-progress .bill-progress-section.completed').qtip({
+        style: {
+          classes: 'qtip-shadow qtip-light'
+        },
+        position: {
+          my: 'bottom center',
+          at: 'top center'
         }
       });
     }
@@ -894,12 +914,12 @@ return __p;
       
       // Add bill models
       _.each(parsed.bills, function(d) {
-        thisRouter.bills.push(LT.utils.getModel('OSBillModel', 'bill_id', d, thisRouter.options));
+        thisRouter.bills.add(LT.utils.getModel('OSBillModel', 'bill_id', d, thisRouter.options));
       });
       
       // Add category models
       _.each(parsed.categories, function(c) {
-        thisRouter.categories.push(LT.utils.getModel('CategoryModel', 'id', c, thisRouter.options));
+        thisRouter.categories.add(LT.utils.getModel('CategoryModel', 'id', c, thisRouter.options));
       });
       
       // Load up bill count
