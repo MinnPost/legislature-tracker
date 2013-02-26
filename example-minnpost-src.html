@@ -7,14 +7,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1"></meta>
 
   <!-- Used to help in aid a similar environment to MinnPost site -->
-  <link type="text/css" rel="stylesheet" media="all" href="http://www.minnpost.com/sites/default/files/css/css_0a3256cafaacbbd745a887aea1e06065.css" />
-  <link type="text/css" rel="stylesheet" media="screen" href="http://www.minnpost.com/sites/default/files/css/css_af7ebe348633c5f1b2a0e6fb63d61db8.css" />
-  <link type="text/css" rel="stylesheet" media="print" href="http://www.minnpost.com/sites/default/files/css/css_661c24623d6669afd5ba1b24560bc9c1.css" />
+  <link type="text/css" rel="stylesheet" media="all" href="http://www.minnpost.com/sites/default/files/css/css_3feb57d9a6fff8476a311e266cb82880.css" />
+  <link type="text/css" rel="stylesheet" media="screen" href="http://www.minnpost.com/sites/default/files/css/css_7c21f8513fb5bed4b20bcdfbd3425599.css" />
+  <link type="text/css" rel="stylesheet" media="print" href="http://www.minnpost.com/sites/default/files/css/css_fcea2525eb0713a66c9fd404a556659e.css" />
   <!--[if IE]>
     <link rel="stylesheet" href="http://www.minnpost.com/sites/default/themes/derma/inc/css/ie.css?n" type="text/css">
   <![endif]-->
   
-  <script type="text/javascript" src="http://www.minnpost.com/sites/default/files/js/js_b87774ad419fc0ad9306e7988b22c562.js"></script>
+  <script type="text/javascript" src="http://www.minnpost.com/sites/default/files/js/js_fa178f6774860be9ec4fbe4b2fe5f7cf.js"></script>
   <script type="text/javascript">
   <!--//--><![CDATA[//><!--
   jQuery.extend(Drupal.settings, {"basePath":"\/","combineBlocks":[["#block-views-most_viewed_by_taxonomy-block","#block-views-most_commented_articles-block_1"],["#block-views-most_viewed_by_node_type-block","#block-views-most_commented_blogs-block_1"],["#block-views-most_viewed_by_node_type-block","#block-views-most_commented_articles-block_1"]],"chartbeat":{"uid":27923,"domain":"minnpost.com","authors":"Tom Nehil,Alan Palazzolo","sections":"Data \u0026 Maps","title":"Build your own sales tax policy for Dayton\u0026#039;s new budget"},"googleanalytics":{"trackOutgoing":1,"trackMailto":1,"trackDownload":1,"trackDownloadExtensions":"7z|aac|arc|arj|asf|asx|avi|bin|csv|doc|exe|flv|gif|gz|gzip|hqx|jar|jpe?g|js|mp(2|3|4|e?g)|mov(ie)?|msi|msp|pdf|phps|png|ppt|qtm?|ra(m|r)?|sea|sit|tar|tgz|torrent|txt|wav|wma|wmv|wpd|xls|xml|z|zip"},"addthis":{"config_default":{"services_toolbox":"facebook_like_counter, tweet, print, email","services_compact":"","services_expanded":"","ui_cobrand":"","ui_header_color":"#000000","ui_header_background":"#FFFFFF","ui_click":true,"ui_delay":"","ui_use_addressbook":0,"pubid":"xa-4e2cfd1147868c4e","data_track_clickback":0,"data_ga_tracker":0,"ui_use_css":true,"data_use_cookies":true,"ui_language":"en","data_use_flash":true},"share_default":{"templates":{"twitter":""}}}});
@@ -109,7 +109,7 @@
           apiKey: '49c5c72c157d4b37892ddb52c63d06be',
           dataKey: '0AtX8MXQ89fOKdFNaY1Nzc3p6MjJQdll1VEZwSDkzWEE',
           title: 'Minnesota 2013 Legislative Session Tracker',
-          billCountDataSource: 'https://api.scraperwiki.com/api/1.0/datastore/sqlite?format=jsondict&name=mn-scrape-bills-by-topic2&query=SELECT%20topic%2C%20bill_count%20FROM%20%60swdata%60%20ORDER%20BY%20topic&callback=?'
+          billCountDataSource: 'https://api.scraperwiki.com/api/1.0/datastore/sqlite?format=jsondict&name=mn-topic-bill-counts&query=SELECT%20topic%2C%20bill_count%20FROM%20%60swdata%60%20ORDER%20BY%20topic&callback=?'
         };
         
         var app = new LT.Application(options);
