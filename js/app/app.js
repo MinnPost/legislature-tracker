@@ -112,19 +112,12 @@
       
       category = decodeURI(category);
       category = this.categories.get(category);
-      this.mainView.loading();
       
       // Load up bill data from open states
-      var bills = category.get('bills');
-      var defers = [];
-      bills.each(function(b) {
-        defers.push(LT.utils.fetchModel(b));
-      });
-      
-      $.when.apply(null, defers).then(function() {
+      this.mainView.loading();
+      category.loadBills(function() {
         thisRouter.mainView.renderCategory(category);
-      }, this.error);
-      
+      }, thisRouter.error());
     },
     
     // Bill route

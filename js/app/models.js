@@ -32,7 +32,7 @@
   });
   
   /**
-   * Model for Open States Bill
+   * Model for Open States State
    */
   LT.OSStateModel = LT.OSModel.extend({
     url: function() {
@@ -147,6 +147,15 @@
           thisModel.get('bills').push(LT.utils.getModel('OSBillModel', 'bill_id', b.attributes, thisModel.options));
         }
       });
+    },
+    
+    loadBills: function(callback, error) {
+      // Load up bill data from open states
+      var defers = [];
+      this.get('bills').each(function(b) {
+        defers.push(LT.utils.fetchModel(b));
+      });
+      $.when.apply(null, defers).then(callback, error);
     }
   });
 
