@@ -8,7 +8,11 @@
    * Collection of categories.
    */
   LT.CategoriesCollection = Backbone.Collection.extend({
-    model: LT.CategoryModel
+    model: LT.CategoryModel,
+    
+    comparator: function(cat) {
+      return cat.get('title');
+    }
   });
   
   /**
