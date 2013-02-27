@@ -107,6 +107,7 @@
       // some basic data about the bills from Open States
       // but not ALL the data.  We can use the bill search
       // to do this.
+      this.mainView.loading();
       this.getOSBasicBills(this.mainView.renderCategories, this.error);
     },
   

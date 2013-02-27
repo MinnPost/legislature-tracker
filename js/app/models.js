@@ -119,14 +119,17 @@
         categories.add(LT.utils.getModel('CategoryModel', 'id', { id: c }));
       });
       this.set('ecategories', categories);
+      return this;
     },
     
     toMoreJSON: function() {
       // Renders the internal collections as JOSN as well
-      var json = this.toJSON();
-      json.ecategories = this.get('ecategories').sort().map(function(c) {
-        return c.toJSON();
-      });
+      json = LT.OSBillModel.__super__.toJSON.apply(this, arguments);
+      if (json.ecategories instanceof Backbone.Collection) {
+        json.ecategories = this.get('ecategories').sort().map(function(c) {
+          return c.toJSON();
+        });
+      }
       return json;
     }
   });
@@ -149,6 +152,7 @@
    * Model Legislature Tracker category
    */
   LT.CategoryModel = Backbone.Model.extend({
+  
     initialize: function(attr, options) {
       this.options = options;
       this.set('bills', new LT.BillsCollection(null, this.options));
@@ -166,6 +170,7 @@
           thisModel.get('bills').push(LT.utils.getModel('OSBillModel', 'bill_id', b.attributes));
         }
       });
+      return this;
     },
     
     loadBills: function(callback, error) {
@@ -175,6 +180,7 @@
         defers.push(LT.utils.fetchModel(b));
       });
       $.when.apply(null, defers).then(callback, error);
+      return this;
     }
   });
 
