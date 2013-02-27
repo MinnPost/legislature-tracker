@@ -103,7 +103,11 @@
   
     // Categories view
     categories: function() {
-      this.mainView.renderCategories();
+      // If we are viewing the categories, we want to get
+      // some basic data about the bills from Open States
+      // but not ALL the data.  We can use the bill search
+      // to do this.
+      this.getOSBasicBills(this.mainView.renderCategories, this.error);
     },
   
     // Single Category view
@@ -131,6 +135,27 @@
       $.when(LT.utils.fetchModel(bill)).then(function() {
         thisRouter.mainView.renderBill(bill);
       }, this.error);
+    },
+    
+    getOSBasicBills: function(callback, error) {
+      var thisRouter = this;
+      var url = 'http://openstates.org/api/v1/bills/?state=' + this.options.state +
+        '&search_window=session:' + this.options.session +
+        '&bill_id__in=' + encodeURI(this.bills.pluck('bill_id').join('|')) +
+        '&apikey=' + this.options.apiKey + '&callback=?';
+      
+      $.jsonp({
+        url: url,
+        success: function(data) {
+          _.each(data, function(d) {
+            d.created_at = moment(d.created_at);
+            d.updated_at = moment(d.updated_at);
+            thisRouter.bills.where({ bill_id: d.bill_id })[0].set(d);
+          });
+          callback.call(thisRouter);
+        },
+        error: error
+      });
     },
     
     error: function(e) {
