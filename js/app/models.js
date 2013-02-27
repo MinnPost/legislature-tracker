@@ -61,6 +61,7 @@
       
       this.on('sync', function(model, resp, options) {
         this.parseOSData();
+        this.getCategories();
       });
     },
     
@@ -109,6 +110,24 @@
       
       // Figure out newest
       this.set('newest_action', this.get('actions')[0]);
+    },
+    
+    getCategories: function() {
+      // Gets category models
+      var categories = new LT.CategoriesCollection();
+      _.each(this.get('ecategories'), function(c) {
+        categories.add(LT.utils.getModel('CategoryModel', 'id', { id: c }));
+      });
+      this.set('ecategories', categories);
+    },
+    
+    toMoreJSON: function() {
+      // Renders the internal collections as JOSN as well
+      var json = this.toJSON();
+      json.ecategories = this.get('ecategories').sort().map(function(c) {
+        return c.toJSON();
+      });
+      return json;
     }
   });
   
@@ -144,7 +163,7 @@
 
       allBills.each(function(b) {
         if (_.indexOf(b.get('ecategories'), cat) !== -1) {
-          thisModel.get('bills').push(LT.utils.getModel('OSBillModel', 'bill_id', b.attributes, thisModel.options));
+          thisModel.get('bills').push(LT.utils.getModel('OSBillModel', 'bill_id', b.attributes));
         }
       });
     },

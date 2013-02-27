@@ -1,11 +1,21 @@
 <% if (!expandable && _.isArray(bill.ecategories) && bill.ecategories.length > 0) { %>
   <% for (var c in bill.ecategories) { %>
-    <a href="#/category/<%= encodeURI(bill.ecategories[c]) %>"><%= bill.ecategories[c] %></a>
+    <a href="#/category/<%= encodeURI(bill.ecategories[c].id) %>">
+      <%= bill.ecategories[c].title %></a><% if (c < bill.ecategories.length - 1) { %>,<% } %>
   <% } %>
 <% } %>
 
 <div class="bill <% if (expandable) { %>is-expandable<% } %>">
   <div class="bill-top">
+    <% if (expandable && _.isArray(bill.ecategories) && bill.ecategories.length > 0) { %>
+      <div class="bill-categories">
+        <% for (var c in bill.ecategories) { %>
+          <a href="#/category/<%= encodeURI(bill.ecategories[c].id) %>">
+            <%= bill.ecategories[c].title %></a><% if (c < bill.ecategories.length - 1) { %>,<% } %>
+        <% } %>
+      </div>
+    <% } %>
+  
     <% if (expandable) { %><h3><% } else { %><h2><% } %>
       <% if (bill.etitle) { %>
         <%= bill.etitle %>

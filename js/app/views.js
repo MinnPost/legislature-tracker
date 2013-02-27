@@ -52,7 +52,7 @@
       // Render each bill
       data = category.toJSON();
       data.bills = data.bills.sort().map(function(b) {
-        var json = b.toJSON();
+        var json = b.toMoreJSON();
         return thisView.templates.bill({
           bill: json,
           expandable: true,
@@ -69,7 +69,7 @@
       if (!_.isObject(bill)) {
         bill = this.router.bills.get(bill);
       }
-      var json = bill.toJSON();
+      var json = bill.toMoreJSON();
       
       this.$el.html(this.templates.bill({
         bill: json,
