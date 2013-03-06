@@ -186,6 +186,9 @@
           error: this.error
         });
       }
+      else {
+        callback.call(thisRouter);
+      }
     },
     
     error: function(e) {
