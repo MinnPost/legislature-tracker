@@ -7,6 +7,14 @@
     
     <p class="description"><%= bill.description %></p>
     
+    <% if (_.isArray(bill.links) && bill.links.length > 0) { %>
+      <ul class="e-links">
+        <% for (var l in bill.links) { %>
+          <li><a href="<%= bill.links[l].url %>"><%= bill.links[l].title %></a></li>
+        <% } %>
+      </ul>
+    <% } %>
+    
     <% if (expandable) { %>
       <a href="#" class="bill-expand">Expand</a>
     <% } %>
