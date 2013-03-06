@@ -61,7 +61,6 @@
       
       this.on('sync', function(model, resp, options) {
         this.parseOSData();
-        this.getCategories();
       });
     },
     
@@ -87,16 +86,6 @@
       });
       this.set('actions', swapper);
       
-      // Mark as introduced.  Not sure if this can be assumed
-      // to be true
-      swapper = this.get('action_dates');
-      _.each(this.get('actions'), function(a) {
-        if (a.type.indexOf('bill:introduced') !== -1) {
-          swapper.introduced = a.date;
-        }
-      });
-      this.set('action_dates', swapper);
-      
       // Add custom events to actions
       swapper = this.get('custom_events');
       if (_.isArray(swapper) && swapper.length > 0) {
@@ -110,27 +99,6 @@
       
       // Figure out newest
       this.set('newest_action', this.get('actions')[0]);
-    },
-    
-    getCategories: function() {
-      // Gets category models
-      var categories = new LT.CategoriesCollection();
-      _.each(this.get('ecategories'), function(c) {
-        categories.add(LT.utils.getModel('CategoryModel', 'id', { id: c }));
-      });
-      this.set('ecategories', categories);
-      return this;
-    },
-    
-    toMoreJSON: function() {
-      // Renders the internal collections as JOSN as well
-      json = LT.OSBillModel.__super__.toJSON.apply(this, arguments);
-      if (json.ecategories instanceof Backbone.Collection) {
-        json.ecategories = this.get('ecategories').sort().map(function(c) {
-          return c.toJSON();
-        });
-      }
-      return json;
     }
   });
   
@@ -155,8 +123,20 @@
   
     initialize: function(attr, options) {
       this.options = options;
+    },
+    
+    loadOSBills: function(callback, error) {
+      var thisModel = this;
+      var defers = [];
+      
+      _.each(['bill_primary', 'bill_companion', 'bill_conference'], function(prop) {
+        if (thisModel.get(prop)) {
+          defers.push(LT.utils.fetchModel(thisModel.get(prop)));
+        }
+      });
+      $.when.apply(null, defers).then(callback, error);
+      return this;
     }
-  
   });
   
   /**
@@ -187,8 +167,12 @@
     loadBills: function(callback, error) {
       // Load up bill data from open states
       var defers = [];
-      this.get('bills').each(function(b) {
-        defers.push(LT.utils.fetchModel(b));
+      this.get('bills').each(function(bill) {     
+        _.each(['bill_primary', 'bill_companion', 'bill_conference'], function(prop) {
+          if (bill.get(prop)) {
+            defers.push(LT.utils.fetchModel(bill.get(prop)));
+          }
+        });
       });
       $.when.apply(null, defers).then(callback, error);
       return this;

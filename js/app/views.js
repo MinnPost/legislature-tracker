@@ -16,10 +16,10 @@
       // Get templates
       this.templates = this.templates || {};
       LT.utils.getTemplate('template-loading', this.templates, 'loading');
-      LT.utils.getTemplate('template-bill', this.templates, 'bill');
+      LT.utils.getTemplate('template-ebill', this.templates, 'ebill');
+      LT.utils.getTemplate('template-osbill', this.templates, 'osbill');
       LT.utils.getTemplate('template-category', this.templates, 'category');
       LT.utils.getTemplate('template-categories', this.templates, 'categories');
-      LT.utils.getTemplate('template-bill-progress', this.templates, 'billProgress');
       
       // Bind all
       _.bindAll(this);
@@ -45,35 +45,25 @@
       var data;
       
       if (!_.isObject(category)) {
-        category = this.router.categories.get(category);
+        category = LT.app.categories.get(category);
       }
       
-      // Render each bill
-      data = category.toJSON();
-      data.bills = data.bills.sort().map(function(b) {
-        var json = b.toMoreJSON();
-        return thisView.templates.bill({
-          bill: json,
-          expandable: true,
-          progress: thisView.templates.billProgress(json)
-        });
-      });
-      
-      this.$el.html(this.templates.category(data));
+      this.$el.html(this.templates.category({
+        category: category.toJSON(),
+        templates: this.templates
+      }));
       this.getLegislators();
-      this.addTooltips();
     },
     
-    renderBill: function(bill) {
+    renderEBill: function(bill) {
       if (!_.isObject(bill)) {
         bill = this.router.bills.get(bill);
       }
-      var json = bill.toMoreJSON();
       
-      this.$el.html(this.templates.bill({
-        bill: json,
+      this.$el.html(this.templates.ebill({
+        bill: bill.toJSON(),
         expandable: false,
-        progress: this.templates.billProgress(json)
+        templates: this.templates
       }));
       this.getLegislators();
       this.addTooltips();

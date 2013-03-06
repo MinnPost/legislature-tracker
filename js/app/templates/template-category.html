@@ -2,30 +2,34 @@
 <a href="#/">All Categories</a>
 
 <div class="category-container">
-  <h2><%= title %></h2>
+  <h2><%= category.title %></h2>
   
-  <p><%= description %></p>
+  <p><%= category.description %></p>
   
-  <% if (_.isArray(links) && links.length > 0) { %>
+  <% if (_.isArray(category.links) && category.links.length > 0) { %>
     <ul class="e-links">
-      <% for (var l in links) { %>
-        <li><a href="<%= links[l].url %>"><%= links[l].title %></a></li>
+      <% for (var l in category.links) { %>
+        <li><a href="<%= category.links[l].url %>"><%= category.links[l].title %></a></li>
       <% } %>
     </ul>
   <% } %>
   
   <div class="clear-block bills-list">
-    <% for (var b in bills) { %>
-      <%= bills[b] %>
-    <% } %>
+    <% category.bills.each(function(b) { %>
+      <%= templates.ebill({
+        bill: b.toJSON(),
+        expandable: true,
+        templates: templates
+      }) %>
+    <% }); %>
   </div>
   
   <div class="clear-block total-bill">
     Watching 
-    <strong><%= bills.length %></strong>
-    <% if (typeof total_bill_count != 'undefined') { %>
-      of <%= total_bill_count %>
+    <strong><%= category.bills.length %></strong>
+    <% if (typeof category.total_bill_count != 'undefined') { %>
+      of <%= category.total_bill_count %>
     <% } %>
-    bills in the <%= title %> category.
+    bills in the <%= category.title %> category.
   </div>
 </div>

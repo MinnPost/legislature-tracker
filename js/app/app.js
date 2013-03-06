@@ -127,12 +127,12 @@
       var thisRouter = this;
       
       bill = decodeURI(bill);
-      bill = this.bills.where({ bill_id: bill })[0];
-      this.mainView.loading();
+      bill = this.bills.where({ bill: bill })[0];
       
-      $.when(LT.utils.fetchModel(bill)).then(function() {
-        thisRouter.mainView.renderBill(bill);
-      }, this.error);
+      this.mainView.loading();
+      bill.loadOSBills(function() {
+        thisRouter.mainView.renderEBill(bill);
+      }, thisRouter.error());
     },
     
     getOSBasicBills: function(callback, error) {
@@ -145,7 +145,7 @@
           if (bill.get(prop)) {
             billIDs.push(bill.get(prop).get('bill_id'));
           }
-        })
+        });
       });
       
       var url = 'http://openstates.org/api/v1/bills/?state=' + LT.options.state +

@@ -1,0 +1,42 @@
+<div class="osbill">
+
+  <h5><%= title %> (<%= bill.bill_id %>)</h5>
+
+  <div class="sponsors clear-block">
+    <% for (var a in bill.sponsors) { %>
+      <% if (bill.sponsors[a].type === 'primary') { %>
+        <div class="sponsor" data-leg-id="<%= bill.sponsors[a].leg_id %>" data-sponsor-type="<%= bill.sponsors[a].type %>">
+          <%= bill.sponsors[a].name %> (<%= bill.sponsors[a].type %>)
+        </div>
+      <% } %>
+    <% } %>
+  </div>
+  
+  <strong>Actions</strong>
+  <div class="actions">
+    <% for (var a in bill.actions) { %>
+      <div>
+        <%= bill.actions[a].date.format('MMM DD, YYYY') %>: <%= bill.actions[a].action %>
+        (<%= LT.utils.translate('chamber', bill.actions[a].actor) %>)
+      </div>
+    <% } %>
+  </div>
+
+  <strong>Co-Sponsors</strong>
+  <div class="sponsors clear-block">
+    <% for (var a in bill.sponsors) { %>
+      <% if (bill.sponsors[a].type !== 'primary') { %>
+        <div class="sponsor" data-leg-id="<%= bill.sponsors[a].leg_id %>" data-sponsor-type="<%= bill.sponsors[a].type %>">
+          <%= bill.sponsors[a].name %> (<%= bill.sponsors[a].type %>)
+        </div>
+      <% } %>
+    <% } %>
+  </div>
+  
+  <strong>Full Text</strong>
+  <div class="sources">
+    <% for (var a in bill.sources) { %>
+      <a href="<%= bill.sources[a].url %>" target="_blank">Source</a> <br />
+    <% } %>
+  </div>
+</div>

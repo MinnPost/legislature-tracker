@@ -175,12 +175,21 @@
 
 
 /**
+ * OS Bill specifics
+ */
+.ls .primary-bill,
+.ls .companion-bill {
+  width: 50%;
+  float: left;
+}
+
+
+/**
  * Bill sponsors/legislators styles
  */
 .ls .sponsors .sponsor {
   width: 200px;
   float: left;
-  margin-bottom: 1em;
   font-size: .85em;
 }
 .ls .legislator img {

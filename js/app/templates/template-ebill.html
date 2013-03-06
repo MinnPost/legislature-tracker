@@ -1,0 +1,38 @@
+<div class="bill ebill <% if (expandable) { %>is-expandable<% } %>">
+  <div class="bill-top">
+    <% if (expandable) { %><h3><% } else { %><h2><% } %>
+      <%= bill.title %>
+      <a class="permalink" title="Permanent link to bill" href="#/bill/<%= encodeURI(bill.bill) %>"></a>
+    <% if (expandable) { %></h3><% } else { %></h2><% } %>
+    
+    <p class="description"><%= bill.description %></p>
+    
+    <% if (expandable) { %>
+      <a href="#" class="bill-expand">Expand</a>
+    <% } %>
+  </div>
+  
+  <div class="bill-bottom">
+    <div class="clear-block">
+      <% if (_.isObject(bill.bill_primary)) { %>
+        <div class="primary-bill">
+          <%= templates.osbill({
+            title: 'Primary Bill',
+            bill: bill.bill_primary.toJSON(),
+            templates: templates
+          }) %>
+        </div>
+      <% } %>
+      
+      <% if (_.isObject(bill.bill_companion)) { %>
+        <div class="companion-bill">
+          <%= templates.osbill({
+            title: 'Companion Bill',
+            bill: bill.bill_companion.toJSON(),
+            templates: templates
+          }) %>
+        </div>
+      <% } %>
+    </div>
+  </div>
+</div>
