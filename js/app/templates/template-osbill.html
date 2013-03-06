@@ -1,6 +1,15 @@
 <div class="osbill">
 
-  <h5><%= title %> (<%= bill.bill_id %>)</h5>
+  <h5>
+    <% if (typeof title != 'undefined') { %>
+      <%= title %>
+    <% } else if (bill.title) { %>
+      <%= bill.title %>
+    <% } %>
+      
+    (<%= bill.bill_id %>) 
+    <a class="permalink" title="Permanent link to bill" href="#/bill-detail/<%= encodeURI(bill.bill_id) %>"></a>
+  </h5>
 
   <div class="sponsors clear-block">
     <% for (var a in bill.sponsors) { %>

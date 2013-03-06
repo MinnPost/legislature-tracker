@@ -54,7 +54,7 @@ else {
     }
     else {
       defer = $.Deferred();
-      defer.resolve(model);
+      defer.resolveWith(model);
       return defer;
     }
   };

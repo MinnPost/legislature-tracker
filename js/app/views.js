@@ -16,6 +16,7 @@
       // Get templates
       this.templates = this.templates || {};
       LT.utils.getTemplate('template-loading', this.templates, 'loading');
+      LT.utils.getTemplate('template-error', this.templates, 'error');
       LT.utils.getTemplate('template-ebill', this.templates, 'ebill');
       LT.utils.getTemplate('template-osbill', this.templates, 'osbill');
       LT.utils.getTemplate('template-category', this.templates, 'category');
@@ -31,6 +32,10 @@
   
     loading: function() {
       this.$el.html(this.templates.loading({}));
+    },
+    
+    error: function(e) {
+      this.$el.html(this.templates.error({ error: e }));
     },
     
     renderCategories: function() {
@@ -63,6 +68,15 @@
       this.$el.html(this.templates.ebill({
         bill: bill.toJSON(),
         expandable: false,
+        templates: this.templates
+      }));
+      this.getLegislators();
+      this.addTooltips();
+    },
+    
+    renderOSBill: function(bill) {
+      this.$el.html(this.templates.osbill({
+        bill: bill.toJSON(),
         templates: this.templates
       }));
       this.getLegislators();

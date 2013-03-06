@@ -134,7 +134,7 @@
           defers.push(LT.utils.fetchModel(thisModel.get(prop)));
         }
       });
-      $.when.apply(null, defers).then(callback, error);
+      $.when.apply($, defers).done(callback).fail(error);
       return this;
     }
   });
@@ -174,7 +174,7 @@
           }
         });
       });
-      $.when.apply(null, defers).then(callback, error);
+      $.when.apply($, defers).done(callback).fail(error);
       return this;
     }
   });

@@ -7,10 +7,11 @@
 
   LT.Application = Backbone.Router.extend({
     routes: {
-      'categories': 'categories',
-      'category/:category': 'category',
-      'bill/:bill': 'bill',
-      '*defaultR': 'defaultR'
+      'categories': 'routeCategories',
+      'category/:category': 'routeCategory',
+      'bill/:bill': 'routeEBill',
+      'bill-detail/:bill': 'routeOSBill',
+      '*defaultR': 'routeDefault'
     },
   
     initialize: function(options) {
@@ -93,13 +94,13 @@
     },
   
     // Default route
-    defaultR: function() {
+    routeDefault: function() {
       this.navigate('/categories', { trigger: true, replace: true });
       this.mainView.render();
     },
   
     // Categories view
-    categories: function() {
+    routeCategories: function() {
       // If we are viewing the categories, we want to get
       // some basic data about the bills from Open States
       // but not ALL the data.  We can use the bill search
@@ -109,7 +110,7 @@
     },
   
     // Single Category view
-    category: function(category) {
+    routeCategory: function(category) {
       var thisRouter = this;
       
       category = decodeURI(category);
@@ -119,11 +120,11 @@
       this.mainView.loading();
       category.loadBills(function() {
         thisRouter.mainView.renderCategory(category);
-      }, thisRouter.error());
+      }, thisRouter.error);
     },
     
-    // Bill route
-    bill: function(bill) {
+    // eBill route
+    routeEBill: function(bill) {
       var thisRouter = this;
       
       bill = decodeURI(bill);
@@ -132,43 +133,63 @@
       this.mainView.loading();
       bill.loadOSBills(function() {
         thisRouter.mainView.renderEBill(bill);
-      }, thisRouter.error());
+      }, thisRouter.error);
+    },
+    
+    // osBill route
+    routeOSBill: function(bill) {
+      var thisRouter = this;
+      
+      bill = decodeURI(bill);
+      bill = LT.utils.getModel('OSBillModel', 'bill_id', { bill_id: bill });
+
+      this.mainView.loading();
+      $.when.apply($, [ LT.utils.fetchModel(bill) ]).done(function() {
+        thisRouter.mainView.renderOSBill(bill);
+      })
+      .fail(thisRouter.error);
     },
     
     getOSBasicBills: function(callback, error) {
       var thisRouter = this;
       var billIDs = [];
       
-      // First collect all the bill id's we need
-      this.bills.each(function(bill) {
-        _.each(['bill_primary', 'bill_companion', 'bill_conference'], function(prop) {
-          if (bill.get(prop)) {
-            billIDs.push(bill.get(prop).get('bill_id'));
-          }
-        });
-      });
+      // Check if we have one this already
+      if (!this.fetchedCategories) {
       
-      var url = 'http://openstates.org/api/v1/bills/?state=' + LT.options.state +
-        '&search_window=session:' + LT.options.session +
-        '&bill_id__in=' + encodeURI(billIDs.join('|')) +
-        '&apikey=' + LT.options.OSKey + '&callback=?';
-      
-      $.jsonp({
-        url: url,
-        success: function(data) {
-          _.each(data, function(d) {
-            d.created_at = moment(d.created_at);
-            d.updated_at = moment(d.updated_at);
-            LT.utils.getModel('OSBillModel', 'bill_id', d).set(d);
+        // First collect all the bill id's we need
+        this.bills.each(function(bill) {
+          _.each(['bill_primary', 'bill_companion', 'bill_conference'], function(prop) {
+            if (bill.get(prop)) {
+              billIDs.push(bill.get(prop).get('bill_id'));
+            }
           });
-          callback.call(thisRouter);
-        },
-        error: this.error
-      });
+        });
+        
+        var url = 'http://openstates.org/api/v1/bills/?state=' + LT.options.state +
+          '&search_window=session:' + LT.options.session +
+          '&bill_id__in=' + encodeURI(billIDs.join('|')) +
+          '&apikey=' + LT.options.OSKey + '&callback=?';
+        
+        $.jsonp({
+          url: url,
+          success: function(data) {
+            thisRouter.fetchedCategories = true;
+          
+            _.each(data, function(d) {
+              d.created_at = moment(d.created_at);
+              d.updated_at = moment(d.updated_at);
+              LT.utils.getModel('OSBillModel', 'bill_id', d).set(d);
+            });
+            callback.call(thisRouter);
+          },
+          error: this.error
+        });
+      }
     },
     
     error: function(e) {
-      // Handle error
+      this.mainView.error(e);
     }
   });
   
