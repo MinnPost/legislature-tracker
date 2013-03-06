@@ -13,7 +13,7 @@
     },
     
     urlEnd: function() {
-      return '/?apikey=' + encodeURI(this.options.apiKey) + '&callback=?';
+      return '/?apikey=' + encodeURI(LT.options.OSKey) + '&callback=?';
     },
     
     url: function() {
@@ -24,7 +24,7 @@
     initialize: function(attr, options) {
       this.options = options;
       
-      this.on('sync', function(model, resp, options) {
+      this.on('sync', function(model, resp) {
         // Mark as fetched so we can use some caching
         model.set('fetched', true);
       });
@@ -149,25 +149,36 @@
   });
   
   /**
+   * Model Legislature Tracker for bill
+   */
+  LT.BillModel = Backbone.Model.extend({
+  
+    initialize: function(attr, options) {
+      this.options = options;
+    }
+  
+  });
+  
+  /**
    * Model Legislature Tracker category
    */
   LT.CategoryModel = Backbone.Model.extend({
   
     initialize: function(attr, options) {
       this.options = options;
-      this.set('bills', new LT.BillsCollection(null, this.options));
+      this.set('bills', new LT.BillsCollection(null));
       this.getBills();
     },
     
     getBills: function() {
       // Gets reference to bills that are in the category
       var thisModel = this;
-      var allBills = this.options.app.bills;
+      var allBills = LT.app.bills;
       var cat = this.get('id');
 
       allBills.each(function(b) {
-        if (_.indexOf(b.get('ecategories'), cat) !== -1) {
-          thisModel.get('bills').push(LT.utils.getModel('OSBillModel', 'bill_id', b.attributes));
+        if (_.indexOf(b.get('categories'), cat) !== -1) {
+          thisModel.get('bills').push(LT.utils.getModel('BillModel', 'bill', b.attributes));
         }
       });
       return this;

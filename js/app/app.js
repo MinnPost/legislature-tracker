@@ -14,24 +14,23 @@
     },
   
     initialize: function(options) {
-      options = LT.options = _.extend(LT.defaultOptions, options);
-      this.options = options;
-      this.options.app = this;
+      LT.options = _.extend(LT.defaultOptions, options);
+      LT.app = this;
       
       // Bind to help with some event callbacks
       _.bindAll(this);
       
       // Main view for application
-      this.mainView = new LT.MainApplicationView(options);
+      this.mainView = new LT.MainApplicationView(LT.options);
       this.mainView.router = this;
       this.mainView.loading();
       
       // Get data from spreadsheets
       this.tabletop = Tabletop.init({
-        key: this.options.dataKey,
+        key: LT.options.eKey,
         callback: this.loadEBills,
         callbackContext: this,
-        wanted: this.options.eBillsWanted
+        wanted: LT.options.sheetsWanted
       });
     },
     
@@ -40,24 +39,22 @@
       var thisRouter = this;
       
       // Parse out data from sheets
-      var parsed = LT.parse.eData(tabletop, this.options);
-      
+      var parsed = LT.parse.eData(tabletop);
+
       // Set up collections
-      this.categories = new LT.CategoriesCollection(null, this.options);
-      this.bills = new LT.BillsCollection(null, this.options);
-      
-      // Add bill models
-      _.each(parsed.bills, function(d) {
-        thisRouter.bills.add(LT.utils.getModel('OSBillModel', 'bill_id', d));
+      this.categories = new LT.CategoriesCollection(null);
+      this.bills = new LT.BillsCollection(null);
+
+      // Add bills and categories models
+      _.each(parsed.bills, function(b) {
+        thisRouter.bills.add(LT.utils.getModel('BillModel', 'bill', b));
       });
-      
-      // Add category models
       _.each(parsed.categories, function(c) {
         thisRouter.categories.add(LT.utils.getModel('CategoryModel', 'id', c));
       });
       
       // Load up bill count
-      if (this.options.billCountDataSource) {
+      if (LT.options.billCountDataSource) {
         $.jsonp({
           url: this.options.billCountDataSource,
           success: this.loadBillCounts
@@ -140,10 +137,21 @@
     
     getOSBasicBills: function(callback, error) {
       var thisRouter = this;
-      var url = 'http://openstates.org/api/v1/bills/?state=' + this.options.state +
-        '&search_window=session:' + this.options.session +
-        '&bill_id__in=' + encodeURI(this.bills.pluck('bill_id').join('|')) +
-        '&apikey=' + this.options.apiKey + '&callback=?';
+      var billIDs = [];
+      
+      // First collect all the bill id's we need
+      this.bills.each(function(bill) {
+        _.each(['bill_primary', 'bill_companion', 'bill_conference'], function(prop) {
+          if (bill.get(prop)) {
+            billIDs.push(bill.get(prop).get('bill_id'));
+          }
+        })
+      });
+      
+      var url = 'http://openstates.org/api/v1/bills/?state=' + LT.options.state +
+        '&search_window=session:' + LT.options.session +
+        '&bill_id__in=' + encodeURI(billIDs.join('|')) +
+        '&apikey=' + LT.options.OSKey + '&callback=?';
       
       $.jsonp({
         url: url,
@@ -151,17 +159,16 @@
           _.each(data, function(d) {
             d.created_at = moment(d.created_at);
             d.updated_at = moment(d.updated_at);
-            thisRouter.bills.where({ bill_id: d.bill_id })[0].set(d);
+            LT.utils.getModel('OSBillModel', 'bill_id', d).set(d);
           });
           callback.call(thisRouter);
         },
-        error: error
+        error: this.error
       });
     },
     
     error: function(e) {
       // Handle error
-
     }
   });
   

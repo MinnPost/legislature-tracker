@@ -35,9 +35,8 @@
     
     renderCategories: function() {
       this.$el.html(this.templates.categories({
-        categories: this.router.categories.toJSON(),
-        bills: this.router.bills.toJSON(),
-        options: this.options
+        categories: LT.app.categories.toJSON(),
+        options: LT.options
       }));
     },
     

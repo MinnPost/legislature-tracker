@@ -39,7 +39,7 @@ caching happening.
 
 For model instances, we wrap the creation of models in the following method:
 
-    LT.utils.getModel(LT.ModelName, identifying_attribute, attributes)
+    LT.utils.getModel('ModelName', 'identifying_attribute', attributes)
     
 For fetching models, specifically Open States data, we wrap fetching:
 

@@ -24,10 +24,6 @@
             <% } %>
             bills.
           </div>
-          
-          <% if (categories[c].bills.length > 0) { %>
-            Last updated <%= categories[c].bills.at(0).get('updated_at').diff(moment(), 'days') * -1 %> day(s) ago
-          <% } %>
         </div>
       </li>
     <% } %>

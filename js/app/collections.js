@@ -14,11 +14,22 @@
       return cat.get('title');
     }
   });
-  
+ 
   /**
-   * Collection of bills.
+   * Collection of editorial (meta) bills.
    */
   LT.BillsCollection = Backbone.Collection.extend({
+    model: LT.BillModel,
+    
+    comparator: function(cat) {
+      return cat.get('title');
+    }
+  });
+  
+  /**
+   * Collection of Open States bills.
+   */
+  LT.OSBillsCollection = Backbone.Collection.extend({
     model: LT.OSBillModel,
     
     comparator: function(bill) {

@@ -130,29 +130,27 @@ else {
   
   LT.parse.eBills = function(bills) {
     return _.map(bills, function(row) {
-      // Handle translation
-      _.each(LT.options.fieldTranslations.eBills, function(input, output) {
-        row[output] = row[input];
-        delete row[input];
-      });
+      LT.parse.translateFields(LT.options.fieldTranslations.eBills, row);
+      row.links = LT.parse.eLinks(row.links);
       
       // Break up categories into an array
-      row.ecategories = row.ecategories.split(',');
-      row.ecategories = _.map(row.ecategories, _.trim);
+      row.categories = (row.categories) ? row.categories.split(',') : [];
+      row.categories = _.map(row.categories, _.trim);
       
-      row.links = LT.parse.eLinks(row.links);
+      // Create open states bill objects
+      row.bill_primary = (row.bill) ?
+        LT.utils.getModel('OSBillModel', 'bill_id', { bill_id: row.bill }) : undefined;
+      row.bill_companion = (row.bill_companion) ?
+        LT.utils.getModel('OSBillModel', 'bill_id', { bill_id: row.bill_companion }) : undefined;
+      row.bill_conference = (row.conference_bill) ?
+        LT.utils.getModel('OSBillModel', 'bill_id', { bill_id: row.bill_conference }) : undefined;
       return row;
     });
   };
   
   LT.parse.eCategories = function(categories) {
     return _.map(categories, function(row) {
-      // Handle translation
-      _.each(LT.options.fieldTranslations.eCategories, function(input, output) {
-        row[output] = row[input];
-        delete row[input];
-      });
-      
+      LT.parse.translateFields(LT.options.fieldTranslations.eCategories, row);
       row.links = LT.parse.eLinks(row.links);
       row.open_states_subjects = LT.parse.csvCategories(row.open_states_subjects);
       row.legislator_subjects = LT.parse.csvCategories(row.legislator_subjects);
@@ -162,12 +160,7 @@ else {
   
   LT.parse.eEvents = function(events) {
     return _.map(events, function(row) {
-      // Handle translation
-      _.each(LT.options.fieldTranslations.eEvents, function(input, output) {
-        row[output] = row[input];
-        delete row[input];
-      });
-      
+      LT.parse.translateFields(LT.options.fieldTranslations.eEvents, row);
       row.links = LT.parse.eLinks(row.links);
       row.date = moment(row.date);
       
@@ -204,7 +197,7 @@ else {
   };
   
   // "Environmental", "Energy"
-  LT.parse.csvCategories = function(category, options) {
+  LT.parse.csvCategories = function(category) {
     category = _.trim(category);
     if (category.length === 0) {
       return [];
@@ -219,10 +212,21 @@ else {
     return category.split('", "');
   };
   
+  // Handle changing field names
+  LT.parse.translateFields = function(translation, row) {
+    _.each(translation, function(input, output) {
+      row[output] = row[input];
+      
+      if (output !== input) {
+        delete row[input];
+      }
+    });
+  };
+  
   // Default options
   LT.defaultOptions = {
     title: 'Legislature Tracker',
-    eBillsWanted: ['Categories', 'Bills', 'Events'],
+    sheetsWanted: ['Categories', 'Bills', 'Events'],
     fieldTranslations: {
       eCategories: {
         'id': 'categoryid',
@@ -230,10 +234,12 @@ else {
         'legislator_subjects': 'legislatorsubjects'
       },
       eBills: {
-        'bill_id': 'bill',
-        'ecategories': 'categories',
-        'etitle': 'title',
-        'edescription': 'description'
+        'bill': 'bill',
+        'bill_companion': 'companionbill',
+        'bill_conference': 'conferencebill',
+        'categories': 'categories',
+        'title': 'title',
+        'description': 'description'
       },
       eEvents: {
         'bill_id': 'bill',
