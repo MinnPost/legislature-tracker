@@ -18,6 +18,9 @@
       }
       
       return str;
+    },
+    cssClass: function(str) {
+      return str.replace(/[^a-z0-9]/g, '-');
     }
   });
   
@@ -258,7 +261,6 @@ else {
   
   // Default options
   LT.defaultOptions = {
-    title: 'Legislature Tracker',
     sheetsWanted: ['Categories', 'Bills', 'Events'],
     fieldTranslations: {
       eCategories: {
@@ -306,15 +308,17 @@ __p+='\n<div class="categories-container">\n  ';
 ( options.title )+
 '</h2>\n  ';
  } 
-;__p+='\n\n  <ul class="clear-block">\n    ';
+;__p+='\n\n  <ul class="category-list clear-block">\n    ';
  for (var c in categories) { 
-;__p+='\n      <li>\n        <div class="category-inner">\n          <h3>\n            <a href="#/category/'+
+;__p+='\n      <li class="category-item category-item-'+
+( c )+
+'">\n        <div class="category-inner category-'+
+( _.cssClass(categories[c].id) )+
+'">\n          <h3>\n            <a href="#/category/'+
 ( encodeURI(categories[c].id) )+
 '">\n              '+
 ( categories[c].title )+
-'\n            </a>\n          </h3>\n          \n          <p>'+
-( categories[c].description )+
-'</p>\n           \n          <div>\n            Watching \n            <strong>'+
+'\n            </a>\n          </h3>\n           \n          <div>\n            Watching \n            <strong>'+
 ( categories[c].bills.length )+
 '</strong>\n            ';
  if (categories[c].total_bill_count) { 
@@ -332,7 +336,7 @@ return __p;
 this["LT"]["templates"]["js/app/templates/template-category.html"] = function(obj){
 var __p='';var print=function(){__p+=Array.prototype.join.call(arguments, '')};
 with(obj||{}){
-__p+='\n<a href="#/">All Categories</a>\n\n<div class="category-container">\n  <h2>'+
+__p+='\n<div class="ls-header">\n  <a href="#/">All Categories</a>\n</div>\n\n<div class="category-container">\n  <h2>'+
 ( category.title )+
 '</h2>\n  \n  <p>'+
 ( category.description )+
@@ -376,7 +380,23 @@ return __p;
 this["LT"]["templates"]["js/app/templates/template-ebill.html"] = function(obj){
 var __p='';var print=function(){__p+=Array.prototype.join.call(arguments, '')};
 with(obj||{}){
-__p+='<div class="bill ebill ';
+__p+='';
+ if (!expandable) { 
+;__p+='\n  <div class="ls-header">\n    ';
+ _.each(bill.categories, function(c, i) { 
+;__p+='\n      <a href="#/category/'+
+( c.get('id') )+
+'">'+
+( c.get('title') )+
+'</a>';
+ if (i < bill.categories.length - 1) { 
+;__p+=',';
+ } 
+;__p+='\n    ';
+ }) 
+;__p+='\n  </div>\n';
+ } 
+;__p+='\n\n<div class="bill ebill ';
  if (expandable) { 
 ;__p+='is-expandable';
  } 
@@ -399,6 +419,18 @@ __p+='<div class="bill ebill ';
 ;__p+='\n    \n    <p class="description">'+
 ( bill.description )+
 '</p>\n    \n    ';
+ if (_.isArray(bill.links) && bill.links.length > 0) { 
+;__p+='\n      <ul class="e-links">\n        ';
+ for (var l in bill.links) { 
+;__p+='\n          <li><a href="'+
+( bill.links[l].url )+
+'">'+
+( bill.links[l].title )+
+'</a></li>\n        ';
+ } 
+;__p+='\n      </ul>\n    ';
+ } 
+;__p+='\n    \n    ';
  if (expandable) { 
 ;__p+='\n      <a href="#" class="bill-expand">Expand</a>\n    ';
  } 
@@ -442,9 +474,7 @@ __p+='\n<div class="legislator">\n  <img src="'+
 ( photo_url )+
 '" />\n\n  <div class="legislator-info">\n    '+
 ( full_name )+
-' ('+
-( sponsorType )+
-')<br />\n    District '+
+'<br />\n    District '+
 ( district )+
 ' ('+
 ( LT.utils.translate('partyAbbr', party) )+
@@ -466,21 +496,31 @@ return __p;
 this["LT"]["templates"]["js/app/templates/template-osbill.html"] = function(obj){
 var __p='';var print=function(){__p+=Array.prototype.join.call(arguments, '')};
 with(obj||{}){
-__p+='<div class="osbill">\n\n  <h5>\n    ';
+__p+='';
+ if (typeof detailed != 'undefined' && detailed)  { 
+;__p+='\n  <div class="ls-header">\n    <a href="#/">All Categories</a>\n  </div>\n';
+ } 
+;__p+='\n\n<div class="osbill">\n  <h5>\n    ';
  if (typeof title != 'undefined') { 
 ;__p+='\n      '+
 ( title )+
-'\n    ';
- } else if (bill.title) { 
+' ('+
+( bill.bill_id )+
+')\n    ';
+ } else { 
 ;__p+='\n      '+
-( bill.title )+
+( bill.bill_id )+
 '\n    ';
  } 
-;__p+='\n      \n    ('+
-( bill.bill_id )+
-') \n    <a class="permalink" title="Permanent link to bill" href="#/bill-detail/'+
+;__p+='\n    <a class="permalink" title="Permanent link to bill" href="#/bill-detail/'+
 ( encodeURI(bill.bill_id) )+
-'"></a>\n  </h5>\n\n  <div class="sponsors clear-block">\n    ';
+'"></a>\n  </h5>\n  \n  ';
+ if (typeof detailed != 'undefined' && detailed) { 
+;__p+='\n    <p class="description">\n      '+
+( bill.title )+
+'\n    </p>\n  ';
+ } 
+;__p+='\n\n  <strong>Primary sponsors</strong>\n  <div class="sponsors primary-sponsors clear-block">\n    ';
  for (var a in bill.sponsors) { 
 ;__p+='\n      ';
  if (bill.sponsors[a].type === 'primary') { 
@@ -506,7 +546,7 @@ __p+='<div class="osbill">\n\n  <h5>\n    ';
 ( LT.utils.translate('chamber', bill.actions[a].actor) )+
 ')\n      </div>\n    ';
  } 
-;__p+='\n  </div>\n\n  <strong>Co-Sponsors</strong>\n  <div class="sponsors clear-block">\n    ';
+;__p+='\n  </div>\n\n  <strong>Co-Sponsors</strong>\n  <div class="sponsors co-sponsors clear-block">\n    ';
  for (var a in bill.sponsors) { 
 ;__p+='\n      ';
  if (bill.sponsors[a].type !== 'primary') { 
@@ -670,6 +710,17 @@ return __p;
       });
       $.when.apply($, defers).done(callback).fail(error);
       return this;
+    },
+    
+    loadCategories: function() {
+      if (this.get('categories')) {
+        this.set('categories', _.map(this.get('categories'), function(c) {
+          if (!_.isObject(c)) {
+            c = LT.utils.getModel('CategoryModel', 'id', { id: c });
+          }
+          return c;
+        }));
+      }
     }
   });
   
@@ -838,6 +889,7 @@ return __p;
     renderOSBill: function(bill) {
       this.$el.html(this.templates.osbill({
         bill: bill.toJSON(),
+        detailed: true,
         templates: this.templates
       }));
       this.getLegislators();
@@ -959,6 +1011,9 @@ return __p;
       });
       _.each(parsed.categories, function(c) {
         thisRouter.categories.add(LT.utils.getModel('CategoryModel', 'id', c));
+      });
+      this.bills.each(function(b) {
+        b.loadCategories();
       });
       
       // Load up bill count
@@ -1092,6 +1147,9 @@ return __p;
           },
           error: this.error
         });
+      }
+      else {
+        callback.call(thisRouter);
       }
     },
     
