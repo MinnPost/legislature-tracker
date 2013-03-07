@@ -1,6 +1,8 @@
 <% if (!expandable) { %>
   <div class="ls-header">
-    <a href="#/">All Categories</a>
+    <% _.each(bill.categories, function(c, i) { %>
+      <a href="#/category/<%= c.get('id') %>"><%= c.get('title') %></a><% if (i < bill.categories.length - 1) { %>,<% } %>
+    <% }) %>
   </div>
 <% } %>
 

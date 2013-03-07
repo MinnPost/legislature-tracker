@@ -53,6 +53,9 @@
       _.each(parsed.categories, function(c) {
         thisRouter.categories.add(LT.utils.getModel('CategoryModel', 'id', c));
       });
+      this.bills.each(function(b) {
+        b.loadCategories();
+      });
       
       // Load up bill count
       if (LT.options.billCountDataSource) {

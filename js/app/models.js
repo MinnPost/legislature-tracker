@@ -136,6 +136,17 @@
       });
       $.when.apply($, defers).done(callback).fail(error);
       return this;
+    },
+    
+    loadCategories: function() {
+      if (this.get('categories')) {
+        this.set('categories', _.map(this.get('categories'), function(c) {
+          if (!_.isObject(c)) {
+            c = LT.utils.getModel('CategoryModel', 'id', { id: c });
+          }
+          return c;
+        }));
+      }
     }
   });
   
