@@ -77,6 +77,7 @@
     renderOSBill: function(bill) {
       this.$el.html(this.templates.osbill({
         bill: bill.toJSON(),
+        detailed: true,
         templates: this.templates
       }));
       this.getLegislators();
