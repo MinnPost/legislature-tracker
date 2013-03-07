@@ -1,3 +1,9 @@
+<% if (!expandable) { %>
+  <div class="ls-header">
+    <a href="#/">All Categories</a>
+  </div>
+<% } %>
+
 <div class="bill ebill <% if (expandable) { %>is-expandable<% } %>">
   <div class="bill-top">
     <% if (expandable) { %><h3><% } else { %><h2><% } %>

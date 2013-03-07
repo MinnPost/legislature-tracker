@@ -55,7 +55,7 @@
 
 .ls a.permalink {
   font-size: .5em;
-  background: transparent url('https://s3.amazonaws.com/data.minnpost/projects/2012-mn-election-results/images/link-16x8.png') center right no-repeat;
+  background: transparent url('../images/link-16x8.png') center right no-repeat;
   height: 8px;
   width: 16px;
   display: -moz-inline-stack;
@@ -83,17 +83,35 @@
 }
 .ls .loading-general span {
   padding: 10px 5px 10px 40px;
-  background: transparent url('https://s3.amazonaws.com/data.minnpost/projects/2012-mn-election-results/images/ajax-loader.gif') center left no-repeat;
+  background: transparent url('../images/loading.gif') center left no-repeat;
   vertical-align: middle;
   height: 100%;
   line-height: 100%;
 }
 
 /**
+ * Headers
+ */
+.ls .ls-header {
+  color: #414141;
+  border-bottom: 1px solid #BCBCBC;
+  margin: 1em 0;
+  background: transparent url('../images/capitol-bg.png') center right no-repeat;
+  background-size: 40px;
+  min-height: 1.5em;
+}
+
+/**
  * Category list styles
  */
+.ls .categories-container {
+  background: transparent url('../images/capitol-bg.png') top center no-repeat;
+  background-size: 100%;
+  min-height: 350px;
+  padding-top: 17.5em;
+}
 .ls .categories-container ul {
-  margin: .5em 0 2em 0;
+  margin: 1em 0 2em 0;
   padding: 0;
 }
 .ls .categories-container ul li {
@@ -102,13 +120,21 @@
   list-style: none;
   display: block;
   width: 25%;
-  min-height: 200px;
+  min-height: 100px;
   float: left;
+  text-align: center;
 }
 .ls .categories-container ul li .category-inner {
-  padding: 2.5% 5%;
-  margin: 2.5% 5%;
-  border: 1px solid #DDDDDD;
+  padding: .5em .25em;
+  margin: .5em .25em;
+}
+
+.ls .categories-container ul li.category-item-0 {
+  width: 100%;
+}
+.ls .categories-container ul li.category-item-1,
+.ls .categories-container ul li.category-item-2 {
+  width: 50%;
 }
 
 /**

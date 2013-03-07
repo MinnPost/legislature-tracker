@@ -1,5 +1,10 @@
-<div class="osbill">
+<% if (typeof detailed != 'undefined' && detailed)  { %>
+  <div class="ls-header">
+    <a href="#/">All Categories</a>
+  </div>
+<% } %>
 
+<div class="osbill">
   <h5>
     <% if (typeof title != 'undefined') { %>
       <%= title %> (<%= bill.bill_id %>)

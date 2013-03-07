@@ -225,7 +225,6 @@ else {
   
   // Default options
   LT.defaultOptions = {
-    title: 'Legislature Tracker',
     sheetsWanted: ['Categories', 'Bills', 'Events'],
     fieldTranslations: {
       eCategories: {

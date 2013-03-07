@@ -4,17 +4,15 @@
     <h2><%= options.title %></h2>
   <% } %>
 
-  <ul class="clear-block">
+  <ul class="category-list clear-block">
     <% for (var c in categories) { %>
-      <li>
-        <div class="category-inner">
+      <li class="category-item category-item-<%= c %>">
+        <div class="category-inner category-<%= _.cssClass(categories[c].id) %>">
           <h3>
             <a href="#/category/<%= encodeURI(categories[c].id) %>">
               <%= categories[c].title %>
             </a>
           </h3>
-          
-          <p><%= categories[c].description %></p>
            
           <div>
             Watching 
