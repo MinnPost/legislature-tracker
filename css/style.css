@@ -55,7 +55,7 @@
 
 .ls a.permalink {
   font-size: .5em;
-  background: transparent url('../images/link-16x8.png') center right no-repeat;
+  background: transparent url('images/link-16x8.png') center right no-repeat;
   height: 8px;
   width: 16px;
   display: -moz-inline-stack;
@@ -83,7 +83,7 @@
 }
 .ls .loading-general span {
   padding: 10px 5px 10px 40px;
-  background: transparent url('../images/loading.gif') center left no-repeat;
+  background: transparent url('images/loading.gif') center left no-repeat;
   vertical-align: middle;
   height: 100%;
   line-height: 100%;
@@ -96,7 +96,7 @@
   color: #414141;
   border-bottom: 1px solid #BCBCBC;
   margin: 1em 0;
-  background: transparent url('../images/capitol-bg.png') center right no-repeat;
+  background: transparent url('images/capitol-bg.png') center right no-repeat;
   background-size: 40px;
   min-height: 1.5em;
 }
@@ -105,7 +105,7 @@
  * Category list styles
  */
 .ls .categories-container {
-  background: transparent url('../images/capitol-bg.png') top center no-repeat;
+  background: transparent url('images/capitol-bg.png') top center no-repeat;
   background-size: 100%;
   min-height: 350px;
   padding-top: 17.5em;
