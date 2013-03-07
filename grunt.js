@@ -69,6 +69,11 @@ module.exports = function(grunt) {
           'dist/<%= pkg.name %>.latest.css': 'css/style.css',
           'dist/<%= pkg.name %>.latest.ie.css': 'css/style.ie.css'
         }
+      },
+      images: {
+        files: {
+          'dist/images/': 'css/images/*'
+        }
       }
     },
     watch: {
@@ -112,6 +117,10 @@ module.exports = function(grunt) {
         {
           src: 'dist/*',
           dest: 'projects/legislature-tracker/'
+        },
+        {
+          src: 'dist/images/*',
+          dest: 'projects/legislature-tracker/images/'
         }
       ]
     }
