@@ -23,6 +23,31 @@
       </ul>
     <% } %>
     
+    <% if (bill.actions.lower || bill.actions.upper || bill.bill_type.conference || bill.actions.signed) { %>
+      <div class="bill-status">
+        <% if (bill.actions.lower) { %>
+          <div class="lower">
+            Passed House
+          </div>
+        <% } %>
+        <% if (bill.actions.upper) { %>
+          <div class="upper">
+            Passed House
+          </div>
+        <% } %>
+        <% if (bill.bill_type.conference) { %>
+          <div class="conference">
+            In conference committee
+          </div>
+        <% } %>
+        <% if (bill.actions.signed) { %>
+          <div class="signed">
+            Signed by Governor
+          </div>
+        <% } %>
+      </div>
+    <% } %>
+    
     <% if (expandable) { %>
       <a href="#" class="bill-expand">Expand</a>
     <% } %>

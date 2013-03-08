@@ -290,6 +290,8 @@
     loadBills: function(callback, error) {
       // Load up bill data from open states
       var defers = [];
+      var thisModel = this;
+      
       this.get('bills').each(function(bill) {     
         _.each(['bill_primary', 'bill_companion', 'bill_conference'], function(prop) {
           if (bill.get(prop)) {
@@ -297,7 +299,15 @@
           }
         });
       });
-      $.when.apply($, defers).done(callback).fail(error);
+      
+      $.when.apply($, defers)
+        .done(function() {
+          thisModel.get('bills').each(function(bill) {
+            bill.parseMeta();
+          });
+          callback();
+        })
+        .fail(error);
       return this;
     }
   });

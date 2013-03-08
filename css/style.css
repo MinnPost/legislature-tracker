@@ -227,27 +227,8 @@
 /**
  * Bill progress styles
  */
-.ls .bill-progress {
-  width: 200px;
+.ls .bill-status {
   border: 1px solid #BBBBBB;
+  padding: .5em;
   margin-bottom: 1em;
-  float: right;
-}
-.ls .bill-progress .bill-progress-section {
-  width: 25%;
-  float: left;
-  background-color: #EFEFEF;
-  height: 1.5em;
-}
-.ls .bill-progress .bill-progress-section.bill-introduced.completed {
-  background-color: #10517F;
-}
-.ls .bill-progress .bill-progress-section.bill-passed-lower.completed {
-  background-color: #107F76;
-}
-.ls .bill-progress .bill-progress-section.bill-passed-upper.completed {
-  background-color: #107F3E;
-}
-.ls .bill-progress .bill-progress-section.bill-signed.completed {
-  background-color: #197F10;
 }
