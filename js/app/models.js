@@ -99,6 +99,27 @@
       
       // Figure out newest
       this.set('newest_action', this.get('actions')[0]);
+    },
+    
+    getActionDate: function(type) {
+      return (this.get('action_dates')[type]) ? this.get('action_dates')[type] : false;
+    },
+    
+    isSubstituted: function() {
+      var sub = false;
+    
+      if (_.isBoolean(this.get('substitued'))) {
+        sub = this.get('substitued');
+      }
+      else {
+        sub = _.find(this.get('actions'), function(a) {
+          return a.action.match(LT.options.regex.substituteMatch);
+        });
+        sub = (sub) ? true : false;
+        this.set('substitued', sub);
+      }
+      
+      return sub;
     }
   });
   
@@ -134,7 +155,12 @@
           defers.push(LT.utils.fetchModel(thisModel.get(prop)));
         }
       });
-      $.when.apply($, defers).done(callback).fail(error);
+      $.when.apply($, defers)
+        .done(function() {
+          thisModel.parseMeta();
+          callback();
+        })
+        .fail(error);
       return this;
     },
     
@@ -147,6 +173,92 @@
           return c;
         }));
       }
+    },
+    
+    parseMeta: function() {
+      // We need to get actions and meta data from individual 
+      // bills.  This could get a bit complicated...
+      var actions = {
+        upper: false,
+        lower: false,
+        conference: false,
+        signed: false,
+        last: false
+      };
+      
+      // Let's determine types
+      var type = {
+        companion: (this.get('bill_companion')) ? true : false,
+        conference: (this.get('bill_conference')) ? true : false
+      };
+      
+      // The companion or primary bill can stop being relevant.  This is noted
+      // by a SF Substituted or HF Substituted
+      if (type.companion) {
+        if (this.get('bill_companion').isSubstituted()) {
+          type.substituted = true;
+        }
+        if (this.get('bill_primary').isSubstituted()) {
+          type.substituted = true;
+          // Swap primary for companion
+        }
+      }
+      
+      // If only primary, get the actions from there, or
+      // if substituted, then just get from primary bill
+      if (!type.companion || type.substituted) {
+        actions.lower = this.get('bill_primary').getActionDate('passed_lower');
+        actions.upper = this.get('bill_primary').getActionDate('passed_upper');
+      }
+      
+      // If companion, get the actions from their respective bills
+      if (type.companion && !type.substituted) {
+        if (this.get('bill_primary').get('chamber') == 'upper') {
+          actions.upper = this.get('bill_primary').getActionDate('passed_upper');
+          actions.lower = this.get('bill_companion').getActionDate('passed_lower');
+        }
+        else {
+          actions.lower = this.get('bill_primary').getActionDate('passed_lower');
+          actions.upper = this.get('bill_companion').getActionDate('passed_upper');
+        }
+      }
+      
+      // If conference bill, get date if both chambers have passed
+      if (type.conference) {
+          var lower = this.get('bill_conference').getActionDate('passed_lower');
+          var upper = this.get('bill_conference').getActionDate('passed_upper');
+            
+          if (lower && upper) {
+            actions.conference = (lower.unix() >= upper.unix()) ? lower : upper;
+          }
+      }
+      
+      // Determine signed.  If conference, then use that, otherwise
+      // use primary
+      if (type.conference) {
+        actions.signed = this.get('bill_conference').getActionDate('signed');
+      }
+      else {
+        actions.signed = this.get('bill_primary').getActionDate('signed');
+      }
+      
+      
+      // Determine last updated date
+      if (type.conference) {
+        actions.last = this.get('bill_conference').getActionDate('last');
+      }
+      else if (type.companion) {
+        actions.last = (this.get('bill_companion').getActionDate('last').unix() >=
+          this.get('bill_primary').getActionDate('last').unix()) ?
+          this.get('bill_companion').getActionDate('last') :
+          this.get('bill_primary').getActionDate('last');
+      }
+      else  {
+        actions.last = this.get('bill_primary').getActionDate('last');
+      }
+      
+      this.set('actions', actions);
+      this.set('bill_type', type);
     }
   });
   

@@ -64,7 +64,6 @@
       if (!_.isObject(bill)) {
         bill = this.router.bills.get(bill);
       }
-      
       this.$el.html(this.templates.ebill({
         bill: bill.toJSON(),
         expandable: false,

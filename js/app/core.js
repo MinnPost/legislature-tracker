@@ -256,6 +256,9 @@ else {
         'Democratic': 'D',
         'Republican': 'R'
       }
+    },
+    regex: {
+      substituteMatch: /substituted/i
     }
   };
   
