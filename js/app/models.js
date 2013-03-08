@@ -213,7 +213,7 @@
       
       // If companion, get the actions from their respective bills
       if (type.companion && !type.substituted) {
-        if (this.get('bill_primary').get('chamber') == 'upper') {
+        if (this.get('bill_primary').get('chamber') === 'upper') {
           actions.upper = this.get('bill_primary').getActionDate('passed_upper');
           actions.lower = this.get('bill_companion').getActionDate('passed_lower');
         }
