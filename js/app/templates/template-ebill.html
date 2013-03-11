@@ -32,7 +32,7 @@
         <% } %>
         <% if (bill.actions.upper) { %>
           <div class="upper">
-            Passed House
+            Passed Senate
           </div>
         <% } %>
         <% if (bill.bill_type.conference) { %>
@@ -57,21 +57,25 @@
     <div class="clear-block">
       <% if (_.isObject(bill.bill_primary)) { %>
         <div class="primary-bill">
-          <%= templates.osbill({
-            title: 'Primary Bill',
-            bill: bill.bill_primary.toJSON(),
-            templates: templates
-          }) %>
+          <div class="primary-bill-inner clear-block">
+            <%= templates.osbill({
+              title: 'Primary Bill',
+              bill: bill.bill_primary.toJSON(),
+              templates: templates
+            }) %>
+          </div>
         </div>
       <% } %>
       
       <% if (_.isObject(bill.bill_companion)) { %>
         <div class="companion-bill">
-          <%= templates.osbill({
-            title: 'Companion Bill',
-            bill: bill.bill_companion.toJSON(),
-            templates: templates
-          }) %>
+          <div class="companion-bill-inner clear-block">
+            <%= templates.osbill({
+              title: 'Companion Bill',
+              bill: bill.bill_companion.toJSON(),
+              templates: templates
+            }) %>
+          </div>
         </div>
       <% } %>
     </div>
