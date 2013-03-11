@@ -1,10 +1,21 @@
 
 <div class="legislator">
-  <img src="<%= photo_url %>" />
-
+  <% if (LT.options.legImageProxy) { %>
+    <img src="<%= LT.options.legImageProxy %><%= encodeURI(photo_url) %>" />
+  <% } else { %>
+    <img src="<%= photo_url %>" />
+  <% } %>
+  
   <div class="legislator-info">
     <%= full_name %><br />
-    District <%= district %> (<%= LT.utils.translate('partyAbbr', party) %>) <br />
-    <%= LT.utils.translate('chamber', chamber) %>
+    <% if (typeof district != 'undefined') { %>
+      District <%= district %>
+    <% } %>
+    <% if (typeof party != 'undefined') { %>
+      (<%= LT.utils.translate('partyAbbr', party) %>) 
+    <% } %> <br />
+    <% if (typeof chamber != 'undefined') { %>
+      <%= LT.utils.translate('chamber', chamber) %>
+    <% } %>
   </div>
 </div>
