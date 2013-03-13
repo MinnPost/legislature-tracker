@@ -19,6 +19,14 @@
   font-size: 1.5em;
   margin-bottom: .5em;
 }
+.ls h4 {
+  font-size: 1.25em;
+  margin-top: .5em;
+}
+.ls h5 {
+  font-size: 1em;
+  margin-top: .5em;
+}
 
 .ls p {
   font-family: Georgia, "Times New Roman", Times,serif;
@@ -140,10 +148,6 @@
 /**
  * Indiviual category styles
  */
-.ls .e-links {
-  margin-bottom: 1em;
-}
-
 .ls .total-bill {
   text-align: right;
 }
@@ -156,16 +160,14 @@
   margin-top: 0;
 }
 
-.ls .bill .bill-updated,
-.ls .bill .actions,
-.ls .bill .sponsors,
-.ls .bill .sources {
-  margin-bottom: 1em;
-}
-
+.ls .bill-updated,
+.ls .actions,
+.ls .sponsors,
+.ls .sources
+.ls .e-links,
 .ls .bill .description,
 .ls .bill .latest-action {
-  margin-bottom: 1em;
+  margin-bottom: 1.5em;
 }
 
 .ls .bill .bill-update {
@@ -199,14 +201,43 @@
   padding: 2.5%;
 }
 
-
-/**
- * OS Bill specifics
- */
-.ls .primary-bill,
+.ls .primary-bill {
+  width: 100%;
+  float: none;
+}
+.ls .primary-bill.with-companion,
 .ls .companion-bill {
   width: 50%;
   float: left;
+}
+
+.ls .actions-inner {
+  font-size: .85em;
+  height: 150px;
+  overflow: scroll;
+}
+
+.ls .co-sponsors-inner {
+  height: 150px;
+  overflow: scroll;
+}
+
+.ls .overflowed {
+  -moz-box-shadow: inset 0px -11px 10px -10px rgba(0, 0, 0, .4);
+  -webkit-box-shadow: inset 0px -11px 10px -10px rgba(0, 0, 0, .4);
+  box-shadow: inset 0px -11px 10px -10px rgba(0, 0, 0, .4);
+}
+
+.ls .primary-bill-inner,
+.ls .companion-bill-inner {
+  margin-right: .5em;
+}
+
+.ls ul.e-links-list {
+  padding-left: 0;
+}
+.ls ul.e-links-list li {
+  list-style: none;
 }
 
 
@@ -214,14 +245,20 @@
  * Bill sponsors/legislators styles
  */
 .ls .sponsors .sponsor {
-  width: 200px;
+  width: 25%;
+  float: left;
+  font-size: .85em;
+}
+.ls .with-companion .sponsors .sponsor,
+.ls .companion-bill .sponsors .sponsor {
+  width: 50%;
   float: left;
   font-size: .85em;
 }
 .ls .legislator img {
-  max-width: 65px;
+  max-height: 75px;
   float: left;
-  margin: 0 .5em 2em 0;
+  margin: 0 .5em 1em 0;
 }
 
 /**

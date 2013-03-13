@@ -15,14 +15,6 @@
     
     <p class="description"><%= bill.description %></p>
     
-    <% if (_.isArray(bill.links) && bill.links.length > 0) { %>
-      <ul class="e-links">
-        <% for (var l in bill.links) { %>
-          <li><a href="<%= bill.links[l].url %>"><%= bill.links[l].title %></a></li>
-        <% } %>
-      </ul>
-    <% } %>
-    
     <% if (bill.actions.lower || bill.actions.upper || bill.bill_type.conference || bill.actions.signed) { %>
       <div class="bill-status">
         <% if (bill.actions.lower) { %>
@@ -54,9 +46,20 @@
   </div>
   
   <div class="bill-bottom">
+    <% if (_.isArray(bill.links) && bill.links.length > 0) { %>
+      <div class="e-links">
+        <h4>In the news</h4>
+        <ul class="e-links-list">
+          <% for (var l in bill.links) { %>
+            <li><a href="<%= bill.links[l].url %>"><%= bill.links[l].title %></a></li>
+          <% } %>
+        </ul>
+      </div>
+    <% } %>
+  
     <div class="clear-block">
       <% if (_.isObject(bill.bill_primary)) { %>
-        <div class="primary-bill">
+        <div class="primary-bill <% if (_.isObject(bill.bill_companion)) { %>with-companion<% } %>">
           <div class="primary-bill-inner clear-block">
             <%= templates.osbill({
               title: 'Primary Bill',

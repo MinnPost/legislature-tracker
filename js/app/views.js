@@ -70,8 +70,7 @@
         expandable: false,
         templates: this.templates
       }));
-      this.getLegislators();
-      this.addTooltips();
+      this.getLegislators().addTooltips().checkOverflows();
     },
     
     renderOSBill: function(bill) {
@@ -80,8 +79,7 @@
         detailed: true,
         templates: this.templates
       }));
-      this.getLegislators();
-      this.addTooltips();
+      this.getLegislators().addTooltips().checkOverflows();
     },
     
     expandBill: function(e) {
@@ -89,6 +87,8 @@
       var $this = $(e.target);
       
       $this.parent().parent().toggleClass('expanded').find('.bill-bottom').slideToggle();
+      this.checkOverflows();
+      return this;
     },
     
     getLegislators: function() {
@@ -107,6 +107,7 @@
           });
         }
       });
+      return this;
     },
     
     addTooltips: function() {
@@ -119,6 +120,16 @@
           at: 'top center'
         }
       });
+      return this;
+    },
+    
+    checkOverflows: function() {
+      this.$el.find('.actions-inner, .co-sponsors-inner').each(function() {
+        if ($(this).hasScrollBar()) {
+          $(this).addClass('overflowed');
+        }
+      });
+      return this;
     }
   });
 

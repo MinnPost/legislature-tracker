@@ -33,4 +33,13 @@
       return Backbone.$.jsonp.apply(Backbone.$, arguments);
     };
   }
+  
+  /**
+   * Basic jQuery plugin to see if element
+   * has a scroll bar.
+   */
+  $.fn.hasScrollBar = function() {
+    return (this.get(0) && this.get(0).scrollHeight) ?
+      (this.get(0).scrollHeight > this.height()) : false;
+  };
 })(jQuery, window);
