@@ -31,11 +31,21 @@
     },
   
     loading: function() {
-      this.resetScrollView().$el.html(this.templates.loading({}));
+      // The first (and second) load, we don't actually 
+      // want to force the scroll
+      if (this.initialLoad === true) {
+        this.resetScrollView();
+      }
+      else {
+        this.initialLoad = (_.isUndefined(this.initialLoad)) ? false : true;
+      }
+      this.$el.html(this.templates.loading({}));
+      return this;
     },
     
     error: function(e) {
       this.$el.html(this.templates.error({ error: e }));
+      return this;
     },
     
     renderCategories: function() {
