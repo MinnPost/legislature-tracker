@@ -175,26 +175,29 @@
       }
     },
     
-    lastUpdated: function() {
-      var last_updated;
+    newestAction: function() {
+      var newest_action;
+      var p = this.get('bill_primary');
+      var c = this.get('bill_companion');
+      var co = this.get('bill_conference');
       
-      if (_.isUndefined(this.get('last_updated')) && this.get('bill_primary').get('updated_at')) {
-        last_updated = this.get('bill_primary').get('updated_at');
+      if (_.isUndefined(this.get('newest_action')) && p.get('newest_action')) {
+        newest_action = p.get('newest_action');
         
-        if (this.get('bill_companion') && this.get('bill_companion').get('updated_at')) {
-          last_updated = (this.get('bill_companion').get('updated_at').unix() >
-            last_updated.unix()) ?
-            this.get('bill_companion').get('updated_at') : last_updated;
+        if (c && c.get('newest_action')) {
+          newest_action = (c.get('newest_action').date.unix() >
+            newest_action.date.unix()) ?
+            c.get('newest_action') : newest_action;
         }
-        if (this.get('bill_conference') && this.get('bill_conference').get('updated_at')) {
-          last_updated = (this.get('bill_conference').get('updated_at').unix() >
-            last_updated.unix()) ?
-            this.get('bill_conference').get('updated_at') : last_updated;
+        if (co && co.get('newest_action')) {
+          newest_action = (co.get('newest_action').date.unix() >
+            newest_action.date.unix()) ?
+            co.get('newest_action') : newest_action;
         }
-        this.set('last_updated', last_updated);
+        this.set('newest_action', newest_action);
       }
       
-      return this.get('last_updated');
+      return this.get('newest_action');
     },
     
     parseMeta: function() {

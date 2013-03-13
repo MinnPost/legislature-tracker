@@ -22,7 +22,7 @@
     model: LT.BillModel,
     
     comparator: function(b) {
-      var compare = (b.lastUpdated()) ? b.lastUpdated().unix() * -1 :
+      var compare = (b.newestAction()) ? b.newestAction().date.unix() * -1 :
         b.get('title');
       return compare;
     }
