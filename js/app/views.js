@@ -52,6 +52,7 @@
       if (!_.isObject(category)) {
         category = LT.app.categories.get(category);
       }
+      category.get('bills').sort();
       
       this.$el.html(this.templates.category({
         category: category.toJSON(),

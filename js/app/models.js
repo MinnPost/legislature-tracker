@@ -175,6 +175,28 @@
       }
     },
     
+    lastUpdated: function() {
+      var last_updated;
+      
+      if (_.isUndefined(this.get('last_updated')) && this.get('bill_primary').get('updated_at')) {
+        last_updated = this.get('bill_primary').get('updated_at');
+        
+        if (this.get('bill_companion') && this.get('bill_companion').get('updated_at')) {
+          last_updated = (this.get('bill_companion').get('updated_at').unix() >
+            last_updated.unix()) ?
+            this.get('bill_companion').get('updated_at') : last_updated;
+        }
+        if (this.get('bill_conference') && this.get('bill_conference').get('updated_at')) {
+          last_updated = (this.get('bill_conference').get('updated_at').unix() >
+            last_updated.unix()) ?
+            this.get('bill_conference').get('updated_at') : last_updated;
+        }
+        this.set('last_updated', last_updated);
+      }
+      
+      return this.get('last_updated');
+    },
+    
     parseMeta: function() {
       // We need to get actions and meta data from individual 
       // bills.  This could get a bit complicated...

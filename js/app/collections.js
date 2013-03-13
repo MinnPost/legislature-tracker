@@ -21,8 +21,10 @@
   LT.BillsCollection = Backbone.Collection.extend({
     model: LT.BillModel,
     
-    comparator: function(cat) {
-      return cat.get('title');
+    comparator: function(b) {
+      var compare = (b.lastUpdated()) ? b.lastUpdated().unix() * -1 :
+        b.get('title');
+      return compare;
     }
   });
   
