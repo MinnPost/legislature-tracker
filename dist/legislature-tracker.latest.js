@@ -33,6 +33,15 @@
       return Backbone.$.jsonp.apply(Backbone.$, arguments);
     };
   }
+  
+  /**
+   * Basic jQuery plugin to see if element
+   * has a scroll bar.
+   */
+  $.fn.hasScrollBar = function() {
+    return (this.get(0) && this.get(0).scrollHeight) ?
+      (this.get(0).scrollHeight > this.height()) : false;
+  };
 })(jQuery, window);
 /**
  * Core file for Legislature tracker.
@@ -292,6 +301,9 @@ else {
         'Democratic': 'D',
         'Republican': 'R'
       }
+    },
+    regex: {
+      substituteMatch: /substituted/i
     }
   };
   
@@ -419,40 +431,64 @@ __p+='';
 ;__p+='\n    \n    <p class="description">'+
 ( bill.description )+
 '</p>\n    \n    ';
- if (_.isArray(bill.links) && bill.links.length > 0) { 
-;__p+='\n      <ul class="e-links">\n        ';
- for (var l in bill.links) { 
-;__p+='\n          <li><a href="'+
-( bill.links[l].url )+
-'">'+
-( bill.links[l].title )+
-'</a></li>\n        ';
+ if (bill.actions.lower || bill.actions.upper || bill.bill_type.conference || bill.actions.signed) { 
+;__p+='\n      <div class="bill-status">\n        ';
+ if (bill.actions.lower) { 
+;__p+='\n          <div class="lower">\n            Passed House\n          </div>\n        ';
  } 
-;__p+='\n      </ul>\n    ';
+;__p+='\n        ';
+ if (bill.actions.upper) { 
+;__p+='\n          <div class="upper">\n            Passed Senate\n          </div>\n        ';
+ } 
+;__p+='\n        ';
+ if (bill.bill_type.conference) { 
+;__p+='\n          <div class="conference">\n            In conference committee\n          </div>\n        ';
+ } 
+;__p+='\n        ';
+ if (bill.actions.signed) { 
+;__p+='\n          <div class="signed">\n            Signed by Governor\n          </div>\n        ';
+ } 
+;__p+='\n      </div>\n    ';
  } 
 ;__p+='\n    \n    ';
  if (expandable) { 
-;__p+='\n      <a href="#" class="bill-expand">Expand</a>\n    ';
+;__p+='\n      <a href="#" class="bill-expand">More details</a>\n    ';
  } 
-;__p+='\n  </div>\n  \n  <div class="bill-bottom">\n    <div class="clear-block">\n      ';
+;__p+='\n  </div>\n  \n  <div class="bill-bottom">\n    ';
+ if (_.isArray(bill.links) && bill.links.length > 0) { 
+;__p+='\n      <div class="e-links">\n        <h4>In the news</h4>\n        <ul class="e-links-list">\n          ';
+ for (var l in bill.links) { 
+;__p+='\n            <li><a href="'+
+( bill.links[l].url )+
+'">'+
+( bill.links[l].title )+
+'</a></li>\n          ';
+ } 
+;__p+='\n        </ul>\n      </div>\n    ';
+ } 
+;__p+='\n  \n    <div class="clear-block">\n      ';
  if (_.isObject(bill.bill_primary)) { 
-;__p+='\n        <div class="primary-bill">\n          '+
+;__p+='\n        <div class="primary-bill ';
+ if (_.isObject(bill.bill_companion)) { 
+;__p+='with-companion';
+ } 
+;__p+='">\n          <div class="primary-bill-inner clear-block">\n            '+
 ( templates.osbill({
-            title: 'Primary Bill',
-            bill: bill.bill_primary.toJSON(),
-            templates: templates
-          }) )+
-'\n        </div>\n      ';
+              title: 'Primary Bill',
+              bill: bill.bill_primary.toJSON(),
+              templates: templates
+            }) )+
+'\n          </div>\n        </div>\n      ';
  } 
 ;__p+='\n      \n      ';
  if (_.isObject(bill.bill_companion)) { 
-;__p+='\n        <div class="companion-bill">\n          '+
+;__p+='\n        <div class="companion-bill">\n          <div class="companion-bill-inner clear-block">\n            '+
 ( templates.osbill({
-            title: 'Companion Bill',
-            bill: bill.bill_companion.toJSON(),
-            templates: templates
-          }) )+
-'\n        </div>\n      ';
+              title: 'Companion Bill',
+              bill: bill.bill_companion.toJSON(),
+              templates: templates
+            }) )+
+'\n          </div>\n        </div>\n      ';
  } 
 ;__p+='\n    </div>\n  </div>\n</div>';
 }
@@ -470,17 +506,39 @@ return __p;
 this["LT"]["templates"]["js/app/templates/template-legislator.html"] = function(obj){
 var __p='';var print=function(){__p+=Array.prototype.join.call(arguments, '')};
 with(obj||{}){
-__p+='\n<div class="legislator">\n  <img src="'+
+__p+='\n<div class="legislator">\n  ';
+ if (LT.options.legImageProxy) { 
+;__p+='\n    <img src="'+
+( LT.options.legImageProxy )+
+''+
+( encodeURI(photo_url) )+
+'" />\n  ';
+ } else { 
+;__p+='\n    <img src="'+
 ( photo_url )+
-'" />\n\n  <div class="legislator-info">\n    '+
+'" />\n  ';
+ } 
+;__p+='\n  \n  <div class="legislator-info">\n    '+
 ( full_name )+
-'<br />\n    District '+
+'<br />\n    ';
+ if (typeof district != 'undefined') { 
+;__p+='\n      District '+
 ( district )+
-' ('+
+'\n    ';
+ } 
+;__p+='\n    ';
+ if (typeof party != 'undefined') { 
+;__p+='\n      ('+
 ( LT.utils.translate('partyAbbr', party) )+
-') <br />\n    '+
+') \n    ';
+ } 
+;__p+=' <br />\n    ';
+ if (typeof chamber != 'undefined') { 
+;__p+='\n      '+
 ( LT.utils.translate('chamber', chamber) )+
-'\n  </div>\n</div>';
+'\n    ';
+ } 
+;__p+='\n  </div>\n</div>';
 }
 return __p;
 };
@@ -500,7 +558,7 @@ __p+='';
  if (typeof detailed != 'undefined' && detailed)  { 
 ;__p+='\n  <div class="ls-header">\n    <a href="#/">All Categories</a>\n  </div>\n';
  } 
-;__p+='\n\n<div class="osbill">\n  <h5>\n    ';
+;__p+='\n\n<div class="osbill">\n  <h4>\n    ';
  if (typeof title != 'undefined') { 
 ;__p+='\n      '+
 ( title )+
@@ -514,59 +572,65 @@ __p+='';
  } 
 ;__p+='\n    <a class="permalink" title="Permanent link to bill" href="#/bill-detail/'+
 ( encodeURI(bill.bill_id) )+
-'"></a>\n  </h5>\n  \n  ';
+'"></a>\n  </h4>\n  \n  ';
  if (typeof detailed != 'undefined' && detailed) { 
 ;__p+='\n    <p class="description">\n      '+
 ( bill.title )+
 '\n    </p>\n  ';
  } 
-;__p+='\n\n  <strong>Primary sponsors</strong>\n  <div class="sponsors primary-sponsors clear-block">\n    ';
+;__p+='\n\n  <div class="sponsors primary-sponsors">\n    <h5>Primary sponsors</h5>\n    \n    <div class="clear-block">\n      ';
  for (var a in bill.sponsors) { 
-;__p+='\n      ';
+;__p+='\n        ';
  if (bill.sponsors[a].type === 'primary') { 
-;__p+='\n        <div class="sponsor" data-leg-id="'+
+;__p+='\n          <div class="sponsor" data-leg-id="'+
 ( bill.sponsors[a].leg_id )+
 '" data-sponsor-type="'+
 ( bill.sponsors[a].type )+
-'">\n          '+
+'">\n            '+
 ( bill.sponsors[a].name )+
 ' ('+
 ( bill.sponsors[a].type )+
-')\n        </div>\n      ';
+')\n          </div>\n        ';
  } 
-;__p+='\n    ';
+;__p+='\n      ';
  } 
-;__p+='\n  </div>\n  \n  <strong>Actions</strong>\n  <div class="actions">\n    ';
+;__p+='\n    </div>\n  </div>\n  \n  <div class="actions">\n    <h5>Actions</h5>\n    \n    <div class="actions-inner">\n      ';
  for (var a in bill.actions) { 
-;__p+='\n      <div>\n        '+
+;__p+='\n        <div>\n          '+
 ( bill.actions[a].date.format('MMM DD, YYYY') )+
 ': '+
 ( bill.actions[a].action )+
-'\n        ('+
+'\n          ('+
 ( LT.utils.translate('chamber', bill.actions[a].actor) )+
-')\n      </div>\n    ';
+')\n        </div>\n      ';
  } 
-;__p+='\n  </div>\n\n  <strong>Co-Sponsors</strong>\n  <div class="sponsors co-sponsors clear-block">\n    ';
+;__p+='\n    </div>\n  </div>\n\n  ';
+ if (bill.sponsors.length > 1) { 
+;__p+='\n    <div class="sponsors co-sponsors clear-block">\n      <h5>Co-Sponsors</h5>\n      \n      <div class="co-sponsors-inner clear-block">\n        ';
  for (var a in bill.sponsors) { 
-;__p+='\n      ';
+;__p+='\n          ';
  if (bill.sponsors[a].type !== 'primary') { 
-;__p+='\n        <div class="sponsor" data-leg-id="'+
+;__p+='\n            <div class="sponsor" data-leg-id="'+
 ( bill.sponsors[a].leg_id )+
 '" data-sponsor-type="'+
 ( bill.sponsors[a].type )+
-'">\n          '+
+'">\n              '+
 ( bill.sponsors[a].name )+
 ' ('+
 ( bill.sponsors[a].type )+
-')\n        </div>\n      ';
+')\n            </div>\n          ';
  } 
-;__p+='\n    ';
+;__p+='\n        ';
  } 
-;__p+='\n  </div>\n  \n  <strong>Full Text</strong>\n  <div class="sources">\n    ';
+;__p+='\n      </div>\n    </div>\n  ';
+ } 
+;__p+='\n  \n  <strong>Full Text</strong>\n  <div class="sources">\n    ';
  for (var a in bill.sources) { 
 ;__p+='\n      <a href="'+
 ( bill.sources[a].url )+
-'" target="_blank">Source</a> <br />\n    ';
+'" target="_blank">Link to '+
+( bill.bill_id )+
+' on the Minnesota State Legislature site.</a> <br />\n    ';
  } 
 ;__p+='\n  </div>\n</div>';
 }
@@ -673,6 +737,27 @@ return __p;
       
       // Figure out newest
       this.set('newest_action', this.get('actions')[0]);
+    },
+    
+    getActionDate: function(type) {
+      return (this.get('action_dates')[type]) ? this.get('action_dates')[type] : false;
+    },
+    
+    isSubstituted: function() {
+      var sub = false;
+    
+      if (_.isBoolean(this.get('substitued'))) {
+        sub = this.get('substitued');
+      }
+      else {
+        sub = _.find(this.get('actions'), function(a) {
+          return a.action.match(LT.options.regex.substituteMatch);
+        });
+        sub = (sub) ? true : false;
+        this.set('substitued', sub);
+      }
+      
+      return sub;
     }
   });
   
@@ -708,7 +793,12 @@ return __p;
           defers.push(LT.utils.fetchModel(thisModel.get(prop)));
         }
       });
-      $.when.apply($, defers).done(callback).fail(error);
+      $.when.apply($, defers)
+        .done(function() {
+          thisModel.parseMeta();
+          callback();
+        })
+        .fail(error);
       return this;
     },
     
@@ -721,6 +811,117 @@ return __p;
           return c;
         }));
       }
+    },
+    
+    newestAction: function() {
+      var newest_action;
+      var p = this.get('bill_primary');
+      var c = this.get('bill_companion');
+      var co = this.get('bill_conference');
+      
+      if (_.isUndefined(this.get('newest_action')) && p.get('newest_action')) {
+        newest_action = p.get('newest_action');
+        
+        if (c && c.get('newest_action')) {
+          newest_action = (c.get('newest_action').date.unix() >
+            newest_action.date.unix()) ?
+            c.get('newest_action') : newest_action;
+        }
+        if (co && co.get('newest_action')) {
+          newest_action = (co.get('newest_action').date.unix() >
+            newest_action.date.unix()) ?
+            co.get('newest_action') : newest_action;
+        }
+        this.set('newest_action', newest_action);
+      }
+      
+      return this.get('newest_action');
+    },
+    
+    parseMeta: function() {
+      // We need to get actions and meta data from individual 
+      // bills.  This could get a bit complicated...
+      var actions = {
+        upper: false,
+        lower: false,
+        conference: false,
+        signed: false,
+        last: false
+      };
+      
+      // Let's determine types
+      var type = {
+        companion: (this.get('bill_companion')) ? true : false,
+        conference: (this.get('bill_conference')) ? true : false
+      };
+      
+      // The companion or primary bill can stop being relevant.  This is noted
+      // by a SF Substituted or HF Substituted
+      if (type.companion) {
+        if (this.get('bill_companion').isSubstituted()) {
+          type.substituted = true;
+        }
+        if (this.get('bill_primary').isSubstituted()) {
+          type.substituted = true;
+          // Swap primary for companion
+        }
+      }
+      
+      // If only primary, get the actions from there, or
+      // if substituted, then just get from primary bill
+      if (!type.companion || type.substituted) {
+        actions.lower = this.get('bill_primary').getActionDate('passed_lower');
+        actions.upper = this.get('bill_primary').getActionDate('passed_upper');
+      }
+      
+      // If companion, get the actions from their respective bills
+      if (type.companion && !type.substituted) {
+        if (this.get('bill_primary').get('chamber') === 'upper') {
+          actions.upper = this.get('bill_primary').getActionDate('passed_upper');
+          actions.lower = this.get('bill_companion').getActionDate('passed_lower');
+        }
+        else {
+          actions.lower = this.get('bill_primary').getActionDate('passed_lower');
+          actions.upper = this.get('bill_companion').getActionDate('passed_upper');
+        }
+      }
+      
+      // If conference bill, get date if both chambers have passed
+      if (type.conference) {
+          var lower = this.get('bill_conference').getActionDate('passed_lower');
+          var upper = this.get('bill_conference').getActionDate('passed_upper');
+            
+          if (lower && upper) {
+            actions.conference = (lower.unix() >= upper.unix()) ? lower : upper;
+          }
+      }
+      
+      // Determine signed.  If conference, then use that, otherwise
+      // use primary
+      if (type.conference) {
+        actions.signed = this.get('bill_conference').getActionDate('signed');
+      }
+      else {
+        actions.signed = this.get('bill_primary').getActionDate('signed');
+      }
+      
+      
+      // Determine last updated date
+      if (type.conference) {
+        actions.last = this.get('bill_conference').getActionDate('last');
+      }
+      else if (type.companion) {
+        actions.last = (this.get('bill_companion').getActionDate('last').unix() >=
+          this.get('bill_primary').getActionDate('last').unix()) ?
+          this.get('bill_companion').getActionDate('last') :
+          this.get('bill_primary').getActionDate('last');
+      }
+      else  {
+        actions.last = this.get('bill_primary').getActionDate('last');
+      }
+      
+      this.set('actions', actions);
+      this.set('bill_type', type);
     }
   });
   
@@ -752,6 +953,8 @@ return __p;
     loadBills: function(callback, error) {
       // Load up bill data from open states
       var defers = [];
+      var thisModel = this;
+      
       this.get('bills').each(function(bill) {     
         _.each(['bill_primary', 'bill_companion', 'bill_conference'], function(prop) {
           if (bill.get(prop)) {
@@ -759,7 +962,15 @@ return __p;
           }
         });
       });
-      $.when.apply($, defers).done(callback).fail(error);
+      
+      $.when.apply($, defers)
+        .done(function() {
+          thisModel.get('bills').each(function(bill) {
+            bill.parseMeta();
+          });
+          callback();
+        })
+        .fail(error);
       return this;
     }
   });
@@ -788,8 +999,10 @@ return __p;
   LT.BillsCollection = Backbone.Collection.extend({
     model: LT.BillModel,
     
-    comparator: function(cat) {
-      return cat.get('title');
+    comparator: function(b) {
+      var compare = (b.newestAction()) ? b.newestAction().date.unix() * -1 :
+        b.get('title');
+      return compare;
     }
   });
   
@@ -864,6 +1077,7 @@ return __p;
       if (!_.isObject(category)) {
         category = LT.app.categories.get(category);
       }
+      category.get('bills').sort();
       
       this.$el.html(this.templates.category({
         category: category.toJSON(),
@@ -876,14 +1090,12 @@ return __p;
       if (!_.isObject(bill)) {
         bill = this.router.bills.get(bill);
       }
-      
       this.$el.html(this.templates.ebill({
         bill: bill.toJSON(),
         expandable: false,
         templates: this.templates
       }));
-      this.getLegislators();
-      this.addTooltips();
+      this.getLegislators().addTooltips().checkOverflows();
     },
     
     renderOSBill: function(bill) {
@@ -892,15 +1104,20 @@ return __p;
         detailed: true,
         templates: this.templates
       }));
-      this.getLegislators();
-      this.addTooltips();
+      this.getLegislators().addTooltips().checkOverflows();
     },
     
     expandBill: function(e) {
       e.preventDefault();
       var $this = $(e.target);
+      var text = [ 'More details', 'Less details' ];
+      var current = $this.text();
       
+      $this.text((current === text[0]) ? text[1] : text[0]);
       $this.parent().parent().toggleClass('expanded').find('.bill-bottom').slideToggle();
+      
+      this.checkOverflows();
+      return this;
     },
     
     getLegislators: function() {
@@ -919,6 +1136,7 @@ return __p;
           });
         }
       });
+      return this;
     },
     
     addTooltips: function() {
@@ -931,6 +1149,16 @@ return __p;
           at: 'top center'
         }
       });
+      return this;
+    },
+    
+    checkOverflows: function() {
+      this.$el.find('.actions-inner, .co-sponsors-inner').each(function() {
+        if ($(this).hasScrollBar()) {
+          $(this).addClass('overflowed');
+        }
+      });
+      return this;
     }
   });
 
