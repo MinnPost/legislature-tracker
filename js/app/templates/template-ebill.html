@@ -9,37 +9,28 @@
 
 <div class="bill ebill <% if (expandable) { %>is-expandable<% } %>">
   <div class="bill-top">
+    <div class="bill-status">
+      <img class="lower <% if (bill.actions.lower) { %>passed<% } %>" src="<%= LT.options.imagePath %>PassedHouse.png" />
+      
+      <img class="upper <% if (bill.actions.upper) { %>passed<% } %>" src="<%= LT.options.imagePath %>PassedSenate.png" />
+      
+      <img class="conference <% if (bill.bill_type.conference) { %>passed<% } %>" src="<%= LT.options.imagePath %>InConferenceCommittee.png" />
+      
+      <img class="signed <% if (bill.actions.signed) { %>passed<% } %>" src="<%= LT.options.imagePath %>SignedIntoLaw.png" />
+    </div>
+    
     <% if (expandable) { %><h3><% } else { %><h2><% } %>
       <%= bill.title %>
       <a class="permalink" title="Permanent link to bill" href="#/bill/<%= encodeURI(bill.bill) %>"></a>
     <% if (expandable) { %></h3><% } else { %></h2><% } %>
     
-    <p class="description"><%= bill.description %></p>
-    
-    <% if (bill.actions.lower || bill.actions.upper || bill.bill_type.conference || bill.actions.signed) { %>
-      <div class="bill-status">
-        <% if (bill.actions.lower) { %>
-          <div class="lower">
-            Passed House
-          </div>
-        <% } %>
-        <% if (bill.actions.upper) { %>
-          <div class="upper">
-            Passed Senate
-          </div>
-        <% } %>
-        <% if (bill.bill_type.conference) { %>
-          <div class="conference">
-            In conference committee
-          </div>
-        <% } %>
-        <% if (bill.actions.signed) { %>
-          <div class="signed">
-            Signed by Governor
-          </div>
-        <% } %>
+    <% if (bill.newest_action) { %>
+      <div class="latest-action">
+        Last action <%= bill.newest_action.date.fromNow() %>.
       </div>
     <% } %>
+    
+    <p class="description"><%= bill.description %></p>
     
     <% if (expandable) { %>
       <a href="#" class="bill-expand">More details</a>

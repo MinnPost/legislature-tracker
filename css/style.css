@@ -193,11 +193,14 @@
 .ls .bill-updated,
 .ls .actions,
 .ls .sponsors,
-.ls .sources
+.ls .sources,
 .ls .e-links,
-.ls .bill .description,
-.ls .bill .latest-action {
+.ls .bill .description {
   margin-bottom: 1.5em;
+}
+
+.ls .bill .latest-action {
+  margin-bottom: .5em;
 }
 
 .ls .bill .bill-update {
@@ -216,6 +219,14 @@
   display: none;
 }
 
+.ls .bill-top {
+  margin-bottom: 2em;
+}
+
+.ls .is-expandable .bill-top {
+  margin-bottom: 0;
+}
+
 .ls .bills-list .bill {
   margin-bottom: 1em;
   padding-bottom: 1em;
@@ -225,6 +236,9 @@
 .ls .bills-list .bill.is-expandable {
   border: 1px solid #DDDDDD;
   padding: 2.5%;
+  -moz-border-bottom-right-radius: 10px;
+  -webkit-border-bottom-right-radius: 10px;
+  border-bottom-right-radius: 10px;
 }
 
 .ls .primary-bill {
@@ -291,7 +305,17 @@
  * Bill progress styles
  */
 .ls .bill-status {
-  border: 1px solid #BBBBBB;
-  padding: .5em;
   margin-bottom: 1em;
+  text-align: right;
+  float: right;
+}
+.ls .bill-status img {
+  max-height: 2em;
+  margin-right: .5em;
+  opacity: .25;
+  filter: alpha(opacity = 25);
+}
+.ls .bill-status img.passed {
+  opacity: 1;
+  filter: alpha(opacity = 100);
 }
