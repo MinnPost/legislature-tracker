@@ -10,13 +10,15 @@
 <div class="bill ebill <% if (expandable) { %>is-expandable<% } %>">
   <div class="bill-top">
     <div class="bill-status">
-      <img class="lower <% if (bill.actions.lower) { %>passed<% } %>" src="<%= LT.options.imagePath %>PassedHouse.png" />
+      <img class="lower <% if (bill.newest_action && Math.abs(parseInt(bill.newest_action.date.diff(moment(), 'days'))) < LT.options.recentChangeThreshold) { %>passed<% } %>" src="<%= LT.options.imagePath %>RecentChanges.png" title="<% if (bill.newest_action && Math.abs(parseInt(bill.newest_action.date.diff(moment(), 'days'))) < LT.options.recentChangeThreshold) { %>Recently changed<% } %>" />
       
-      <img class="upper <% if (bill.actions.upper) { %>passed<% } %>" src="<%= LT.options.imagePath %>PassedSenate.png" />
+      <img class="lower <% if (bill.actions.lower) { %>passed<% } %>" src="<%= LT.options.imagePath %>PassedHouse.png" title="<% if (bill.actions.lower) { %>Passed House<% } %>" />
       
-      <img class="conference <% if (bill.bill_type.conference) { %>passed<% } %>" src="<%= LT.options.imagePath %>InConferenceCommittee.png" />
+      <img class="upper <% if (bill.actions.upper) { %>passed<% } %>" src="<%= LT.options.imagePath %>PassedSenate.png" title="<% if (bill.actions.upper) { %>Passed Senate<% } %>" />
       
-      <img class="signed <% if (bill.actions.signed) { %>passed<% } %>" src="<%= LT.options.imagePath %>SignedIntoLaw.png" />
+      <img class="conference <% if (bill.bill_type.conference) { %>passed<% } %>" src="<%= LT.options.imagePath %>InConferenceCommittee.png" title="<% if (bill.bill_type.conference) { %>In conference committee<% } %>" />
+      
+      <img class="signed <% if (bill.actions.signed) { %>passed<% } %>" src="<%= LT.options.imagePath %>SignedIntoLaw.png" title="<% if (bill.actions.signed) { %>Signed into law by the Governor<% } %>" />
     </div>
     
     <% if (expandable) { %><h3><% } else { %><h2><% } %>

@@ -260,7 +260,8 @@ else {
     regex: {
       substituteMatch: /substituted/i
     },
-    imagePath: './css/images/'
+    imagePath: './css/images/',
+    recentChangeThreshold: 7
   };
   
 })(jQuery, window);

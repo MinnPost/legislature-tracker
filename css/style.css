@@ -299,6 +299,9 @@
   max-height: 75px;
   float: left;
   margin: 0 .5em 1em 0;
+  -moz-border-bottom-right-radius: 5px;
+  -webkit-border-bottom-right-radius: 5px;
+  border-bottom-right-radius: 5px;
 }
 
 /**
