@@ -31,7 +31,7 @@
     },
   
     loading: function() {
-      this.$el.html(this.templates.loading({}));
+      this.resetScrollView().$el.html(this.templates.loading({}));
     },
     
     error: function(e) {
@@ -135,6 +135,11 @@
           $(this).addClass('overflowed');
         }
       });
+      return this;
+    },
+    
+    resetScrollView: function() {
+      $('html, body').animate({ scrollTop: this.$el.offset().top - 15 }, 1000);
       return this;
     }
   });
