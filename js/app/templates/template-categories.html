@@ -13,6 +13,12 @@
               <%= categories[c].title %>
             </a>
           </h3>
+          
+          <% if (categories[c].image) { %>
+            <a href="#/category/<%= encodeURI(categories[c].id) %>">
+              <img class="category-image" src="<%= LT.options.imagePath %><%= categories[c].image %>" />
+            </a>
+          <% } %>
            
           <div>
             Watching 

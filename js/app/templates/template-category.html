@@ -4,16 +4,26 @@
 </div>
 
 <div class="category-container">
-  <h2><%= category.title %></h2>
+  <h2>
+    <%= category.title %>
+    
+    <% if (category.image) { %>
+      <img class="category-image" src="<%= LT.options.imagePath %><%= category.image %>" />
+    <% } %>
+  </h2>
   
   <p><%= category.description %></p>
   
   <% if (_.isArray(category.links) && category.links.length > 0) { %>
-    <ul class="e-links">
-      <% for (var l in category.links) { %>
-        <li><a href="<%= category.links[l].url %>"><%= category.links[l].title %></a></li>
-      <% } %>
-    </ul>
+    <div class="e-links">
+      <h4>In the news</h4>
+      
+      <ul class="e-links-list">
+        <% for (var l in category.links) { %>
+          <li><a href="<%= category.links[l].url %>"><%= category.links[l].title %></a></li>
+        <% } %>
+      </ul>
+    </div>
   <% } %>
   
   <div class="clear-block bills-list">

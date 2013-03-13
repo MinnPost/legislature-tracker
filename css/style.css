@@ -110,13 +110,25 @@
 }
 
 /**
+ * Category styles
+ */
+.ls .category-image {
+  max-height: 1em;
+  margin-left: .5em;
+  display: -moz-inline-stack;
+  display: inline-block;
+  zoom: 1;
+  *display: inline;
+}
+
+/**
  * Category list styles
  */
 .ls .categories-container {
   background: transparent url('images/capitol-bg.png') top center no-repeat;
   background-size: 100%;
   min-height: 350px;
-  padding-top: 17.5em;
+  padding-top: 4.5em;
 }
 .ls .categories-container ul {
   margin: 1em 0 2em 0;
@@ -145,11 +157,29 @@
   width: 50%;
 }
 
+.ls .category-list .category-image {
+  max-height: 85px;
+  opacity: .85;
+  filter: alpha(opacity = 85);
+  margin: 0 auto;
+  display: block;
+  zoom: 1;
+  *display: block;
+}
+.ls .category-list .category-image:hover {
+  opacity: 1;
+  filter: alpha(opacity = 100);
+}
+
 /**
  * Indiviual category styles
  */
 .ls .total-bill {
   text-align: right;
+}
+
+.ls .category-container .e-links-list {
+  margin-bottom: 2em;
 }
 
 /**

@@ -259,7 +259,8 @@ else {
     },
     regex: {
       substituteMatch: /substituted/i
-    }
+    },
+    imagePath: './css/images/'
   };
   
 })(jQuery, window);
