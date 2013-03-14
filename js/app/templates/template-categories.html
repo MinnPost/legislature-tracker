@@ -8,18 +8,18 @@
     <% for (var c in categories) { %>
       <li class="category-item category-item-<%= c %>">
         <div class="category-inner category-<%= _.cssClass(categories[c].id) %>">
-          <h3>
-            <a href="#/category/<%= encodeURI(categories[c].id) %>">
-              <%= categories[c].title %>
-            </a>
-          </h3>
-          
           <% if (categories[c].image) { %>
             <a href="#/category/<%= encodeURI(categories[c].id) %>">
               <img class="category-image" src="<%= LT.options.imagePath %><%= categories[c].image %>" />
             </a>
           <% } %>
            
+          <h3>
+            <a href="#/category/<%= encodeURI(categories[c].id) %>">
+              <%= categories[c].title %>
+            </a>
+          </h3>
+          
           <div>
             Watching 
             <strong><%= categories[c].bills.length %></strong>
