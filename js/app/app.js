@@ -58,10 +58,10 @@
       });
       
       // Load up bill count
-      if (LT.options.billCountDataSource) {
+      if (LT.options.aggregateURL) {
         $.jsonp({
-          url: this.options.billCountDataSource,
-          success: this.loadBillCounts
+          url: LT.options.aggregateURL,
+          success: this.loadAggregateCounts
         });
       }
       else {
@@ -70,21 +70,27 @@
       }
     },
     
-    // Function to call when bill data is loaded
-    loadBillCounts: function(billCountData) {
-      this.categories.each(function(c) {
-        var cats = c.get('legislator_subjects');
-        var billCount = 0;
-        
-        if (_.isArray(cats) && cats.length > 0) {
-          _.each(cats, function(cat) {
-            var catData = _.find(billCountData, function(b) { return b.topic === cat; });
-            billCount += catData.bill_count;
-          });
-          
-          c.set('total_bill_count', billCount);
+    // Get aggregate counts
+    loadAggregateCounts: function(billCountData) {
+      var thisRouter = this;
+      var recentDate = moment().subtract('days', parseInt(LT.options.recentChangeThreshold));
+      var recentInt = parseInt(recentDate.format('YYYYMMDD'));
+      var recentUpdated = 0;
+      var recentCreated = 0;
+      
+      _.each(billCountData, function(stat) {
+        if (stat.stat === 'total-bills') {
+          thisRouter.totalBills = parseInt(stat.value);
+        }
+        if (stat.stat.indexOf('updated') !== -1) {
+          recentUpdated += (stat.int >= recentInt) ? parseInt(stat.value) : 0;
+        }
+        if (stat.stat.indexOf('created') !== -1) {
+          recentCreated += (stat.int >= recentInt) ? parseInt(stat.value) : 0;
         }
       });
+      this.recentUpdated = recentUpdated;
+      this.recentCreated = recentCreated;
       
       // Start application/routing
       this.start();
