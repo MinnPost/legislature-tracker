@@ -21,6 +21,9 @@
     },
     cssClass: function(str) {
       return str.replace(/[^a-z0-9]/g, '-');
+    },
+    numberFormatCommas: function(number) {
+      return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
     }
   });
   
@@ -187,7 +190,7 @@ else {
         LT.utils.getModel('OSBillModel', 'bill_id', { bill_id: row.bill }) : undefined;
       row.bill_companion = (row.bill_companion) ?
         LT.utils.getModel('OSBillModel', 'bill_id', { bill_id: row.bill_companion }) : undefined;
-      row.bill_conference = (row.conference_bill) ?
+      row.bill_conference = (row.bill_conference) ?
         LT.utils.getModel('OSBillModel', 'bill_id', { bill_id: row.bill_conference }) : undefined;
       return row;
     });
@@ -304,7 +307,9 @@ else {
     },
     regex: {
       substituteMatch: /substituted/i
-    }
+    },
+    imagePath: './css/images/',
+    recentChangeThreshold: 7
   };
   
 })(jQuery, window);
@@ -315,10 +320,20 @@ this["LT"]["templates"]["js/app/templates/template-categories.html"] = function(
 var __p='';var print=function(){__p+=Array.prototype.join.call(arguments, '')};
 with(obj||{}){
 __p+='\n<div class="categories-container">\n  ';
- if (options.title) { 
+ if (LT.options.title) { 
 ;__p+='\n    <h2>'+
-( options.title )+
+( LT.options.title )+
 '</h2>\n  ';
+ } 
+;__p+='\n  \n  ';
+ if (typeof LT.app.totalBills != 'undefined') { 
+;__p+='\n    <div class="aggregate-counts">\n      <span class="aggregate-stat">\n        <span class="aggregate-count-label">Bills introduced:</span>\n        <span class="aggregate-count-value">'+
+( _.numberFormatCommas(LT.app.totalBills) )+
+'</span>\n      </span>\n      \n      <span class="aggregate-stat">\n        <span class="aggregate-count-label">Recently introduced:</span>\n        <span class="aggregate-count-value">~'+
+( _.numberFormatCommas(LT.app.recentCreated) )+
+'</span>\n      </span>\n      \n      <span class="aggregate-stat">\n        <span class="aggregate-count-label">Recently updated:</span>\n        <span class="aggregate-count-value">~'+
+( _.numberFormatCommas(LT.app.recentUpdated) )+
+'</span>\n      </span>\n    </div>\n  ';
  } 
 ;__p+='\n\n  <ul class="category-list clear-block">\n    ';
  for (var c in categories) { 
@@ -326,11 +341,21 @@ __p+='\n<div class="categories-container">\n  ';
 ( c )+
 '">\n        <div class="category-inner category-'+
 ( _.cssClass(categories[c].id) )+
-'">\n          <h3>\n            <a href="#/category/'+
+'">\n          ';
+ if (categories[c].image) { 
+;__p+='\n            <a href="#/category/'+
+( encodeURI(categories[c].id) )+
+'">\n              <img class="category-image" src="'+
+( LT.options.imagePath )+
+''+
+( categories[c].image )+
+'" />\n            </a>\n          ';
+ } 
+;__p+='\n           \n          <h3>\n            <a href="#/category/'+
 ( encodeURI(categories[c].id) )+
 '">\n              '+
 ( categories[c].title )+
-'\n            </a>\n          </h3>\n           \n          <div>\n            Watching \n            <strong>'+
+'\n            </a>\n          </h3>\n          \n          <div>\n            Watching \n            <strong>'+
 ( categories[c].bills.length )+
 '</strong>\n            ';
  if (categories[c].total_bill_count) { 
@@ -348,21 +373,29 @@ return __p;
 this["LT"]["templates"]["js/app/templates/template-category.html"] = function(obj){
 var __p='';var print=function(){__p+=Array.prototype.join.call(arguments, '')};
 with(obj||{}){
-__p+='\n<div class="ls-header">\n  <a href="#/">All Categories</a>\n</div>\n\n<div class="category-container">\n  <h2>'+
+__p+='\n<div class="ls-header">\n  <a href="#/">All Categories</a>\n</div>\n\n<div class="category-container">\n  <h2>\n    '+
 ( category.title )+
-'</h2>\n  \n  <p>'+
+'\n    \n    ';
+ if (category.image) { 
+;__p+='\n      <img class="category-image" src="'+
+( LT.options.imagePath )+
+''+
+( category.image )+
+'" />\n    ';
+ } 
+;__p+='\n  </h2>\n  \n  <p>'+
 ( category.description )+
 '</p>\n  \n  ';
  if (_.isArray(category.links) && category.links.length > 0) { 
-;__p+='\n    <ul class="e-links">\n      ';
+;__p+='\n    <div class="e-links">\n      <h4>In the news</h4>\n      \n      <ul class="e-links-list">\n        ';
  for (var l in category.links) { 
-;__p+='\n        <li><a href="'+
+;__p+='\n          <li><a href="'+
 ( category.links[l].url )+
 '">'+
 ( category.links[l].title )+
-'</a></li>\n      ';
+'</a></li>\n        ';
  } 
-;__p+='\n    </ul>\n  ';
+;__p+='\n      </ul>\n    </div>\n  ';
  } 
 ;__p+='\n  \n  <div class="clear-block bills-list">\n    ';
  category.bills.each(function(b) { 
@@ -398,9 +431,17 @@ __p+='';
  _.each(bill.categories, function(c, i) { 
 ;__p+='\n      <a href="#/category/'+
 ( c.get('id') )+
-'">'+
+'">\n        '+
 ( c.get('title') )+
-'</a>';
+'';
+ if (c.get('image')) { 
+;__p+='<img class="category-image" src="'+
+( LT.options.imagePath )+
+''+
+( c.get('image') )+
+'" />';
+ } 
+;__p+='</a>';
  if (i < bill.categories.length - 1) { 
 ;__p+=',';
  } 
@@ -412,7 +453,57 @@ __p+='';
  if (expandable) { 
 ;__p+='is-expandable';
  } 
-;__p+='">\n  <div class="bill-top">\n    ';
+;__p+='">\n  <div class="bill-top">\n    <div class="bill-status">\n      <img class="lower ';
+ if (bill.newest_action && Math.abs(parseInt(bill.newest_action.date.diff(moment(), 'days'))) < LT.options.recentChangeThreshold) { 
+;__p+='passed';
+ } 
+;__p+='" src="'+
+( LT.options.imagePath )+
+'RecentChanges.png" title="';
+ if (bill.newest_action && Math.abs(parseInt(bill.newest_action.date.diff(moment(), 'days'))) < LT.options.recentChangeThreshold) { 
+;__p+='Recently changed';
+ } 
+;__p+='" />\n      \n      <img class="lower ';
+ if (bill.actions.lower) { 
+;__p+='passed';
+ } 
+;__p+='" src="'+
+( LT.options.imagePath )+
+'PassedHouse.png" title="';
+ if (bill.actions.lower) { 
+;__p+='Passed House';
+ } 
+;__p+='" />\n      \n      <img class="upper ';
+ if (bill.actions.upper) { 
+;__p+='passed';
+ } 
+;__p+='" src="'+
+( LT.options.imagePath )+
+'PassedSenate.png" title="';
+ if (bill.actions.upper) { 
+;__p+='Passed Senate';
+ } 
+;__p+='" />\n      \n      <img class="conference ';
+ if (bill.bill_type.conference) { 
+;__p+='passed';
+ } 
+;__p+='" src="'+
+( LT.options.imagePath )+
+'InConferenceCommittee.png" title="';
+ if (bill.bill_type.conference) { 
+;__p+='In conference committee';
+ } 
+;__p+='" />\n      \n      <img class="signed ';
+ if (bill.actions.signed) { 
+;__p+='passed';
+ } 
+;__p+='" src="'+
+( LT.options.imagePath )+
+'SignedIntoLaw.png" title="';
+ if (bill.actions.signed) { 
+;__p+='Signed into law by the Governor';
+ } 
+;__p+='" />\n    </div>\n    \n    ';
  if (expandable) { 
 ;__p+='<h3>';
  } else { 
@@ -428,29 +519,15 @@ __p+='';
  } else { 
 ;__p+='</h2>';
  } 
+;__p+='\n    \n    ';
+ if (bill.newest_action) { 
+;__p+='\n      <div class="latest-action">\n        Last action '+
+( bill.newest_action.date.fromNow() )+
+'.\n      </div>\n    ';
+ } 
 ;__p+='\n    \n    <p class="description">'+
 ( bill.description )+
 '</p>\n    \n    ';
- if (bill.actions.lower || bill.actions.upper || bill.bill_type.conference || bill.actions.signed) { 
-;__p+='\n      <div class="bill-status">\n        ';
- if (bill.actions.lower) { 
-;__p+='\n          <div class="lower">\n            Passed House\n          </div>\n        ';
- } 
-;__p+='\n        ';
- if (bill.actions.upper) { 
-;__p+='\n          <div class="upper">\n            Passed Senate\n          </div>\n        ';
- } 
-;__p+='\n        ';
- if (bill.bill_type.conference) { 
-;__p+='\n          <div class="conference">\n            In conference committee\n          </div>\n        ';
- } 
-;__p+='\n        ';
- if (bill.actions.signed) { 
-;__p+='\n          <div class="signed">\n            Signed by Governor\n          </div>\n        ';
- } 
-;__p+='\n      </div>\n    ';
- } 
-;__p+='\n    \n    ';
  if (expandable) { 
 ;__p+='\n      <a href="#" class="bill-expand">More details</a>\n    ';
  } 
@@ -466,7 +543,21 @@ __p+='';
  } 
 ;__p+='\n        </ul>\n      </div>\n    ';
  } 
-;__p+='\n  \n    <div class="clear-block">\n      ';
+;__p+='\n\n    ';
+ if (_.isObject(bill.bill_conference)) { 
+;__p+='\n      <div class="conference-bill">\n        <div class="conference-bill-inner clear-block">\n          '+
+( templates.osbill({
+            title: 'Conference Bill',
+            bill: bill.bill_conference.toJSON(),
+            templates: templates
+          }) )+
+'\n        </div>\n      </div>\n      \n      <a class="expand-other-bills" href="#">Show other bills</a>\n    ';
+ } 
+;__p+='\n    \n    <div class="clear-block ';
+ if (_.isObject(bill.bill_conference)) { 
+;__p+='has-conference-bill';
+ } 
+;__p+='">\n      ';
  if (_.isObject(bill.bill_primary)) { 
 ;__p+='\n        <div class="primary-bill ';
  if (_.isObject(bill.bill_companion)) { 
@@ -624,7 +715,7 @@ __p+='';
  } 
 ;__p+='\n      </div>\n    </div>\n  ';
  } 
-;__p+='\n  \n  <strong>Full Text</strong>\n  <div class="sources">\n    ';
+;__p+='\n  \n  <div class="sources">\n    <h5>Full Text</h5>\n    ';
  for (var a in bill.sources) { 
 ;__p+='\n      <a href="'+
 ( bill.sources[a].url )+
@@ -1052,15 +1143,26 @@ return __p;
     },
     
     events: {
-      'click .bill-expand': 'expandBill'
+      'click .bill-expand': 'expandBill',
+      'click .expand-other-bills': 'expandOtherBills'
     },
   
     loading: function() {
+      // The first (and second) load, we don't actually 
+      // want to force the scroll
+      if (this.initialLoad === true) {
+        this.resetScrollView();
+      }
+      else {
+        this.initialLoad = (_.isUndefined(this.initialLoad)) ? false : true;
+      }
       this.$el.html(this.templates.loading({}));
+      return this;
     },
     
     error: function(e) {
       this.$el.html(this.templates.error({ error: e }));
+      return this;
     },
     
     renderCategories: function() {
@@ -1090,6 +1192,8 @@ return __p;
       if (!_.isObject(bill)) {
         bill = this.router.bills.get(bill);
       }
+      bill.newestAction();
+      
       this.$el.html(this.templates.ebill({
         bill: bill.toJSON(),
         expandable: false,
@@ -1115,6 +1219,19 @@ return __p;
       
       $this.text((current === text[0]) ? text[1] : text[0]);
       $this.parent().parent().toggleClass('expanded').find('.bill-bottom').slideToggle();
+      
+      this.checkOverflows();
+      return this;
+    },
+    
+    expandOtherBills: function(e) {
+      e.preventDefault();
+      var $this = $(e.target);
+      var text = [ 'Show other bills', 'Hide other bills' ];
+      var current = $this.text();
+      
+      $this.text((current === text[0]) ? text[1] : text[0]);
+      $this.parent().find('.has-conference-bill').toggleClass('showing').slideToggle();
       
       this.checkOverflows();
       return this;
@@ -1158,6 +1275,11 @@ return __p;
           $(this).addClass('overflowed');
         }
       });
+      return this;
+    },
+    
+    resetScrollView: function() {
+      $('html, body').animate({ scrollTop: this.$el.offset().top - 15 }, 1000);
       return this;
     }
   });
@@ -1245,10 +1367,10 @@ return __p;
       });
       
       // Load up bill count
-      if (LT.options.billCountDataSource) {
+      if (LT.options.aggregateURL) {
         $.jsonp({
-          url: this.options.billCountDataSource,
-          success: this.loadBillCounts
+          url: LT.options.aggregateURL,
+          success: this.loadAggregateCounts
         });
       }
       else {
@@ -1257,21 +1379,27 @@ return __p;
       }
     },
     
-    // Function to call when bill data is loaded
-    loadBillCounts: function(billCountData) {
-      this.categories.each(function(c) {
-        var cats = c.get('legislator_subjects');
-        var billCount = 0;
-        
-        if (_.isArray(cats) && cats.length > 0) {
-          _.each(cats, function(cat) {
-            var catData = _.find(billCountData, function(b) { return b.topic === cat; });
-            billCount += catData.bill_count;
-          });
-          
-          c.set('total_bill_count', billCount);
+    // Get aggregate counts
+    loadAggregateCounts: function(billCountData) {
+      var thisRouter = this;
+      var recentDate = moment().subtract('days', parseInt(LT.options.recentChangeThreshold, 10));
+      var recentInt = parseInt(recentDate.format('YYYYMMDD'), 10);
+      var recentUpdated = 0;
+      var recentCreated = 0;
+      
+      _.each(billCountData, function(stat) {
+        if (stat.stat === 'total-bills') {
+          thisRouter.totalBills = parseInt(stat.value, 10);
+        }
+        if (stat.stat.indexOf('updated') !== -1) {
+          recentUpdated += (stat.int >= recentInt) ? parseInt(stat.value, 10) : 0;
+        }
+        if (stat.stat.indexOf('created') !== -1) {
+          recentCreated += (stat.int >= recentInt) ? parseInt(stat.value, 10) : 0;
         }
       });
+      this.recentUpdated = recentUpdated;
+      this.recentCreated = recentCreated;
       
       // Start application/routing
       this.start();
