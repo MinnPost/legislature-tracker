@@ -136,8 +136,13 @@
     routeEBill: function(bill) {
       var thisRouter = this;
       
-      bill = decodeURI(bill);
-      bill = this.bills.where({ bill: bill })[0];
+      bill_id = decodeURI(bill);
+      bill = this.bills.where({ bill: bill_id })[0];
+
+      if (!bill) {
+        this.navigate('/bill-detail/' + encodeURI(bill_id), { trigger: true, replace: true });
+        return;
+      }
       
       this.mainView.loading();
       bill.loadOSBills(function() {
