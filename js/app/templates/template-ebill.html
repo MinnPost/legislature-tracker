@@ -50,8 +50,22 @@
         </ul>
       </div>
     <% } %>
-  
-    <div class="clear-block">
+
+    <% if (_.isObject(bill.bill_conference)) { %>
+      <div class="conference-bill">
+        <div class="conference-bill-inner clear-block">
+          <%= templates.osbill({
+            title: 'Conference Bill',
+            bill: bill.bill_conference.toJSON(),
+            templates: templates
+          }) %>
+        </div>
+      </div>
+      
+      <a class="expand-other-bills" href="#">Show other bills</a>
+    <% } %>
+    
+    <div class="clear-block <% if (_.isObject(bill.bill_conference)) { %>has-conference-bill<% } %>">
       <% if (_.isObject(bill.bill_primary)) { %>
         <div class="primary-bill <% if (_.isObject(bill.bill_companion)) { %>with-companion<% } %>">
           <div class="primary-bill-inner clear-block">

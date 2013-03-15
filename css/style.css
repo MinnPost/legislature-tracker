@@ -320,3 +320,10 @@
   opacity: 1;
   filter: alpha(opacity = 100);
 }
+
+/**
+ * Conference bill styles
+ */
+.ls .has-conference-bill {
+  display: none;
+}

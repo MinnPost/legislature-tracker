@@ -27,7 +27,8 @@
     },
     
     events: {
-      'click .bill-expand': 'expandBill'
+      'click .bill-expand': 'expandBill',
+      'click .expand-other-bills': 'expandOtherBills'
     },
   
     loading: function() {
@@ -102,6 +103,19 @@
       
       $this.text((current === text[0]) ? text[1] : text[0]);
       $this.parent().parent().toggleClass('expanded').find('.bill-bottom').slideToggle();
+      
+      this.checkOverflows();
+      return this;
+    },
+    
+    expandOtherBills: function(e) {
+      e.preventDefault();
+      var $this = $(e.target);
+      var text = [ 'Show other bills', 'Hide other bills' ];
+      var current = $this.text();
+      
+      $this.text((current === text[0]) ? text[1] : text[0]);
+      $this.parent().find('.has-conference-bill').toggleClass('showing').slideToggle();
       
       this.checkOverflows();
       return this;
