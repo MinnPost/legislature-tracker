@@ -21,6 +21,9 @@
     },
     cssClass: function(str) {
       return str.replace(/[^a-z0-9]/g, '-');
+    },
+    numberFormatCommas: function(number) {
+      return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
     }
   });
   

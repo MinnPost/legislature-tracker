@@ -1,7 +1,26 @@
 
 <div class="categories-container">
-  <% if (options.title) { %>
-    <h2><%= options.title %></h2>
+  <% if (LT.options.title) { %>
+    <h2><%= LT.options.title %></h2>
+  <% } %>
+  
+  <% if (typeof LT.app.totalBills != 'undefined') { %>
+    <div class="aggregate-counts">
+      <span class="aggregate-stat">
+        <span class="aggregate-count-label">Bills introduced:</span>
+        <span class="aggregate-count-value"><%= _.numberFormatCommas(LT.app.totalBills) %></span>
+      </span>
+      
+      <span class="aggregate-stat">
+        <span class="aggregate-count-label">Recently introduced:</span>
+        <span class="aggregate-count-value">~<%= _.numberFormatCommas(LT.app.recentCreated) %></span>
+      </span>
+      
+      <span class="aggregate-stat">
+        <span class="aggregate-count-label">Recently updated:</span>
+        <span class="aggregate-count-value">~<%= _.numberFormatCommas(LT.app.recentUpdated) %></span>
+      </span>
+    </div>
   <% } %>
 
   <ul class="category-list clear-block">
