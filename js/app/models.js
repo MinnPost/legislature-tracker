@@ -175,6 +175,31 @@
       }
     },
     
+    lastUpdatedAt: function() {
+      var newest_action;
+      var p = this.get('bill_primary');
+      var c = this.get('bill_companion');
+      var co = this.get('bill_conference');
+      
+      if (_.isUndefined(this.get('last_updated_at')) && p.get('updated_at')) {
+        last_updated_at = p.get('updated_at');
+        
+        if (c && c.get('updated_at')) {
+          last_updated_at = (c.get('updated_at').unix() >
+            last_updated_at.unix()) ?
+            c.get('updated_at') : last_updated_at;
+        }
+        if (co && co.get('updated_at')) {
+          last_updated_at = (co.get('updated_at').unix() >
+            last_updated_at.unix()) ?
+            co.get('updated_at') : last_updated_at;
+        }
+        this.set('last_updated_at', last_updated_at);
+      }
+      
+      return this.get('last_updated_at');
+    },
+    
     newestAction: function() {
       var newest_action;
       var p = this.get('bill_primary');

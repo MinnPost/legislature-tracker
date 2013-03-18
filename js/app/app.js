@@ -101,12 +101,17 @@
   
     // Categories view
     routeCategories: function() {
+      var thisRouter = this;
+    
       // If we are viewing the categories, we want to get
       // some basic data about the bills from Open States
       // but not ALL the data.  We can use the bill search
       // to do this.
       this.mainView.loading();
-      this.getOSBasicBills(this.mainView.renderCategories, this.error);
+      this.getOSBasicBills(function() {
+        thisRouter.makeRecentCategory();
+        thisRouter.mainView.renderCategories();
+      }, this.error);
     },
   
     // Single Category view
@@ -152,6 +157,30 @@
         thisRouter.mainView.renderOSBill(bill);
       })
       .fail(thisRouter.error);
+    },
+    
+    makeRecentCategory: function() {
+      var category = {
+        id: 'recent',
+        title: 'Recently Updated',
+        description: 'The following bills have been updated in the past ' +
+          LT.options.recentChangeThreshold + ' days.',
+        image: 'RecentChanges.png'
+      };
+      
+      this.bills.each(function(b) {
+        var c = b.get('categories');
+        
+        if (Math.abs(parseInt(b.lastUpdatedAt().diff(moment(), 'days'))) < LT.options.recentChangeThreshold) {
+          c.push(category.id);
+          b.set('categories', c);
+        }
+      });
+      
+      this.categories.add(LT.utils.getModel('CategoryModel', 'id', category));
+      this.bills.each(function(b) {
+        b.loadCategories();
+      });
     },
     
     getOSBasicBills: function(callback, error) {

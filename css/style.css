@@ -160,11 +160,13 @@
   margin: .5em .25em;
 }
 
+/*
 .ls .categories-container ul li.category-item-0,
 .ls .categories-container ul li.category-item-1,
 .ls .categories-container ul li.category-item-2 {
   width: 33.332222222%;
 }
+*/
 
 .ls .category-list .category-image {
   max-height: 85px;
