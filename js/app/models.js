@@ -176,7 +176,7 @@
     },
     
     lastUpdatedAt: function() {
-      var newest_action;
+      var last_updated_at;
       var p = this.get('bill_primary');
       var c = this.get('bill_companion');
       var co = this.get('bill_conference');

@@ -171,7 +171,7 @@
       this.bills.each(function(b) {
         var c = b.get('categories');
         
-        if (Math.abs(parseInt(b.lastUpdatedAt().diff(moment(), 'days'))) < LT.options.recentChangeThreshold) {
+        if (Math.abs(parseInt(b.lastUpdatedAt().diff(moment(), 'days'), 10)) < LT.options.recentChangeThreshold) {
           c.push(category.id);
           b.set('categories', c);
         }
