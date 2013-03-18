@@ -73,24 +73,15 @@
     // Get aggregate counts
     loadAggregateCounts: function(billCountData) {
       var thisRouter = this;
-      var recentDate = moment().subtract('days', parseInt(LT.options.recentChangeThreshold, 10));
-      var recentInt = parseInt(recentDate.format('YYYYMMDD'), 10);
-      var recentUpdated = 0;
-      var recentCreated = 0;
       
       _.each(billCountData, function(stat) {
         if (stat.stat === 'total-bills') {
           thisRouter.totalBills = parseInt(stat.value, 10);
         }
-        if (stat.stat.indexOf('updated') !== -1) {
-          recentUpdated += (stat.int >= recentInt) ? parseInt(stat.value, 10) : 0;
-        }
-        if (stat.stat.indexOf('created') !== -1) {
-          recentCreated += (stat.int >= recentInt) ? parseInt(stat.value, 10) : 0;
+        if (stat.stat === 'total-bills-passed') {
+          thisRouter.totalBillsPassed = parseInt(stat.value, 10);
         }
       });
-      this.recentUpdated = recentUpdated;
-      this.recentCreated = recentCreated;
       
       // Start application/routing
       this.start();

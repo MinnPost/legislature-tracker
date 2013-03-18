@@ -12,13 +12,8 @@
       </span>
       
       <span class="aggregate-stat">
-        <span class="aggregate-count-label">Recently introduced:</span>
-        <span class="aggregate-count-value">~<%= _.numberFormatCommas(LT.app.recentCreated) %></span>
-      </span>
-      
-      <span class="aggregate-stat">
-        <span class="aggregate-count-label">Recently updated:</span>
-        <span class="aggregate-count-value">~<%= _.numberFormatCommas(LT.app.recentUpdated) %></span>
+        <span class="aggregate-count-label">Bills passed:</span>
+        <span class="aggregate-count-value"><%= _.numberFormatCommas(LT.app.totalBillsPassed) %></span>
       </span>
     </div>
   <% } %>
