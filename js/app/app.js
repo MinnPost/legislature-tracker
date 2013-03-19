@@ -165,7 +165,7 @@
         title: 'Recently Updated',
         description: 'The following bills have been updated in the past ' +
           LT.options.recentChangeThreshold + ' days.',
-        image: 'RecentChanges.png'
+        image: 'RecentUpdatedBill.png'
       };
       
       this.bills.each(function(b) {
