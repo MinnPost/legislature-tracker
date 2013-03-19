@@ -8,6 +8,7 @@
   LT.Application = Backbone.Router.extend({
     routes: {
       'categories': 'routeCategories',
+      'category/recent': 'routeRecentCategory',
       'category/:category': 'routeCategory',
       'bill/:bill': 'routeEBill',
       'bill-detail/:bill': 'routeOSBill',
@@ -128,6 +129,24 @@
       }, thisRouter.error);
     },
     
+    // Hack for recent category.  We have to build recent
+    // category only after getting the short meta data
+    // from open states
+    routeRecentCategory: function() {
+      var thisRouter = this;
+      this.mainView.loading();
+      
+      this.getOSBasicBills(function() {
+        thisRouter.makeRecentCategory();
+        var category = thisRouter.categories.get('recent');
+        
+        category.loadBills(function() {
+          thisRouter.mainView.renderCategory(category);
+        }, thisRouter.error);
+      }, this.error);
+      
+    },
+    
     // eBill route
     routeEBill: function(bill) {
       var thisRouter = this;
@@ -160,27 +179,31 @@
     },
     
     makeRecentCategory: function() {
-      var category = {
-        id: 'recent',
-        title: 'Recently Updated',
-        description: 'The following bills have been updated in the past ' +
-          LT.options.recentChangeThreshold + ' days.',
-        image: 'RecentUpdatedBill.png'
-      };
-      
-      this.bills.each(function(b) {
-        var c = b.get('categories');
+      if (!this.madeRecentCategory) {
+        var category = {
+          id: 'recent',
+          title: 'Recently Updated',
+          description: 'The following bills have been updated in the past ' +
+            LT.options.recentChangeThreshold + ' days.',
+          image: 'RecentUpdatedBill.png'
+        };
         
-        if (Math.abs(parseInt(b.lastUpdatedAt().diff(moment(), 'days'), 10)) < LT.options.recentChangeThreshold) {
-          c.push(category.id);
-          b.set('categories', c);
-        }
-      });
-      
-      this.categories.add(LT.utils.getModel('CategoryModel', 'id', category));
-      this.bills.each(function(b) {
-        b.loadCategories();
-      });
+        this.bills.each(function(b) {
+          var c = b.get('categories');
+          
+          if (Math.abs(parseInt(b.lastUpdatedAt().diff(moment(), 'days'), 10)) < LT.options.recentChangeThreshold) {
+            c.push(category.id);
+            b.set('categories', c);
+          }
+        });
+        
+        this.categories.add(LT.utils.getModel('CategoryModel', 'id', category));
+        this.bills.each(function(b) {
+          b.loadCategories();
+        });
+        
+        this.madeRecentCategory = true;
+      }
     },
     
     getOSBasicBills: function(callback, error) {
