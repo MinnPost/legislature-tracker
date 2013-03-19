@@ -24,13 +24,13 @@
     <h5>Primary sponsors</h5>
     
     <div class="clear-block">
-      <% for (var a in bill.sponsors) { %>
-        <% if (bill.sponsors[a].type === 'primary') { %>
-          <div class="sponsor" data-leg-id="<%= bill.sponsors[a].leg_id %>" data-sponsor-type="<%= bill.sponsors[a].type %>">
-            <%= bill.sponsors[a].name %> (<%= bill.sponsors[a].type %>)
+      <% _.each(bill.sponsors, function(s) { %>
+        <% if (s.type === 'primary') { %>
+          <div class="sponsor" data-leg-id="<%= s.leg_id %>" data-sponsor-type="<%= s.type %>">
+            <%= s.name %> (<%= s.type %>)
           </div>
         <% } %>
-      <% } %>
+      <% }) %>
     </div>
   </div>
   
@@ -38,12 +38,15 @@
     <h5>Actions</h5>
     
     <div class="actions-inner">
-      <% for (var a in bill.actions) { %>
-        <div>
-          <%= bill.actions[a].date.format('MMM DD, YYYY') %>: <%= bill.actions[a].action %>
-          (<%= LT.utils.translate('chamber', bill.actions[a].actor) %>)
-        </div>
-      <% } %>
+      <% _.each(bill.actions, function(a) { %>
+        <% if (a.date) { %>
+          <div>
+            <%= a.date.format('MMM DD, YYYY') %>:  
+            <%= a.action %>
+            (<%= LT.utils.translate('chamber', a.actor) %>)
+          </div>
+        <% } %> 
+      <% }) %>
     </div>
   </div>
 
@@ -52,21 +55,21 @@
       <h5>Co-Sponsors</h5>
       
       <div class="co-sponsors-inner clear-block">
-        <% for (var a in bill.sponsors) { %>
-          <% if (bill.sponsors[a].type !== 'primary') { %>
-            <div class="sponsor" data-leg-id="<%= bill.sponsors[a].leg_id %>" data-sponsor-type="<%= bill.sponsors[a].type %>">
-              <%= bill.sponsors[a].name %> (<%= bill.sponsors[a].type %>)
+        <% _.each(bill.sponsors, function(s) { %>
+          <% if (s.type !== 'primary') { %>
+            <div class="sponsor" data-leg-id="<%= s.leg_id %>" data-sponsor-type="<%= s.type %>">
+              <%= s.name %> (<%= s.type %>)
             </div>
           <% } %>
-        <% } %>
+        <% }) %>
       </div>
     </div>
   <% } %>
   
   <div class="sources">
     <h5>Full Text</h5>
-    <% for (var a in bill.sources) { %>
-      <a href="<%= bill.sources[a].url %>" target="_blank">Link to <%= bill.bill_id %> on the Minnesota State Legislature site.</a> <br />
-    <% } %>
+    <% _.each(bill.sources, function(s) { %>
+      <a href="<%= s.url %>" target="_blank">Link to <%= bill.bill_id %> on the Minnesota State Legislature site.</a> <br />
+    <% }) %>
   </div>
 </div>

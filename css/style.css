@@ -269,12 +269,10 @@
 .ls .actions-inner {
   font-size: .85em;
   height: 100px;
-  overflow-y: scroll;
 }
 
 .ls .co-sponsors-inner {
   height: 150px;
-  overflow-y: scroll;
 }
 
 .ls .actions-inner,
@@ -287,6 +285,7 @@
 }
 
 .ls .overflowed {
+  overflow-y: scroll;
 }
 
 .ls .primary-bill-inner,

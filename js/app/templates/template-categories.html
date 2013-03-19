@@ -24,31 +24,31 @@
   <% } %>
 
   <ul class="category-list clear-block">
-    <% for (var c in categories) { %>
-      <li class="category-item category-item-<%= c %>">
-        <div class="category-inner category-<%= _.cssClass(categories[c].id) %>">
-          <% if (categories[c].image) { %>
-            <a href="#/category/<%= encodeURI(categories[c].id) %>">
-              <img class="category-image" src="<%= LT.options.imagePath %><%= categories[c].image %>" />
+    <% _.each(categories, function(c, i) { %>
+      <li class="category-item category-item-<%= i %>">
+        <div class="category-inner category-<%= _.cssClass(c.id) %>">
+          <% if (c.image) { %>
+            <a href="#/category/<%= encodeURI(c.id) %>">
+              <img class="category-image" src="<%= LT.options.imagePath %><%= c.image %>" />
             </a>
           <% } %>
            
           <h3>
-            <a href="#/category/<%= encodeURI(categories[c].id) %>">
-              <%= categories[c].title %>
+            <a href="#/category/<%= encodeURI(c.id) %>">
+              <%= c.title %>
             </a>
           </h3>
           
           <div>
             Watching 
-            <strong><%= categories[c].bills.length %></strong>
-            <% if (categories[c].total_bill_count) { %>
-              of <%= categories[c].total_bill_count %>
+            <strong><%= c.bills.length %></strong>
+            <% if (c.total_bill_count) { %>
+              of <%= c.total_bill_count %>
             <% } %>
             bills.
           </div>
         </div>
       </li>
-    <% } %>
+    <% }) %>
   </ul>
 </div>
