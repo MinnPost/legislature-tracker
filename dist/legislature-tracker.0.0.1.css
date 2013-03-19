@@ -160,11 +160,13 @@
   margin: .5em .25em;
 }
 
+/*
 .ls .categories-container ul li.category-item-0,
 .ls .categories-container ul li.category-item-1,
 .ls .categories-container ul li.category-item-2 {
   width: 33.332222222%;
 }
+*/
 
 .ls .category-list .category-image {
   max-height: 85px;
@@ -266,7 +268,7 @@
 
 .ls .actions-inner {
   font-size: .85em;
-  height: 150px;
+  height: 100px;
   overflow: scroll;
 }
 
@@ -275,15 +277,21 @@
   overflow: scroll;
 }
 
+.ls .actions-inner,
+.ls .co-sponsors-inner {
+  border: 1px solid #EBEBEB;
+  -moz-box-shadow: 0px 6px 4px -4px rgba(50, 50, 50, .3);
+  -webkit-box-shadow: 0px 6px 4px -4px rgba(50, 50, 50, .3);
+  box-shadow: 0px 6px 4px -4px rgba(50, 50, 50, .3);
+  padding: .25em .75em;
+}
+
 .ls .overflowed {
-  -moz-box-shadow: inset 0px -11px 10px -10px rgba(0, 0, 0, .4);
-  -webkit-box-shadow: inset 0px -11px 10px -10px rgba(0, 0, 0, .4);
-  box-shadow: inset 0px -11px 10px -10px rgba(0, 0, 0, .4);
 }
 
 .ls .primary-bill-inner,
 .ls .companion-bill-inner {
-  margin-right: .5em;
+  margin-right: 1.5em;
 }
 
 .ls ul.e-links-list {

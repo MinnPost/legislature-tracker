@@ -329,10 +329,10 @@ __p+='\n<div class="categories-container">\n  ';
  if (typeof LT.app.totalBills != 'undefined') { 
 ;__p+='\n    <div class="aggregate-counts">\n      <span class="aggregate-stat">\n        <span class="aggregate-count-label">Bills introduced:</span>\n        <span class="aggregate-count-value">'+
 ( _.numberFormatCommas(LT.app.totalBills) )+
-'</span>\n      </span>\n      \n      <span class="aggregate-stat">\n        <span class="aggregate-count-label">Recently introduced:</span>\n        <span class="aggregate-count-value">~'+
-( _.numberFormatCommas(LT.app.recentCreated) )+
-'</span>\n      </span>\n      \n      <span class="aggregate-stat">\n        <span class="aggregate-count-label">Recently updated:</span>\n        <span class="aggregate-count-value">~'+
-( _.numberFormatCommas(LT.app.recentUpdated) )+
+'</span>\n      </span>\n      \n      <span class="aggregate-stat">\n        <span class="aggregate-count-label">Bills passed:</span>\n        <span class="aggregate-count-value">'+
+( _.numberFormatCommas(LT.app.totalBillsPassed) )+
+'</span>\n      </span>\n      \n      <span class="aggregate-stat">\n        <span class="aggregate-count-label">Bills signed:</span>\n        <span class="aggregate-count-value">'+
+( _.numberFormatCommas(LT.app.totalBillsSigned) )+
 '</span>\n      </span>\n    </div>\n  ';
  } 
 ;__p+='\n\n  <ul class="category-list clear-block">\n    ';
@@ -904,6 +904,31 @@ return __p;
       }
     },
     
+    lastUpdatedAt: function() {
+      var last_updated_at;
+      var p = this.get('bill_primary');
+      var c = this.get('bill_companion');
+      var co = this.get('bill_conference');
+      
+      if (_.isUndefined(this.get('last_updated_at')) && p.get('updated_at')) {
+        last_updated_at = p.get('updated_at');
+        
+        if (c && c.get('updated_at')) {
+          last_updated_at = (c.get('updated_at').unix() >
+            last_updated_at.unix()) ?
+            c.get('updated_at') : last_updated_at;
+        }
+        if (co && co.get('updated_at')) {
+          last_updated_at = (co.get('updated_at').unix() >
+            last_updated_at.unix()) ?
+            co.get('updated_at') : last_updated_at;
+        }
+        this.set('last_updated_at', last_updated_at);
+      }
+      
+      return this.get('last_updated_at');
+    },
+    
     newestAction: function() {
       var newest_action;
       var p = this.get('bill_primary');
@@ -1317,6 +1342,7 @@ return __p;
   LT.Application = Backbone.Router.extend({
     routes: {
       'categories': 'routeCategories',
+      'category/recent': 'routeRecentCategory',
       'category/:category': 'routeCategory',
       'bill/:bill': 'routeEBill',
       'bill-detail/:bill': 'routeOSBill',
@@ -1382,24 +1408,18 @@ return __p;
     // Get aggregate counts
     loadAggregateCounts: function(billCountData) {
       var thisRouter = this;
-      var recentDate = moment().subtract('days', parseInt(LT.options.recentChangeThreshold, 10));
-      var recentInt = parseInt(recentDate.format('YYYYMMDD'), 10);
-      var recentUpdated = 0;
-      var recentCreated = 0;
       
       _.each(billCountData, function(stat) {
         if (stat.stat === 'total-bills') {
           thisRouter.totalBills = parseInt(stat.value, 10);
         }
-        if (stat.stat.indexOf('updated') !== -1) {
-          recentUpdated += (stat.int >= recentInt) ? parseInt(stat.value, 10) : 0;
+        if (stat.stat === 'total-bills-passed') {
+          thisRouter.totalBillsPassed = parseInt(stat.value, 10);
         }
-        if (stat.stat.indexOf('created') !== -1) {
-          recentCreated += (stat.int >= recentInt) ? parseInt(stat.value, 10) : 0;
+        if (stat.stat === 'total-bills-signed') {
+          thisRouter.totalBillsSigned = parseInt(stat.value, 10);
         }
       });
-      this.recentUpdated = recentUpdated;
-      this.recentCreated = recentCreated;
       
       // Start application/routing
       this.start();
@@ -1419,12 +1439,17 @@ return __p;
   
     // Categories view
     routeCategories: function() {
+      var thisRouter = this;
+    
       // If we are viewing the categories, we want to get
       // some basic data about the bills from Open States
       // but not ALL the data.  We can use the bill search
       // to do this.
       this.mainView.loading();
-      this.getOSBasicBills(this.mainView.renderCategories, this.error);
+      this.getOSBasicBills(function() {
+        thisRouter.makeRecentCategory();
+        thisRouter.mainView.renderCategories();
+      }, this.error);
     },
   
     // Single Category view
@@ -1441,12 +1466,34 @@ return __p;
       }, thisRouter.error);
     },
     
+    // Hack for recent category.  We have to build recent
+    // category only after getting the short meta data
+    // from open states
+    routeRecentCategory: function() {
+      var thisRouter = this;
+      this.mainView.loading();
+      
+      this.getOSBasicBills(function() {
+        thisRouter.makeRecentCategory();
+        var category = thisRouter.categories.get('recent');
+        
+        category.loadBills(function() {
+          thisRouter.mainView.renderCategory(category);
+        }, thisRouter.error);
+      }, this.error);
+      
+    },
+    
     // eBill route
     routeEBill: function(bill) {
       var thisRouter = this;
+      var bill_id = decodeURI(bill);
       
-      bill = decodeURI(bill);
-      bill = this.bills.where({ bill: bill })[0];
+      bill = this.bills.where({ bill: bill_id })[0];
+      if (!bill) {
+        this.navigate('/bill-detail/' + encodeURI(bill_id), { trigger: true, replace: true });
+        return;
+      }
       
       this.mainView.loading();
       bill.loadOSBills(function() {
@@ -1466,6 +1513,34 @@ return __p;
         thisRouter.mainView.renderOSBill(bill);
       })
       .fail(thisRouter.error);
+    },
+    
+    makeRecentCategory: function() {
+      if (!this.madeRecentCategory) {
+        var category = {
+          id: 'recent',
+          title: 'Recently Updated',
+          description: 'The following bills have been updated in the past ' +
+            LT.options.recentChangeThreshold + ' days.',
+          image: 'RecentUpdatedBill.png'
+        };
+        
+        this.bills.each(function(b) {
+          var c = b.get('categories');
+          
+          if (Math.abs(parseInt(b.lastUpdatedAt().diff(moment(), 'days'), 10)) < LT.options.recentChangeThreshold) {
+            c.push(category.id);
+            b.set('categories', c);
+          }
+        });
+        
+        this.categories.add(LT.utils.getModel('CategoryModel', 'id', category));
+        this.bills.each(function(b) {
+          b.loadCategories();
+        });
+        
+        this.madeRecentCategory = true;
+      }
     },
     
     getOSBasicBills: function(callback, error) {
