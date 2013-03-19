@@ -82,6 +82,9 @@
         if (stat.stat === 'total-bills-passed') {
           thisRouter.totalBillsPassed = parseInt(stat.value, 10);
         }
+        if (stat.stat === 'total-bills-signed') {
+          thisRouter.totalBillsSigned = parseInt(stat.value, 10);
+        }
       });
       
       // Start application/routing
