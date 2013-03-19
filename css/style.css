@@ -151,7 +151,7 @@
   list-style: none;
   display: block;
   width: 25%;
-  min-height: 100px;
+  min-height: 200px;
   float: left;
   text-align: center;
 }
@@ -269,12 +269,12 @@
 .ls .actions-inner {
   font-size: .85em;
   height: 100px;
-  overflow: scroll;
+  overflow-y: scroll;
 }
 
 .ls .co-sponsors-inner {
   height: 150px;
-  overflow: scroll;
+  overflow-y: scroll;
 }
 
 .ls .actions-inner,
