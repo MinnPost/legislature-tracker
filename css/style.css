@@ -349,3 +349,56 @@
 .ls .has-conference-bill {
   display: none;
 }
+
+
+/**
+ * Responsive, media query styles styles
+ */
+@media screen and (max-width: 768px) {
+
+  .ls .categories-container .aggregate-counts {
+    margin-bottom: 3em;
+  }
+  
+  .ls .categories-container {
+    background-position: bottom center;
+    background-size: 100% auto;
+    padding-top: 3em;
+  }
+
+  .ls .categories-container ul li {
+    width: 33.32222222%;
+    text-align: center;
+  }
+}
+
+
+@media screen and (max-width: 420px) {
+
+  .ls .categories-container .aggregate-counts {
+    margin-bottom: 2em;
+  }
+
+  .ls .categories-container {
+    padding-top: 2em;
+  }
+  
+  .ls .categories-container ul li {
+    width: 50%;
+    text-align: center;
+  }
+}
+
+@media screen and (max-width: 280px) {
+
+  .ls .categories-container .aggregate-counts .aggregate-stat {
+    display: block;
+  }
+  
+  .ls .categories-container ul li {
+    width: 100%;
+    text-align: center;
+  }
+}
+
+
