@@ -24,6 +24,27 @@
     },
     numberFormatCommas: function(number) {
       return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+    },
+    ellipsisText: function(text, wordCount) {
+      var words = text.split(' ');
+      var output = '';
+      var templateStart = '<span class="ellipsis-start">[[[TEXT]]]</span>';
+      var templateEllipsis = '<span class="ellipsis-ellipsis">...</span>';
+      var templateEnd = '<span class="ellipsis-end">[[[TEXT]]]</span>';
+      var sliceStart, sliceEnd;
+      
+      if (words.length <= wordCount) {
+        output += templateStart.replace('[[[TEXT]]]', text);
+      }
+      else {
+        sliceStart = words.slice(0, wordCount);
+        sliceEnd = words.slice(wordCount);
+        output += templateStart.replace('[[[TEXT]]]', sliceStart.join(' ')) + ' ';
+        output += templateEllipsis + ' ';
+        output += templateEnd.replace('[[[TEXT]]]', sliceEnd.join(' ')) + ' ';
+      }
+      
+      return output;
     }
   });
   

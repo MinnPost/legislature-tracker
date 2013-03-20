@@ -32,10 +32,11 @@
       </div>
     <% } %>
     
-    <p class="description"><%= bill.description %></p>
+    <p class="description"><%= _.ellipsisText(bill.description, 60) %></p>
     
     <% if (expandable) { %>
       <a href="#" class="bill-expand">More details</a>
+      <a href="#/bill/<%= encodeURI(bill.bill) %>" class="bill-details-link">More details</a>
     <% } %>
   </div>
   

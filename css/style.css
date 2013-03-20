@@ -300,6 +300,24 @@
   list-style: none;
 }
 
+.ls .bill .bill-details-link,
+.ls .bill .latest-action-label {
+  display: none;
+}
+
+/**
+ * Bill description
+ */
+.ls .bill.is-expandable .description .ellipsis-end {
+  display: none;
+}
+.ls .bill.is-expandable.expanded .description .ellipsis-ellipsis {
+  display: none;
+}
+.ls .bill.is-expandable.expanded .description .ellipsis-end {
+  display: inline;
+}
+
 
 /**
  * Bill sponsors/legislators styles
@@ -370,8 +388,59 @@
     width: 33.32222222%;
     text-align: center;
   }
+  
+  .ls .bill .bill-details-link {
+    display: inline;
+  }
+  .ls .bill .bill-expand {
+    display: none;
+  }
+  
+  .ls .sponsors .sponsor {
+    width: 50%;
+  }
+  .ls .with-companion .sponsors .sponsor,
+  .ls .companion-bill .sponsors .sponsor {
+    width: 100%;
+  }
 }
 
+
+@media screen and (max-width: 520px) {
+  .ls .bill .bill-status {
+    float: none;
+    display: block;
+    text-align: left;
+    margin-bottom: .5em;
+  }
+  
+  .ls .primary-bill.with-companion, 
+  .ls .companion-bill {
+    width: 100%;
+    float: none;
+  }
+  
+  .ls .bill .bill-bottom .sponsors.co-sponsors {
+    display: none;
+  }
+  
+  /* Just show latest actions */
+  .ls .bill .bill-bottom .latest-action-label {
+    display: inline;
+  }
+  .ls .bill-bottom .actions-inner.overflowed {
+    overflow-y: hidden;
+  }
+  .ls .bill-bottom .actions-inner {
+    border: none;
+    -moz-box-shadow: none;
+    -webkit-box-shadow: none;
+    box-shadow: none;
+    padding: 0;
+    height: auto;
+    max-height: 5em;
+  }
+}
 
 @media screen and (max-width: 420px) {
 
@@ -386,6 +455,10 @@
   .ls .categories-container ul li {
     width: 50%;
     text-align: center;
+  }
+  
+  .ls .sponsors .sponsor {
+    width: 100%;
   }
 }
 
