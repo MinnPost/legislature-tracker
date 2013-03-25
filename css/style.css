@@ -135,7 +135,7 @@
   margin-bottom: 6em;
 }
 .ls .categories-container .aggregate-stat {
-  margin-right: 1em;
+  margin-right: 3em;
 }
 .ls .categories-container .aggregate-counts .aggregate-count-value {
   font-weight: bold;
@@ -373,6 +373,9 @@
  * Responsive, media query styles styles
  */
 @media screen and (max-width: 768px) {
+  .ls .categories-container .aggregate-stat {
+    margin-right: 1em;
+  }
 
   .ls .categories-container .aggregate-counts {
     margin-bottom: 3em;
@@ -462,11 +465,13 @@
   }
 }
 
-@media screen and (max-width: 280px) {
-
+@media screen and (max-width: 375px) {
   .ls .categories-container .aggregate-counts .aggregate-stat {
     display: block;
   }
+}
+
+@media screen and (max-width: 280px) {
   
   .ls .categories-container ul li {
     width: 100%;
