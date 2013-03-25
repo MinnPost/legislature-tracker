@@ -63,14 +63,14 @@
 
 .ls a.permalink {
   font-size: .5em;
-  background: transparent url('images/link-16x8.png') center right no-repeat;
+  background: transparent url('images/link-16x8-red.png') center right no-repeat;
   height: 8px;
   width: 16px;
   display: -moz-inline-stack;
   display: inline-block;
   zoom: 1;
   *display: inline;
-  margin-left: 1em;
+  margin-left: .5em;
 }
 
 .ls .number {
