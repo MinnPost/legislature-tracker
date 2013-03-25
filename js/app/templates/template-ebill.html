@@ -1,10 +1,10 @@
 <% if (!expandable) { %>
   <div class="ls-header-container">
     <div class="ls-header">
-      <% _.each(bill.categories, function(c, i) { %>
-        <a href="#/category/<%= c.get('id') %>">
-          <%= c.get('title') %><% if (c.get('image')) { %><img class="category-image" src="<%= LT.options.imagePath %><%= c.get('image') %>" /><% } %></a><% if (i < bill.categories.length - 1) { %>,<% } %>
-      <% }) %>
+      <a class="all-categories-link" href="#/">
+        <img src="<%= LT.options.imagePath %>back-100-85.png" />
+        All Categories
+      </a>
     </div>
   </div>
 <% } %>
@@ -34,7 +34,17 @@
       </div>
     <% } %>
     
-    <p class="description"><%= _.ellipsisText(bill.description, 60) %></p>
+    <p class="description">
+      <%= _.ellipsisText(bill.description, 60) %>
+    </p>
+    
+    <div class="e-bill-categories">
+      <strong>Categories:</strong>
+      <% _.each(bill.categories, function(c, i) { %>
+        <a href="#/category/<%= c.get('id') %>">
+          <%= c.get('title') %><% if (c.get('image')) { %><img class="category-image" src="<%= LT.options.imagePath %><%= c.get('image') %>" /><% } %></a><% if (i < bill.categories.length - 1) { %>,<% } %>
+      <% }) %>
+    </div>
     
     <% if (expandable) { %>
       <a href="#" class="bill-expand">More details</a>

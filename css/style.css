@@ -239,11 +239,16 @@
 .ls .actions,
 .ls .sponsors,
 .ls .sources,
-.ls .e-links,
-.ls .bill .description {
+.ls .e-links {
   margin-bottom: 1.5em;
 }
 
+.ls .bill .e-bill-categories {
+  margin-bottom: 1em;
+  color: #575757;
+}
+
+.ls .bill .description,
 .ls .bill .latest-action {
   margin-bottom: .5em;
 }
