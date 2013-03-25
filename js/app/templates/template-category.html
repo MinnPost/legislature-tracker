@@ -5,11 +5,11 @@
 
 <div class="category-container">
   <h2>
-    <%= category.title %>
-    
     <% if (category.image) { %>
       <img class="category-image" src="<%= LT.options.imagePath %><%= category.image %>" />
     <% } %>
+    
+    <%= category.title %>
   </h2>
   
   <p><%= category.description %></p>

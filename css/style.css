@@ -119,6 +119,11 @@
   *display: inline;
 }
 
+.ls h2 .category-image {
+  margin-left: 0;
+  margin-right: .25em;
+}
+
 /**
  * Category list styles
  */
