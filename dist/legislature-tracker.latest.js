@@ -24,6 +24,27 @@
     },
     numberFormatCommas: function(number) {
       return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+    },
+    ellipsisText: function(text, wordCount) {
+      var words = text.split(' ');
+      var output = '';
+      var templateStart = '<span class="ellipsis-start">[[[TEXT]]]</span>';
+      var templateEllipsis = '<span class="ellipsis-ellipsis">...</span>';
+      var templateEnd = '<span class="ellipsis-end">[[[TEXT]]]</span>';
+      var sliceStart, sliceEnd;
+      
+      if (words.length <= wordCount) {
+        output += templateStart.replace('[[[TEXT]]]', text);
+      }
+      else {
+        sliceStart = words.slice(0, wordCount);
+        sliceEnd = words.slice(wordCount);
+        output += templateStart.replace('[[[TEXT]]]', sliceStart.join(' ')) + ' ';
+        output += templateEllipsis + ' ';
+        output += templateEnd.replace('[[[TEXT]]]', sliceEnd.join(' ')) + ' ';
+      }
+      
+      return output;
     }
   });
   
@@ -329,42 +350,40 @@ __p+='\n<div class="categories-container">\n  ';
  if (typeof LT.app.totalBills != 'undefined') { 
 ;__p+='\n    <div class="aggregate-counts">\n      <span class="aggregate-stat">\n        <span class="aggregate-count-label">Bills introduced:</span>\n        <span class="aggregate-count-value">'+
 ( _.numberFormatCommas(LT.app.totalBills) )+
-'</span>\n      </span>\n      \n      <span class="aggregate-stat">\n        <span class="aggregate-count-label">Bills passed:</span>\n        <span class="aggregate-count-value">'+
-( _.numberFormatCommas(LT.app.totalBillsPassed) )+
 '</span>\n      </span>\n      \n      <span class="aggregate-stat">\n        <span class="aggregate-count-label">Bills signed:</span>\n        <span class="aggregate-count-value">'+
 ( _.numberFormatCommas(LT.app.totalBillsSigned) )+
 '</span>\n      </span>\n    </div>\n  ';
  } 
 ;__p+='\n\n  <ul class="category-list clear-block">\n    ';
- for (var c in categories) { 
+ _.each(categories, function(c, i) { 
 ;__p+='\n      <li class="category-item category-item-'+
-( c )+
+( i )+
 '">\n        <div class="category-inner category-'+
-( _.cssClass(categories[c].id) )+
+( _.cssClass(c.id) )+
 '">\n          ';
- if (categories[c].image) { 
+ if (c.image) { 
 ;__p+='\n            <a href="#/category/'+
-( encodeURI(categories[c].id) )+
+( encodeURI(c.id) )+
 '">\n              <img class="category-image" src="'+
 ( LT.options.imagePath )+
 ''+
-( categories[c].image )+
+( c.image )+
 '" />\n            </a>\n          ';
  } 
 ;__p+='\n           \n          <h3>\n            <a href="#/category/'+
-( encodeURI(categories[c].id) )+
+( encodeURI(c.id) )+
 '">\n              '+
-( categories[c].title )+
+( c.title )+
 '\n            </a>\n          </h3>\n          \n          <div>\n            Watching \n            <strong>'+
-( categories[c].bills.length )+
+( c.bills.length )+
 '</strong>\n            ';
- if (categories[c].total_bill_count) { 
+ if (c.total_bill_count) { 
 ;__p+='\n              of '+
-( categories[c].total_bill_count )+
+( c.total_bill_count )+
 '\n            ';
  } 
 ;__p+='\n            bills.\n          </div>\n        </div>\n      </li>\n    ';
- } 
+ }) 
 ;__p+='\n  </ul>\n</div>';
 }
 return __p;
@@ -373,9 +392,9 @@ return __p;
 this["LT"]["templates"]["js/app/templates/template-category.html"] = function(obj){
 var __p='';var print=function(){__p+=Array.prototype.join.call(arguments, '')};
 with(obj||{}){
-__p+='\n<div class="ls-header">\n  <a href="#/">All Categories</a>\n</div>\n\n<div class="category-container">\n  <h2>\n    '+
-( category.title )+
-'\n    \n    ';
+__p+='<div class="ls-header-container">\n  <div class="ls-header">\n    <a class="all-categories-link" href="#/">\n      <img src="'+
+( LT.options.imagePath )+
+'back-100-85.png" />\n      All Categories\n    </a>\n  </div>\n</div>\n\n<div class="category-container">\n  <h2>\n    ';
  if (category.image) { 
 ;__p+='\n      <img class="category-image" src="'+
 ( LT.options.imagePath )+
@@ -383,18 +402,20 @@ __p+='\n<div class="ls-header">\n  <a href="#/">All Categories</a>\n</div>\n\n<d
 ( category.image )+
 '" />\n    ';
  } 
-;__p+='\n  </h2>\n  \n  <p>'+
+;__p+='\n    \n    '+
+( category.title )+
+'\n  </h2>\n  \n  <p>'+
 ( category.description )+
 '</p>\n  \n  ';
  if (_.isArray(category.links) && category.links.length > 0) { 
 ;__p+='\n    <div class="e-links">\n      <h4>In the news</h4>\n      \n      <ul class="e-links-list">\n        ';
- for (var l in category.links) { 
+ _.each(category.links, function(l) { 
 ;__p+='\n          <li><a href="'+
-( category.links[l].url )+
+( l.url )+
 '">'+
-( category.links[l].title )+
+( l.title )+
 '</a></li>\n        ';
- } 
+ }) 
 ;__p+='\n      </ul>\n    </div>\n  ';
  } 
 ;__p+='\n  \n  <div class="clear-block bills-list">\n    ';
@@ -427,27 +448,9 @@ var __p='';var print=function(){__p+=Array.prototype.join.call(arguments, '')};
 with(obj||{}){
 __p+='';
  if (!expandable) { 
-;__p+='\n  <div class="ls-header">\n    ';
- _.each(bill.categories, function(c, i) { 
-;__p+='\n      <a href="#/category/'+
-( c.get('id') )+
-'">\n        '+
-( c.get('title') )+
-'';
- if (c.get('image')) { 
-;__p+='<img class="category-image" src="'+
+;__p+='\n  <div class="ls-header-container">\n    <div class="ls-header">\n      <a class="all-categories-link" href="#/">\n        <img src="'+
 ( LT.options.imagePath )+
-''+
-( c.get('image') )+
-'" />';
- } 
-;__p+='</a>';
- if (i < bill.categories.length - 1) { 
-;__p+=',';
- } 
-;__p+='\n    ';
- }) 
-;__p+='\n  </div>\n';
+'back-100-85.png" />\n        All Categories\n      </a>\n    </div>\n  </div>\n';
  } 
 ;__p+='\n\n<div class="bill ebill ';
  if (expandable) { 
@@ -525,22 +528,44 @@ __p+='';
 ( bill.newest_action.date.fromNow() )+
 '.\n      </div>\n    ';
  } 
-;__p+='\n    \n    <p class="description">'+
-( bill.description )+
-'</p>\n    \n    ';
+;__p+='\n    \n    <p class="description">\n      '+
+( _.ellipsisText(bill.description, 60) )+
+'\n    </p>\n    \n    <div class="e-bill-categories">\n      <strong>Categories:</strong>\n      ';
+ _.each(bill.categories, function(c, i) { 
+;__p+='\n        <a href="#/category/'+
+( c.get('id') )+
+'">\n          ';
+ if (c.get('image')) { 
+;__p+='<img class="category-image" src="'+
+( LT.options.imagePath )+
+''+
+( c.get('image') )+
+'" />';
+ } 
+;__p+='\n          '+
+( c.get('title') )+
+'</a>';
+ if (i < bill.categories.length - 1) { 
+;__p+=',';
+ } 
+;__p+='\n      ';
+ }) 
+;__p+='\n    </div>\n    \n    ';
  if (expandable) { 
-;__p+='\n      <a href="#" class="bill-expand">More details</a>\n    ';
+;__p+='\n      <a href="#" class="bill-expand">More details</a>\n      <a href="#/bill/'+
+( encodeURI(bill.bill) )+
+'" class="bill-details-link">More details</a>\n    ';
  } 
 ;__p+='\n  </div>\n  \n  <div class="bill-bottom">\n    ';
  if (_.isArray(bill.links) && bill.links.length > 0) { 
 ;__p+='\n      <div class="e-links">\n        <h4>In the news</h4>\n        <ul class="e-links-list">\n          ';
- for (var l in bill.links) { 
+ _.each(bill.links, function(l) { 
 ;__p+='\n            <li><a href="'+
-( bill.links[l].url )+
+( l.url )+
 '">'+
-( bill.links[l].title )+
+( l.title )+
 '</a></li>\n          ';
- } 
+ }) 
 ;__p+='\n        </ul>\n      </div>\n    ';
  } 
 ;__p+='\n\n    ';
@@ -647,7 +672,9 @@ var __p='';var print=function(){__p+=Array.prototype.join.call(arguments, '')};
 with(obj||{}){
 __p+='';
  if (typeof detailed != 'undefined' && detailed)  { 
-;__p+='\n  <div class="ls-header">\n    <a href="#/">All Categories</a>\n  </div>\n';
+;__p+='\n  <div class="ls-header-container">\n    <div class="ls-header">\n      <a class="all-categories-link" href="#/">\n        <img src="'+
+( LT.options.imagePath )+
+'back-100-85.png" />\n        All Categories\n      </a>\n    </div>\n  </div>\n';
  } 
 ;__p+='\n\n<div class="osbill">\n  <h4>\n    ';
  if (typeof title != 'undefined') { 
@@ -670,59 +697,63 @@ __p+='';
 '\n    </p>\n  ';
  } 
 ;__p+='\n\n  <div class="sponsors primary-sponsors">\n    <h5>Primary sponsors</h5>\n    \n    <div class="clear-block">\n      ';
- for (var a in bill.sponsors) { 
+ _.each(bill.sponsors, function(s) { 
 ;__p+='\n        ';
- if (bill.sponsors[a].type === 'primary') { 
+ if (s.type === 'primary') { 
 ;__p+='\n          <div class="sponsor" data-leg-id="'+
-( bill.sponsors[a].leg_id )+
+( s.leg_id )+
 '" data-sponsor-type="'+
-( bill.sponsors[a].type )+
+( s.type )+
 '">\n            '+
-( bill.sponsors[a].name )+
+( s.name )+
 ' ('+
-( bill.sponsors[a].type )+
+( s.type )+
 ')\n          </div>\n        ';
  } 
 ;__p+='\n      ';
+ }) 
+;__p+='\n    </div>\n  </div>\n  \n  <div class="actions">\n    <h5><span class="latest-action-label">Latest </span>Actions</h5>\n    \n    <div class="actions-inner">\n      ';
+ _.each(bill.actions, function(a) { 
+;__p+='\n        ';
+ if (a.date) { 
+;__p+='\n          <div>\n            '+
+( a.date.format('MMM DD, YYYY') )+
+':  \n            '+
+( a.action )+
+'\n            ('+
+( LT.utils.translate('chamber', a.actor) )+
+')\n          </div>\n        ';
  } 
-;__p+='\n    </div>\n  </div>\n  \n  <div class="actions">\n    <h5>Actions</h5>\n    \n    <div class="actions-inner">\n      ';
- for (var a in bill.actions) { 
-;__p+='\n        <div>\n          '+
-( bill.actions[a].date.format('MMM DD, YYYY') )+
-': '+
-( bill.actions[a].action )+
-'\n          ('+
-( LT.utils.translate('chamber', bill.actions[a].actor) )+
-')\n        </div>\n      ';
- } 
+;__p+=' \n      ';
+ }) 
 ;__p+='\n    </div>\n  </div>\n\n  ';
  if (bill.sponsors.length > 1) { 
 ;__p+='\n    <div class="sponsors co-sponsors clear-block">\n      <h5>Co-Sponsors</h5>\n      \n      <div class="co-sponsors-inner clear-block">\n        ';
- for (var a in bill.sponsors) { 
+ _.each(bill.sponsors, function(s) { 
 ;__p+='\n          ';
- if (bill.sponsors[a].type !== 'primary') { 
+ if (s.type !== 'primary') { 
 ;__p+='\n            <div class="sponsor" data-leg-id="'+
-( bill.sponsors[a].leg_id )+
+( s.leg_id )+
 '" data-sponsor-type="'+
-( bill.sponsors[a].type )+
+( s.type )+
 '">\n              '+
-( bill.sponsors[a].name )+
+( s.name )+
 ' ('+
-( bill.sponsors[a].type )+
+( s.type )+
 ')\n            </div>\n          ';
  } 
 ;__p+='\n        ';
- } 
+ }) 
 ;__p+='\n      </div>\n    </div>\n  ';
  } 
 ;__p+='\n  \n  <div class="sources">\n    <h5>Full Text</h5>\n    ';
- for (var a in bill.sources) { 
+ _.each(bill.sources, function(s) { 
 ;__p+='\n      <a href="'+
-( bill.sources[a].url )+
+( s.url )+
 '" target="_blank">Link to '+
 ( bill.bill_id )+
 ' on the Minnesota State Legislature site.</a> <br />\n    ';
- } 
+ }) 
 ;__p+='\n  </div>\n</div>';
 }
 return __p;
@@ -1105,7 +1136,8 @@ return __p;
     model: LT.CategoryModel,
     
     comparator: function(cat) {
-      return cat.get('title');
+      return (cat.get('title').toLowerCase() === 'recently updated') ?
+        'zzzzz' : cat.get('title');
     }
   });
  
@@ -1210,7 +1242,7 @@ return __p;
         category: category.toJSON(),
         templates: this.templates
       }));
-      this.getLegislators();
+      this.getLegislators().navigationGlue();
     },
     
     renderEBill: function(bill) {
@@ -1224,7 +1256,7 @@ return __p;
         expandable: false,
         templates: this.templates
       }));
-      this.getLegislators().addTooltips().checkOverflows();
+      this.getLegislators().addTooltips().checkOverflows().navigationGlue();
     },
     
     renderOSBill: function(bill) {
@@ -1233,7 +1265,7 @@ return __p;
         detailed: true,
         templates: this.templates
       }));
-      this.getLegislators().addTooltips().checkOverflows();
+      this.getLegislators().addTooltips().checkOverflows().navigationGlue();
     },
     
     expandBill: function(e) {
@@ -1305,6 +1337,24 @@ return __p;
     
     resetScrollView: function() {
       $('html, body').animate({ scrollTop: this.$el.offset().top - 15 }, 1000);
+      return this;
+    },
+    
+    navigationGlue: function() {
+      var containerTop = this.$el.offset().top;
+      var $navigation = $('.ls-header');
+      
+      $(w).scroll(function() {
+        var $this = $(this);
+      
+        // Add class for fixed menu
+        if (($this.scrollTop() > containerTop) && !$navigation.hasClass('glued')) {
+          $navigation.addClass('glued');
+        }
+        else if (($this.scrollTop() <= containerTop) && $navigation.hasClass('glued')) {
+          $navigation.removeClass('glued');
+        }
+      });
       return this;
     }
   });
