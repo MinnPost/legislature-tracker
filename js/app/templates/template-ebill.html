@@ -42,7 +42,8 @@
       <strong>Categories:</strong>
       <% _.each(bill.categories, function(c, i) { %>
         <a href="#/category/<%= c.get('id') %>">
-          <%= c.get('title') %><% if (c.get('image')) { %><img class="category-image" src="<%= LT.options.imagePath %><%= c.get('image') %>" /><% } %></a><% if (i < bill.categories.length - 1) { %>,<% } %>
+          <% if (c.get('image')) { %><img class="category-image" src="<%= LT.options.imagePath %><%= c.get('image') %>" /><% } %>
+          <%= c.get('title') %></a><% if (i < bill.categories.length - 1) { %>,<% } %>
       <% }) %>
     </div>
     
