@@ -55,3 +55,7 @@ filling in the data when needed.
 
 The editorial categories contain editorial bills (like meta bills), which refer
 to one or more actual, Open States bills.
+
+## Attribution
+
+* <a href="http://thenounproject.com/noun/back/#icon-No8301" target="_blank">Back</a> designed by <a href="http://thenounproject.com/chapmanjw" target="_blank">John Chapman</a> from The Noun Project

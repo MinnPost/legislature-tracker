@@ -100,11 +100,36 @@
 /**
  * Headers
  */
-.ls .ls-header {
+.ls .ls-header-container {
   color: #414141;
+  margin-bottom: 1em;
+  width: 100%;
+}
+
+.ls .ls-header {
   border-bottom: 1px solid #BCBCBC;
-  margin: 1em 0;
+  padding: 1em 0 .5em 0;
   min-height: 1.5em;
+}
+
+.ls .ls-header.glued {
+  position: fixed;
+  top: 0;
+  background-color: #FFFFFF;
+  padding-left: .5em;
+  padding-right: .5em;
+  z-index: 999;
+  width: 942px;
+  border-left: 1px solid #BCBCBC;
+  border-right: 1px solid #BCBCBC;
+  -webkit-box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.5);
+  -moz-box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.5);
+  box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.5);
+}
+
+.ls .ls-header .all-categories-link img {
+  max-height: 1em;
+  margin-right: .25em;
 }
 
 /**
@@ -377,6 +402,17 @@
 /**
  * Responsive, media query styles styles
  */
+ 
+@media screen and (max-width: 942) {
+  .ls .ls-header.glued {
+    left: 0;
+    right: 0;
+    width: auto;
+    border-left: none;
+    border-right: none;
+  }
+}
+ 
 @media screen and (max-width: 768px) {
   .ls .categories-container .aggregate-stat {
     margin-right: 1em;

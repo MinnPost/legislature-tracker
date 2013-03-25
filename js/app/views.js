@@ -69,7 +69,7 @@
         category: category.toJSON(),
         templates: this.templates
       }));
-      this.getLegislators();
+      this.getLegislators().navigationGlue();
     },
     
     renderEBill: function(bill) {
@@ -83,7 +83,7 @@
         expandable: false,
         templates: this.templates
       }));
-      this.getLegislators().addTooltips().checkOverflows();
+      this.getLegislators().addTooltips().checkOverflows().navigationGlue();
     },
     
     renderOSBill: function(bill) {
@@ -92,7 +92,7 @@
         detailed: true,
         templates: this.templates
       }));
-      this.getLegislators().addTooltips().checkOverflows();
+      this.getLegislators().addTooltips().checkOverflows().navigationGlue();
     },
     
     expandBill: function(e) {
@@ -164,6 +164,24 @@
     
     resetScrollView: function() {
       $('html, body').animate({ scrollTop: this.$el.offset().top - 15 }, 1000);
+      return this;
+    },
+    
+    navigationGlue: function() {
+      var containerTop = this.$el.offset().top;
+      var $navigation = $('.ls-header');
+      
+      $(w).scroll(function() {
+        var $this = $(this);
+      
+        // Add class for fixed menu
+        if (($this.scrollTop() > containerTop) && !$navigation.hasClass('glued')) {
+          $navigation.addClass('glued');
+        }
+        else if (($this.scrollTop() <= containerTop) && $navigation.hasClass('glued')) {
+          $navigation.removeClass('glued');
+        }
+      });
       return this;
     }
   });
