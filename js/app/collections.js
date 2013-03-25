@@ -11,7 +11,7 @@
     model: LT.CategoryModel,
     
     comparator: function(cat) {
-      return (cat.get('title').toLowerCase() == 'recently updated') ?
+      return (cat.get('title').toLowerCase() === 'recently updated') ?
         'zzzzz' : cat.get('title');
     }
   });
