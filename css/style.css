@@ -259,6 +259,7 @@
 
 .ls .bill-expand {
   display: inline-block;
+  font-weight: bold;
 }
 
 .ls .expanded .bill-expand {
@@ -444,6 +445,7 @@
   
   .ls .bill .bill-details-link {
     display: inline;
+    font-weight: bold;
   }
   .ls .bill .bill-expand {
     display: none;
