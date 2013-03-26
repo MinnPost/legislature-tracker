@@ -21,6 +21,7 @@
       LT.utils.getTemplate('template-osbill', this.templates, 'osbill');
       LT.utils.getTemplate('template-category', this.templates, 'category');
       LT.utils.getTemplate('template-categories', this.templates, 'categories');
+      LT.utils.getTemplate('template-header', this.templates, 'header');
       
       // Bind all
       _.bindAll(this);
@@ -67,7 +68,8 @@
       
       this.$el.html(this.templates.category({
         category: category.toJSON(),
-        templates: this.templates
+        templates: this.templates,
+        header: this.renderHeader()
       }));
       this.getLegislators().navigationGlue();
     },
@@ -81,7 +83,8 @@
       this.$el.html(this.templates.ebill({
         bill: bill.toJSON(),
         expandable: false,
-        templates: this.templates
+        templates: this.templates,
+        header: this.renderHeader()
       }));
       this.getLegislators().addTooltips().checkOverflows().navigationGlue();
     },
@@ -90,9 +93,16 @@
       this.$el.html(this.templates.osbill({
         bill: bill.toJSON(),
         detailed: true,
-        templates: this.templates
+        templates: this.templates,
+        header: this.renderHeader()
       }));
       this.getLegislators().addTooltips().checkOverflows().navigationGlue();
+    },
+    
+    renderHeader: function() {
+      return this.templates.header({
+        categories: this.getCategoriesJSON()
+      });
     },
     
     expandBill: function(e) {
@@ -138,6 +148,13 @@
         }
       });
       return this;
+    },
+    
+    getCategoriesJSON: function() {
+      this.categoriesJSON = (this.categoriesJSON) ? this.categoriesJSON : 
+        LT.app.categories.toJSON();
+      
+      return this.categoriesJSON;
     },
     
     addTooltips: function() {
