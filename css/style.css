@@ -419,6 +419,10 @@
 }
  
 @media screen and (max-width: 768px) {
+  .ls .ls-header .categories-nav {
+    display: none;
+  }
+
   .ls .categories-container .aggregate-stat {
     margin-right: 1em;
   }

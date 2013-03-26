@@ -229,6 +229,7 @@ else {
     fieldTranslations: {
       eCategories: {
         'id': 'categoryid',
+        'short_title': 'shorttitle',
         'open_states_subjects': 'openstatessubjects',
         'legislator_subjects': 'legislatorsubjects'
       },
