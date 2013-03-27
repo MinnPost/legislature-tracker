@@ -101,7 +101,7 @@
     
     renderHeader: function() {
       return this.templates.header({
-        categories: this.getCategoriesJSON()
+        categories: LT.app.categories.toJSON()
       });
     },
     
@@ -148,13 +148,6 @@
         }
       });
       return this;
-    },
-    
-    getCategoriesJSON: function() {
-      this.categoriesJSON = (this.categoriesJSON) ? this.categoriesJSON : 
-        LT.app.categories.toJSON();
-      
-      return this.categoriesJSON;
     },
     
     addTooltips: function() {

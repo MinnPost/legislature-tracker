@@ -185,7 +185,7 @@
       if (!this.madeRecentCategory) {
         var category = {
           id: 'recent',
-          title: 'Recently Updated',
+          title: 'Recent Actions',
           description: 'The following bills have been updated in the past ' +
             LT.options.recentChangeThreshold + ' days.',
           image: 'RecentUpdatedBill.png'
