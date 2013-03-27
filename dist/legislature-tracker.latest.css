@@ -127,7 +127,7 @@
   box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.5);
 }
 
-.ls .ls-header .all-categories-link img {
+.ls .ls-header img {
   max-height: 1em;
   margin-right: .25em;
 }
@@ -259,6 +259,7 @@
 
 .ls .bill-expand {
   display: inline-block;
+  font-weight: bold;
 }
 
 .ls .expanded .bill-expand {
@@ -419,6 +420,10 @@
 }
  
 @media screen and (max-width: 768px) {
+  .ls .ls-header .categories-nav {
+    display: none;
+  }
+
   .ls .categories-container .aggregate-stat {
     margin-right: 1em;
   }
@@ -440,6 +445,7 @@
   
   .ls .bill .bill-details-link {
     display: inline;
+    font-weight: bold;
   }
   .ls .bill .bill-expand {
     display: none;

@@ -298,6 +298,7 @@ else {
     fieldTranslations: {
       eCategories: {
         'id': 'categoryid',
+        'short_title': 'shorttitle',
         'open_states_subjects': 'openstatessubjects',
         'legislator_subjects': 'legislatorsubjects'
       },
@@ -392,9 +393,9 @@ return __p;
 this["LT"]["templates"]["js/app/templates/template-category.html"] = function(obj){
 var __p='';var print=function(){__p+=Array.prototype.join.call(arguments, '')};
 with(obj||{}){
-__p+='<div class="ls-header-container">\n  <div class="ls-header">\n    <a class="all-categories-link" href="#/">\n      <img src="'+
-( LT.options.imagePath )+
-'back-100-85.png" />\n      All Categories\n    </a>\n  </div>\n</div>\n\n<div class="category-container">\n  <h2>\n    ';
+__p+='\n'+
+( header )+
+'\n\n<div class="category-container">\n  <h2>\n    ';
  if (category.image) { 
 ;__p+='\n      <img class="category-image" src="'+
 ( LT.options.imagePath )+
@@ -448,9 +449,9 @@ var __p='';var print=function(){__p+=Array.prototype.join.call(arguments, '')};
 with(obj||{}){
 __p+='';
  if (!expandable) { 
-;__p+='\n  <div class="ls-header-container">\n    <div class="ls-header">\n      <a class="all-categories-link" href="#/">\n        <img src="'+
-( LT.options.imagePath )+
-'back-100-85.png" />\n        All Categories\n      </a>\n    </div>\n  </div>\n';
+;__p+='\n  '+
+( header )+
+'\n';
  } 
 ;__p+='\n\n<div class="bill ebill ';
  if (expandable) { 
@@ -619,6 +620,26 @@ __p+='<div class="error-container">\n  <div class="error"><span>There was an err
 return __p;
 };
 
+this["LT"]["templates"]["js/app/templates/template-header.html"] = function(obj){
+var __p='';var print=function(){__p+=Array.prototype.join.call(arguments, '')};
+with(obj||{}){
+__p+='<div class="ls-header-container">\n  <div class="ls-header">\n    <a class="all-categories-link" href="#/">\n      <img src="'+
+( LT.options.imagePath )+
+'back-100-85.png" />\n      All Categories\n    </a>\n    \n    <span class="categories-nav">\n      &nbsp;&nbsp;|&nbsp;&nbsp;\n      ';
+ _.each(categories, function(c) { 
+;__p+='\n        <a class="" href="#/category/'+
+( c.id )+
+'" title="'+
+( c.title )+
+'">\n          '+
+( (c.short_title) ? c.short_title : c.title.split(' ')[0] )+
+'\n        </a>&nbsp;&nbsp;\n      ';
+ }) 
+;__p+='\n    </span>\n  </div>\n</div>';
+}
+return __p;
+};
+
 this["LT"]["templates"]["js/app/templates/template-legislator.html"] = function(obj){
 var __p='';var print=function(){__p+=Array.prototype.join.call(arguments, '')};
 with(obj||{}){
@@ -672,9 +693,9 @@ var __p='';var print=function(){__p+=Array.prototype.join.call(arguments, '')};
 with(obj||{}){
 __p+='';
  if (typeof detailed != 'undefined' && detailed)  { 
-;__p+='\n  <div class="ls-header-container">\n    <div class="ls-header">\n      <a class="all-categories-link" href="#/">\n        <img src="'+
-( LT.options.imagePath )+
-'back-100-85.png" />\n        All Categories\n      </a>\n    </div>\n  </div>\n';
+;__p+='\n  '+
+( header )+
+'\n';
  } 
 ;__p+='\n\n<div class="osbill">\n  <h4>\n    ';
  if (typeof title != 'undefined') { 
@@ -1136,7 +1157,7 @@ return __p;
     model: LT.CategoryModel,
     
     comparator: function(cat) {
-      return (cat.get('title').toLowerCase() === 'recently updated') ?
+      return (cat.get('title').toLowerCase().indexOf('recent') !== -1) ?
         'zzzzz' : cat.get('title');
     }
   });
@@ -1194,6 +1215,7 @@ return __p;
       LT.utils.getTemplate('template-osbill', this.templates, 'osbill');
       LT.utils.getTemplate('template-category', this.templates, 'category');
       LT.utils.getTemplate('template-categories', this.templates, 'categories');
+      LT.utils.getTemplate('template-header', this.templates, 'header');
       
       // Bind all
       _.bindAll(this);
@@ -1240,7 +1262,8 @@ return __p;
       
       this.$el.html(this.templates.category({
         category: category.toJSON(),
-        templates: this.templates
+        templates: this.templates,
+        header: this.renderHeader()
       }));
       this.getLegislators().navigationGlue();
     },
@@ -1254,7 +1277,8 @@ return __p;
       this.$el.html(this.templates.ebill({
         bill: bill.toJSON(),
         expandable: false,
-        templates: this.templates
+        templates: this.templates,
+        header: this.renderHeader()
       }));
       this.getLegislators().addTooltips().checkOverflows().navigationGlue();
     },
@@ -1263,9 +1287,16 @@ return __p;
       this.$el.html(this.templates.osbill({
         bill: bill.toJSON(),
         detailed: true,
-        templates: this.templates
+        templates: this.templates,
+        header: this.renderHeader()
       }));
       this.getLegislators().addTooltips().checkOverflows().navigationGlue();
+    },
+    
+    renderHeader: function() {
+      return this.templates.header({
+        categories: LT.app.categories.toJSON()
+      });
     },
     
     expandBill: function(e) {
@@ -1569,7 +1600,7 @@ return __p;
       if (!this.madeRecentCategory) {
         var category = {
           id: 'recent',
-          title: 'Recently Updated',
+          title: 'Recent Actions',
           description: 'The following bills have been updated in the past ' +
             LT.options.recentChangeThreshold + ' days.',
           image: 'RecentUpdatedBill.png'
