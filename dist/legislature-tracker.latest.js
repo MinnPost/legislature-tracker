@@ -331,7 +331,8 @@ else {
       substituteMatch: /substituted/i
     },
     imagePath: './css/images/',
-    recentChangeThreshold: 7
+    recentChangeThreshold: 7,
+    tabletopOptions: {}
   };
   
 })(jQuery, window);
@@ -1447,12 +1448,12 @@ return __p;
       this.mainView.loading();
       
       // Get data from spreadsheets
-      this.tabletop = Tabletop.init({
+      this.tabletop = Tabletop.init(_.extend(LT.options.tabletopOptions, {
         key: LT.options.eKey,
         callback: this.loadEBills,
         callbackContext: this,
         wanted: LT.options.sheetsWanted
-      });
+      }));
     },
     
     // Function to call when bill data is loaded
