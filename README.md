@@ -48,6 +48,10 @@ For fetching models, specifically Open States data, we wrap fetching:
       errorFunction
     );
 
+#### Google Spreadsheets
+
+This application uses [Tabletop.js](https://github.com/jsoma/tabletop) to read in data from Google Spreadsheets.  Due to the fact that Google does not guarantee up time or ability to handle requests, it is good practice to cache the outputs for production.  Tabletop has some recent additions to handle proxy via saving the outputs to a place like S3, but not a traditional proxy server like [gs-proxy](https://github.com/MinnPost/gs-proxy).  So, at the moment, this project is using a [forked version of Tabletop](https://github.com/zzolo/tabletop) (see [pull request](https://github.com/jsoma/tabletop/pull/14)).
+
 ### Data Models
 
 There are currently models for each Open States object.  This aids in easily

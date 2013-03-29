@@ -94,7 +94,7 @@
     <script type="text/javascript" src="./js/lib/jquery.qtip.master-20130221.min.js"></script>
     <script type="text/javascript" src="./js/lib/underscore.1.4.3.min.js"></script>
     <script type="text/javascript" src="./js/lib/backbone.0.9.10.min.js"></script>
-    <script type="text/javascript" src="./js/lib/tabletop.master-20130121.min.js"></script>
+    <script type="text/javascript" src="./js/lib/tabletop-zzolo.master-20130329.min.js"></script>
     <script type="text/javascript" src="./js/lib/moment.2.0.0.min.js"></script>
     
     <script type="text/javascript" src="./js/app/utils.js"></script>
@@ -114,7 +114,10 @@
           OSKey: '49c5c72c157d4b37892ddb52c63d06be',
           eKey: '0AtX8MXQ89fOKdFNaY1Nzc3p6MjJQdll1VEZwSDkzWEE',
           legImageProxy: 'http://i-mage-proxerific.herokuapp.com/resize?size=100x100&url=',
-          aggregateURL: 'https://api.scraperwiki.com/api/1.0/datastore/sqlite?format=jsondict&name=minnesota_bills_counts_via_open_states&query=select%20*%20from%20%60swdata%60%20&callback=?'
+          aggregateURL: 'https://api.scraperwiki.com/api/1.0/datastore/sqlite?format=jsondict&name=minnesota_bills_counts_via_open_states&query=select%20*%20from%20%60swdata%60%20&callback=?',
+          tabletopOptions: {
+            proxyPrefix: 'http://gs-proxy.herokuapp.com/proxy?url='
+          }
         };
         
         var app = new LT.Application(options);

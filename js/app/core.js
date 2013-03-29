@@ -262,7 +262,8 @@ else {
       substituteMatch: /substituted/i
     },
     imagePath: './css/images/',
-    recentChangeThreshold: 7
+    recentChangeThreshold: 7,
+    tabletopOptions: {}
   };
   
 })(jQuery, window);
