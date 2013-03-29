@@ -108,7 +108,7 @@
     expandBill: function(e) {
       e.preventDefault();
       var $this = $(e.target);
-      var text = [ 'More details', 'Less details' ];
+      var text = [ 'More detail', 'Less detail' ];
       var current = $this.text();
       
       $this.text((current === text[0]) ? text[1] : text[0]);
