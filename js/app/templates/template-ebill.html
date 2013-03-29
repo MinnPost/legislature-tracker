@@ -11,7 +11,7 @@
       
       <img class="upper <% if (bill.actions.upper) { %>passed<% } %>" src="<%= LT.options.imagePath %>PassedSenate.png" title="<% if (bill.actions.upper) { %>Passed Senate<% } %>" />
       
-      <img class="conference <% if (bill.bill_type.conference) { %>passed<% } %>" src="<%= LT.options.imagePath %>InConferenceCommittee.png" title="<% if (bill.bill_type.conference) { %>In conference committee<% } %>" />
+      <img class="conference <% if (bill.bill_type.conference) { %>passed<% } %>" src="<%= LT.options.imagePath %>InConferenceCommittee.png" title="<% if (bill.bill_type.conference) { %>Conference bill created<% } %>" />
       
       <img class="signed <% if (bill.actions.signed) { %>passed<% } %>" src="<%= LT.options.imagePath %>SignedIntoLaw.png" title="<% if (bill.actions.signed) { %>Signed into law by the Governor<% } %>" />
     </div>
