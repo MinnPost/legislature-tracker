@@ -553,9 +553,9 @@ __p+='';
  }) 
 ;__p+='\n    </div>\n    \n    ';
  if (expandable) { 
-;__p+='\n      <a href="#" class="bill-expand">More details</a>\n      <a href="#/bill/'+
+;__p+='\n      <a href="#" class="bill-expand">More detail</a>\n      <a href="#/bill/'+
 ( encodeURI(bill.bill) )+
-'" class="bill-details-link">More details</a>\n    ';
+'" class="bill-details-link">More detail</a>\n    ';
  } 
 ;__p+='\n  </div>\n  \n  <div class="bill-bottom">\n    ';
  if (_.isArray(bill.links) && bill.links.length > 0) { 
@@ -767,13 +767,17 @@ __p+='';
  }) 
 ;__p+='\n      </div>\n    </div>\n  ';
  } 
-;__p+='\n  \n  <div class="sources">\n    <h5>Full Text</h5>\n    ';
+;__p+='\n  \n  <div class="sources">\n    <h5>Full Text</h5>\n    \n    <a href="https://www.revisor.mn.gov/bills/text.php?number='+
+( encodeURI(bill.bill_id) )+
+'&session=ls88&version=list&session_number=0&session_year=2013" target="_blank">Full text of '+
+( bill.bill_id )+
+'.</a> <br />\n    \n    ';
  _.each(bill.sources, function(s) { 
 ;__p+='\n      <a href="'+
 ( s.url )+
-'" target="_blank">Link to '+
+'" target="_blank">'+
 ( bill.bill_id )+
-' on the Minnesota State Legislature site.</a> <br />\n    ';
+' on the MN State Legislature site.</a> <br />\n    ';
  }) 
 ;__p+='\n  </div>\n</div>';
 }
@@ -1302,7 +1306,7 @@ return __p;
     expandBill: function(e) {
       e.preventDefault();
       var $this = $(e.target);
-      var text = [ 'More details', 'Less details' ];
+      var text = [ 'More detail', 'Less detail' ];
       var current = $this.text();
       
       $this.text((current === text[0]) ? text[1] : text[0]);
