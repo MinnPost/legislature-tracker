@@ -16,6 +16,10 @@ Built versions will only be done for tagged releases.
 1. Run: ```grunt```
 1. Tag release: ```git tag 0.1.1```
 
+## Hacks
+
+Currently, Tabletop.js extends Array so that indexOf is available.  This has some implications in browsers, especially in the context of for..in loops.  Because of bad code in our site that is not easily updatable, we are using a [custom version of Tabletop.js](https://github.com/zzolo/tabletop).  See [pull request](https://github.com/jsoma/tabletop/pull/15).
+
 ## Deploying
 
 This is specific to MinnPost, but could easily be changed if needed.
