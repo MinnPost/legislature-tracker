@@ -496,7 +496,7 @@ __p+='';
 ( LT.options.imagePath )+
 'InConferenceCommittee.png" title="';
  if (bill.bill_type.conference) { 
-;__p+='In conference committee';
+;__p+='Conference bill created';
  } 
 ;__p+='" />\n      \n      <img class="signed ';
  if (bill.actions.signed) { 
