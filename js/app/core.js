@@ -166,7 +166,6 @@ else {
       
       // Add some things to fit format of Open States actions
       row.type = [ 'custom' ];
-      
       return row;
     });
   };
