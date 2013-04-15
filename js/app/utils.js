@@ -37,9 +37,9 @@
       // there.
       var output = '';
       var templateBreak = '<!-- break -->';
-      var templateStart = '<span class="ellipsis-start">[[[TEXT]]]</span>';
-      var templateEllipsis = '<span class="ellipsis-ellipsis">...</span>';
-      var templateEnd = '<span class="ellipsis-end">[[[TEXT]]]</span>';
+      var templateStart = '<ins class="ellipsis-start">[[[TEXT]]]</ins>';
+      var templateEllipsis = '<ins class="ellipsis-ellipsis">...</ins>';
+      var templateEnd = '<ins class="ellipsis-end">[[[TEXT]]]</ins>';
       var slice, sliceStart, sliceEnd, words;
       
       // Look for break, otherwise use word count

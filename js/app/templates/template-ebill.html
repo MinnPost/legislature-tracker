@@ -27,9 +27,13 @@
       </div>
     <% } %>
     
-    <p class="description">
-      <%= _.ellipsisText(bill.description, 60) %>
-    </p>
+    <div class="description">
+      <% if (bill.description.indexOf('<p') < 3) { %>
+        <%= _.ellipsisText(bill.description, 60) %>
+      <% } else { %>
+        <p><%= _.ellipsisText(bill.description, 60) %></p>
+      <% } %>
+    </div>
     
     <div class="e-bill-categories">
       <strong>Categories:</strong>
