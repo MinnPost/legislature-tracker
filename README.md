@@ -8,6 +8,12 @@ Currently in action at [MinnPost](http://www.minnpost.com/data/2013/04/minnesota
 
 ## Install
 
+This is a frontend application.  Include the corresponding JS and CSS in your HTML page, then call the following in your JS (see options below);
+
+```
+var app = new LT.Application(options);
+```
+
 Currently, this application has specific parts to MinnPost, but the goal of the project is to make it easy for anyone else to use.  The best example right now is: ```example-minnpost.html```
 
 ### Options
@@ -23,6 +29,49 @@ When creating a new Legislature Tracker object, you can set the following option
 * ```legImageProxy```: If you want to proxy images from Open States, but in the URL prefix, like ```http://proxy.com/?url=```.  For instance we [this custom proxy](https://github.com/MinnPost/i-mage-proxerific).
 * ```aggregateURL```: An API JSON feed to get some aggregate bill counts.  This is specific to MinnPost (MN).
 * ```tabletopOptions```: An object to override any of the [Tabletop.js](https://github.com/jsoma/tabletop) options.
+
+### Google spreadsheets setup
+
+See [this spreadsheet for an example](https://docs.google.com/a/minnpost.com/spreadsheet/ccc?key=0AtX8MXQ89fOKdFNaY1Nzc3p6MjJQdll1VEZwSDkzWEE#gid=1).  There are options to change the column name mapping, but this is not well supported yet.
+
+First make sure you have 3 sheets with the following columns:
+
+* ```Categories```
+    * ```category_id```
+    * ```title```
+    * ```short_title```: Used for the top menu list.
+    * ```description```
+    * ```links```: Links field, see below.
+    * ```image```: Name of image for the category.  These currently live in the images directory.
+* ```Bills```
+    * ```bill```: The primary bill name, like ```SF 789```.
+    * ```companion_bill```
+    * ```conference_bill```
+    * ```categories```: Category IDs separated by commas.
+    * ```title```
+    * ```description```: Descriptions get split up when in the category list view and have a "more details" link.  By default, this is based on the number of words.  To handle longer texts with HTML, you can use ```<!-- break -->``` to define that break point.
+    * ```links```: Links field, see below.
+* ```Events``` (this is not fully supported yet)
+
+#### Link field formatting
+
+There are a few fields that are a list of links.  You should use this subject so that they are parsed correctly.  Do note that the parser is pretty rudimentary so don't expect much.
+
+```
+"Link text title|http://www.example.com/123", "Another link text title|http://www.example.com/154"
+``` 
+
+### How does your legislature work?
+
+The Open States data is very good structured data about bills, but it is basic data that does not account for the subtleties of how legislatures work.
+
+Currently, this application is based on how the Minnesota State Legislature works.  This means there are certain assumptions, such as the following:
+
+* Companion bills are manually designated.
+* When both primary and companion bills pass, but there are difference to reconcile, there is often a conference bill.
+* Sometimes a companion bill will get substituted, meaning it gets dropped and the primary bill is only used.
+* The legislature may actually re-use a bill number for difference bills.
+
 
 ## Building
 
