@@ -96,6 +96,10 @@ The basic idea of the application is pulling together editorial knowledge about 
 
 Each editorial (or meta) bill refers to one or more Open States (or actual) bill.
 
+### Frameworks and libraries
+
+This applications uses Tableop.js, jQuery, jQuery.jsonp, Underscore, Backbone, Moment.js, es5-shim.
+
 ### Caching
 
 To ensure that both memory and network usage is minimized, there is some basic caching happening.
