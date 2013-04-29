@@ -358,6 +358,13 @@
 }
 
 /**
+ * Sources
+ */
+.ls .sources a {
+  font-size: .75em;
+}
+
+/**
  * Bill description
  */
 .ls .bill .description .ellipsis-ellipsis {

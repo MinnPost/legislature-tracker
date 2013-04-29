@@ -65,12 +65,9 @@
   <% } %>
   
   <div class="sources">
-    <h5>Full Text</h5>
-    
-    <a href="https://www.revisor.mn.gov/bills/text.php?number=<%= encodeURI(bill.bill_id) %>&session=ls88&version=list&session_number=0&session_year=2013" target="_blank">Full text of <%= bill.bill_id %>.</a> <br />
-    
+    <h5>Sources and full text</h5>
     <% _.each(bill.sources, function(s) { %>
-      <a href="<%= s.url %>" target="_blank"><%= bill.bill_id %> on the MN State Legislature site.</a> <br />
+      <a href="<%= s.url %>" target="_blank"><%= s.url %></a> <br />
     <% }) %>
   </div>
 </div>
