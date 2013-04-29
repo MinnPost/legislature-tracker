@@ -19,29 +19,48 @@
       
       return str;
     },
+    
     cssClass: function(str) {
       return str.replace(/[^a-z0-9]/g, '-');
     },
+    
     numberFormatCommas: function(number) {
       return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
     },
+    
     ellipsisText: function(text, wordCount) {
-      var words = text.split(' ');
+      // The default is to count words and create an ellipsis break
+      // there that will be handled by showing and hiding the relevant
+      // parts on details and non-detailed views.
+      //
+      // But if the separator is found, we will separate the text
+      // there.
       var output = '';
-      var templateStart = '<span class="ellipsis-start">[[[TEXT]]]</span>';
-      var templateEllipsis = '<span class="ellipsis-ellipsis">...</span>';
-      var templateEnd = '<span class="ellipsis-end">[[[TEXT]]]</span>';
-      var sliceStart, sliceEnd;
+      var templateBreak = '<!-- break -->';
+      var templateStart = '<ins class="ellipsis-start">[[[TEXT]]]</ins>';
+      var templateEllipsis = '<ins class="ellipsis-ellipsis">...</ins>';
+      var templateEnd = '<ins class="ellipsis-end">[[[TEXT]]]</ins>';
+      var slice, sliceStart, sliceEnd, words;
       
-      if (words.length <= wordCount) {
-        output += templateStart.replace('[[[TEXT]]]', text);
+      // Look for break, otherwise use word count
+      if (text.indexOf(templateBreak) !== -1) {
+        slice = text.indexOf(templateBreak);
+        output += templateStart.replace('[[[TEXT]]]', text.substring(0, slice)) + ' ';
+        output += templateEllipsis + ' ';
+        output += templateEnd.replace('[[[TEXT]]]', text.substring(slice, text.length)) + ' ';
       }
       else {
-        sliceStart = words.slice(0, wordCount);
-        sliceEnd = words.slice(wordCount);
-        output += templateStart.replace('[[[TEXT]]]', sliceStart.join(' ')) + ' ';
-        output += templateEllipsis + ' ';
-        output += templateEnd.replace('[[[TEXT]]]', sliceEnd.join(' ')) + ' ';
+        words = text.split(' ');
+        if (words.length <= wordCount) {
+          output += templateStart.replace('[[[TEXT]]]', text);
+        }
+        else {
+          sliceStart = words.slice(0, wordCount);
+          sliceEnd = words.slice(wordCount);
+          output += templateStart.replace('[[[TEXT]]]', sliceStart.join(' ')) + ' ';
+          output += templateEllipsis + ' ';
+          output += templateEnd.replace('[[[TEXT]]]', sliceEnd.join(' ')) + ' ';
+        }
       }
       
       return output;
@@ -235,7 +254,6 @@ else {
       
       // Add some things to fit format of Open States actions
       row.type = [ 'custom' ];
-      
       return row;
     });
   };
@@ -530,9 +548,17 @@ __p+='';
 ( bill.newest_action.date.fromNow() )+
 '.\n      </div>\n    ';
  } 
-;__p+='\n    \n    <p class="description">\n      '+
+;__p+='\n    \n    <div class="description">\n      ';
+ if (bill.description.indexOf('<p') < 3) { 
+;__p+='\n        '+
 ( _.ellipsisText(bill.description, 60) )+
-'\n    </p>\n    \n    <div class="e-bill-categories">\n      <strong>Categories:</strong>\n      ';
+'\n      ';
+ } else { 
+;__p+='\n        <p>'+
+( _.ellipsisText(bill.description, 60) )+
+'</p>\n      ';
+ } 
+;__p+='\n    </div>\n    \n    <div class="e-bill-categories">\n      <strong>Categories:</strong>\n      ';
  _.each(bill.categories, function(c, i) { 
 ;__p+='\n        <a href="#/category/'+
 ( c.get('id') )+

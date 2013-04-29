@@ -32,6 +32,10 @@
   font-family: Georgia, "Times New Roman", Times,serif;
 }
 
+.ls ins {
+  text-decoration: none;
+}
+
 /**
  * General styles
  */
@@ -344,14 +348,38 @@
 /**
  * Bill description
  */
-.ls .bill.is-expandable .description .ellipsis-end {
+.ls .bill .description .ellipsis-ellipsis {
   display: none;
+}
+.ls .bill.is-expandable .description .ellipsis-ellipsis {
+  display: inline;
 }
 .ls .bill.is-expandable.expanded .description .ellipsis-ellipsis {
   display: none;
 }
+
+.ls .bill.is-expandable .description .ellipsis-end {
+  display: none;
+}
 .ls .bill.is-expandable.expanded .description .ellipsis-end {
   display: inline;
+}
+
+.ls .bill.is-expandable .description .ellipsis-start p {
+  display: inline;
+}
+.ls .bill.is-expandable.expanded .description .ellipsis-start p {
+  display: block;
+}
+
+.ls .bill .description .ellipsis-start p:last-child {
+  margin-bottom: 1em;
+}
+.ls .bill.is-expandable .description .ellipsis-start p:last-child {
+  margin-bottom: 0;
+}
+.ls .bill.is-expandable.expanded .description .ellipsis-start p:last-child {
+  margin-bottom: 1em;
 }
 
 
