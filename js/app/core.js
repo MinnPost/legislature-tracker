@@ -155,7 +155,7 @@ else {
         LT.utils.getModel('OSBillModel', 'bill_id', { bill_id: row.bill }) : undefined;
       row.bill_companion = (row.bill_companion) ?
         LT.utils.getModel('OSBillModel', 'bill_id', { bill_id: row.bill_companion }) : undefined;
-      row.bill_conference = (row.bill_conference) ?
+      row.bill_conference = (row.bill_conference && LT.options.conferenceBill) ?
         LT.utils.getModel('OSBillModel', 'bill_id', { bill_id: row.bill_conference }) : undefined;
       return row;
     });
@@ -272,7 +272,8 @@ else {
     imagePath: './css/images/',
     recentChangeThreshold: 7,
     tabletopOptions: {},
-    scrollOffset: false
+    scrollOffset: false,
+    conferenceBill: true
   };
   
 })(jQuery, window);
