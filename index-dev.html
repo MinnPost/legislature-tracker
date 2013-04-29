@@ -23,9 +23,10 @@
   <!-- Application libraries and JS -->
   <script type="text/javascript" src="./js/lib/jquery.1.8.3.min.js"></script>
   <script type="text/javascript" src="./js/lib/jquery.jsonp-2.4.0.min.js"></script>
+  <script type="text/javascript" src="./js/lib/jquery.qtip.master-20130221.min.js"></script>
   <script type="text/javascript" src="./js/lib/underscore.1.4.3.min.js"></script>
   <script type="text/javascript" src="./js/lib/backbone.0.9.10.min.js"></script>
-  <script type="text/javascript" src="./js/lib/tabletop.master-20130121.min.js"></script>
+  <script type="text/javascript" src="./js/lib/tabletop-zzolo.master-20130402.min.js"></script>
   <script type="text/javascript" src="./js/lib/moment.2.0.0.min.js"></script>
   
   <script type="text/javascript" src="./js/app/utils.js"></script>
@@ -43,9 +44,9 @@
         el: '#legislature-tracker-container',
         state: 'MN', 
         session: '2013-2014',
-        apiKey: '49c5c72c157d4b37892ddb52c63d06be',
-        dataKey: '0AtX8MXQ89fOKdFNaY1Nzc3p6MjJQdll1VEZwSDkzWEE',
-        title: 'Minnesota 2013 Legislative Session Tracker'
+        OSKey: '49c5c72c157d4b37892ddb52c63d06be',
+        eKey: '0AtX8MXQ89fOKdFNaY1Nzc3p6MjJQdll1VEZwSDkzWEE',
+        legImageProxy: 'http://i-mage-proxerific.herokuapp.com/resize?size=100x100&url=',
       };
       
       var app = new LT.Application(options);
