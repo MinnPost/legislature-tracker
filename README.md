@@ -38,12 +38,10 @@ See [this spreadsheet for an example](https://docs.google.com/a/minnpost.com/spr
 First make sure you have 3 sheets with the following columns:
 
 * ```Categories```
-    * ```category_id```
-    * ```title```
-    * ```short_title```: Used for the top menu list.
-    * ```description```
-    * ```open_states_subjects```
-    * ```legislator_subjects```
+    * ```category_id```: the identifier that will be used in URL linking.  Should be something like ```social_issues```.
+    * ```title```: The text title.
+    * ```short_title```: Used for the top menu list.  If none is given, the first word from the category title will be used.
+    * ```description```: The full description.
     * ```links```: Links field, see below.
     * ```image```: Name of image for the category.  These currently live in the images directory.
 * ```Bills```
