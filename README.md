@@ -24,7 +24,7 @@ When creating a new Legislature Tracker object, you can set the following option
 * ```state```: The two character state code as used by Open States.
 * ```session```: The session key as used on Open States, like ```2013-2014```.
 * ```OSKey```: Your Open States API Key.
-* ```eKey```: Your Google Spreadsheet identifier.
+* ```eKey```: Your Google Spreadsheet identifier. Be sure to publish your spreadsheet (File -> Publish to the web) to make it available via the Google Spreadsheet API.
 * ```imagePath```:  'https://s3.amazonaws.com/data.minnpost/projects/legislature-tracker/images/',
 * ```legImageProxy```: If you want to proxy images from Open States, but in the URL prefix, like ```http://proxy.com/?url=```.  For instance we [this custom proxy](https://github.com/MinnPost/i-mage-proxerific).
 * ```aggregateURL```: An API JSON feed to get some aggregate bill counts.  This is specific to MinnPost (MN).
@@ -41,6 +41,8 @@ First make sure you have 3 sheets with the following columns:
     * ```title```
     * ```short_title```: Used for the top menu list.
     * ```description```
+    * ```open_states_subjects```
+    * ```legislator_subjects```
     * ```links```: Links field, see below.
     * ```image```: Name of image for the category.  These currently live in the images directory.
 * ```Bills```
