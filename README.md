@@ -14,11 +14,11 @@ This is a frontend application.  Include the corresponding JS and CSS in your HT
 var app = new LT.Application(options);
 ```
 
-Currently, this application has specific parts to MinnPost, but the goal of the project is to make it easy for anyone else to use.  The best example right now is: ```example-minnpost.html```
+See ```index.html``` for a basic example using the 2013-2014 MN Legislature.
 
 ### Options
 
-When creating a new Legislature Tracker object, you can set the following options.  All available options and their defaults are in ```js/app/core.js```.
+When creating a new Legislature Tracker object, you can set the following options.  All default options are in ```js/app/core.js```.
 
 * ```el```: The element selector that will hold the application.
 * ```state```: The two character state code as used by Open States.
@@ -55,7 +55,7 @@ First make sure you have 3 sheets with the following columns:
 
 #### Link field formatting
 
-There are a few fields that are a list of links.  You should use this subject so that they are parsed correctly.  Do note that the parser is pretty rudimentary so don't expect much.
+There are a few fields that are a list of links.  You should use this format so that they are parsed correctly.  Do note that the parser is pretty rudimentary so don't expect much.
 
 ```
 "Link text title|http://www.example.com/123", "Another link text title|http://www.example.com/154"
@@ -70,7 +70,7 @@ Currently, this application is based on how the Minnesota State Legislature work
 * Companion bills are manually designated.
 * When both primary and companion bills pass, but there are difference to reconcile, there is often a conference bill.
 * Sometimes a companion bill will get substituted, meaning it gets dropped and the primary bill is only used.
-* The legislature may actually re-use a bill number for difference bills.
+* The legislature may actually re-use a bill number for difference bills.  In the MN Leg, this is marked as an action with "substitued" in it.
 
 
 ## Building
