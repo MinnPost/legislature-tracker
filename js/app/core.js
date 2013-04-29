@@ -152,8 +152,6 @@ else {
     return _.map(categories, function(row) {
       LT.parse.translateFields(LT.options.fieldTranslations.eCategories, row);
       row.links = LT.parse.eLinks(row.links);
-      row.open_states_subjects = LT.parse.csvCategories(row.open_states_subjects);
-      row.legislator_subjects = LT.parse.csvCategories(row.legislator_subjects);
       return row;
     });
   };
@@ -228,9 +226,7 @@ else {
     fieldTranslations: {
       eCategories: {
         'id': 'categoryid',
-        'short_title': 'shorttitle',
-        'open_states_subjects': 'openstatessubjects',
-        'legislator_subjects': 'legislatorsubjects'
+        'short_title': 'shorttitle'
       },
       eBills: {
         'bill': 'bill',
