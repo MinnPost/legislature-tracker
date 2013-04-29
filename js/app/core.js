@@ -262,4 +262,10 @@ else {
     scrollOffset: false
   };
   
+  LT.log = function(text){
+    if (!_.isUndefined(window.console)){
+      window.console.log(text);
+    }
+  }
+  
 })(jQuery, window);
