@@ -196,7 +196,7 @@
         }
         this.set('last_updated_at', last_updated_at);
       }else if(_.isUndefined(this.get('last_updated_at')) && !p.get('updated_at')){
-        console.log("Couldn't fetch primary bill data from OpenStates. Is its bill number " + this.get('bill_primary').get("bill_id") + " formatted properly?");
+        LT.log("Couldn't fetch primary bill data from OpenStates. Is its bill number " + this.get('bill_primary').get("bill_id") + " formatted properly?");
       }
       
       return this.get('last_updated_at');
