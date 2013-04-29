@@ -258,7 +258,8 @@ else {
     },
     imagePath: './css/images/',
     recentChangeThreshold: 7,
-    tabletopOptions: {}
+    tabletopOptions: {},
+    scrollOffset: false
   };
   
 })(jQuery, window);
