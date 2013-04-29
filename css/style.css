@@ -36,6 +36,18 @@
   text-decoration: none;
 }
 
+.ls a,
+.ls a:hover,
+.ls a:visited {
+  color: #1568A2;
+  text-decoration: none;
+}
+
+.ls a:hover,
+.ls a:visited :hover{
+  text-decoration: underline;
+}
+
 /**
  * General styles
  */
