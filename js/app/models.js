@@ -314,6 +314,11 @@
       
       this.set('actions', actions);
       this.set('bill_type', type);
+      
+      // Description
+      if (!this.get('description')) {
+        this.set('description', this.get('bill_primary').get('summary'));
+      }
     }
   });
   

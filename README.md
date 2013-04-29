@@ -51,7 +51,7 @@ First make sure you have 3 sheets with the following columns:
     * ```conference_bill```
     * ```categories```: Category IDs separated by commas.
     * ```title```
-    * ```description```: Descriptions get split up when in the category list view and have a "more details" link.  By default, this is based on the number of words.  To handle longer texts with HTML, you can use ```<!-- break -->``` to define that break point.
+    * ```description```: Descriptions get split up when in the category list view and have a "more details" link.  By default, this is based on the number of words.  To handle longer texts with HTML, you can use ```<!-- break -->``` to define that break point.  Also note that is no description is given, then the application will use the primary bill summary which may or may not be useful and significant.
     * ```links```: Links field, see below.
 * ```Events``` (this is not fully supported yet)
 
