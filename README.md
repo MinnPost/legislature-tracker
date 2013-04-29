@@ -45,7 +45,7 @@ First make sure you have 3 sheets with the following columns:
     * ```links```: Links field, see below.
     * ```image```: Name of image for the category.  These currently live in the images directory.
 * ```Bills```
-    * ```bill```: The primary bill name, like ```SF 789```.
+    * ```bill```: The primary bill name, like ```SF 789```.  This should be formatted like ```A 1234``` with a space between the letter/chamber-appreviation and the number which should have no leading zeros.
     * ```companion_bill```
     * ```conference_bill```
     * ```categories```: Category IDs separated by commas.

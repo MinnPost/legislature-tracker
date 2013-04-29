@@ -29,6 +29,19 @@ else {
   LT.cache.models = {};
   
   /**
+   * Wrapper around console.log so older browsers don't
+   * complain.
+   *
+   * Shoud be used sparingly where throwing errors is not
+   * appropriate.
+   */
+  LT.log = function(text) {
+    if (!_.isUndefined(window.console)) {
+      window.console.log(text);
+    }
+  };
+  
+  /**
    * Utility functions for LT
    */
   LT.utils = {};
@@ -261,11 +274,5 @@ else {
     tabletopOptions: {},
     scrollOffset: false
   };
-  
-  LT.log = function(text){
-    if (!_.isUndefined(window.console)){
-      window.console.log(text);
-    }
-  }
   
 })(jQuery, window);
