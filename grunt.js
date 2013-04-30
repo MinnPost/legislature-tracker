@@ -111,16 +111,16 @@ module.exports = function(grunt) {
       // See https://npmjs.org/package/grunt-s3
       //key: 'YOUR KEY',
       //secret: 'YOUR SECRET',
-      bucket: 'data.minnpost',
+      bucket: '<% grunt.option("s3dir") %><%= process.env.s3bucket %>',
       access: 'public-read',
       upload: [
         {
           src: 'dist/*',
-          dest: 'projects/legislature-tracker/'
+          dest: '<%= grunt.option("s3dir") %>'
         },
         {
           src: 'dist/images/*',
-          dest: 'projects/legislature-tracker/images/'
+          dest: '<%= grunt.option("s3dir") ? grunt.option("s3dir") + "images/" : "" %>'
         }
       ]
     }
@@ -134,6 +134,10 @@ module.exports = function(grunt) {
 
   // Default task.
   grunt.registerTask('default', 'lint clean jst concat min copy');
-  grunt.registerTask('mp-deploy', 's3');
+  
+  // Deploy task that uses environment variables.  Example
+  // grunt deploy --s3bucket="our_bucket" --s3dir="projects/leg-tracker/"
+  // Not working
+  grunt.registerTask('deploy', 's3');
 
 };

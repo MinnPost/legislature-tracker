@@ -89,9 +89,11 @@ Built versions will only be done for tagged releases.
 
 ## Deploying
 
-This is specific to MinnPost, but could easily be changed if needed.
+This is not currently working.  But the ideal would be an argument for bucket and directory to upload to s3.
 
-1. Uploads dist to S3: ```grunt mp-deploy```
+```
+grunt deploy --s3bucket="our_bucket" --s3dir="projects/leg-tracker/"
+```
 
 ## Architecture
 
