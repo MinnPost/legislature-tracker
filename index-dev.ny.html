@@ -40,7 +40,7 @@
   <!-- Run application -->
   <script type="text/javascript">
     (function($, w, undefined) {
-      var options = {
+      var options = _(LT.defaultOptions).extend({
         el: '#legislature-tracker-container',
         state: 'NY', 
         session: '2013-2014',
@@ -48,7 +48,7 @@
         eKey: '0Ag1Wo8bRevTLdE8tbmpFM1pCRXBWZUVvUE1kMFBGNEE',
         legImageProxy: '',
         conferenceBill: false
-      };
+      });
       options['wordTranslations']['chamber']['lower'] = 'Assembly';
 
       var app = new LT.Application(options);
