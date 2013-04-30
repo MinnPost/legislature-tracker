@@ -182,6 +182,11 @@
     navigationGlue: function() {
       var containerTop = this.$el.offset().top;
       var $navigation = $('.ls-header');
+    
+      // The header container should be as high as the
+      // the header so that it does not jump when
+      // its gets glued
+      $('.ls-header-container').height($navigation.outerHeight());
       
       $(w).scroll(function() {
         var $this = $(this);

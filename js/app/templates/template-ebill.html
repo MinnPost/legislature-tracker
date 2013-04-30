@@ -63,6 +63,17 @@
         </ul>
       </div>
     <% } %>
+    
+    <% if (_.isArray(bill.custom_events) && bill.custom_events.length > 0) { %>
+      <div class="custom-events">
+        <h4>Events</h4>
+        <ul class="custom-events-inner">
+          <% _.each(bill.custom_events, function(e) { %>
+            <li><strong><%= e.bill_id %> <%= e.action %></strong> on  <%= e.date.format('MMM DD, YYYY') %>: <%= e.description %></li>
+          <% }) %>
+        </ul>
+      </div>
+    <% } %>
 
     <% if (_.isObject(bill.bill_conference)) { %>
       <div class="conference-bill">
