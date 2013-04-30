@@ -88,10 +88,10 @@ Currently, this application is based on how the Minnesota State Legislature work
 
 Built versions will only be done for tagged releases.
 
-1. Uses [grunt](http://gruntjs.com/).  To install: ```npm install```
+1. Uses [grunt](http://gruntjs.com/).  To install: ```npm install -g grunt-cli && npm install```
 1. Update version in: ```package.json```
 1. Run: ```grunt```
-1. Tag release: ```git tag 0.1.1```
+1. Tag release with appropriate version: ```git tag 0.1.1```
 
 ## Deploying
 

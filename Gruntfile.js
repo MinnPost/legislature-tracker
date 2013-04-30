@@ -3,16 +3,17 @@ module.exports = function(grunt) {
 
   // Project configuration.
   grunt.initConfig({
-    pkg: '<json:package.json>',
+    pkg: grunt.file.readJSON('package.json'),
     meta: {
       banner: '/*! <%= pkg.title || pkg.name %> - v<%= pkg.version %> - ' +
-        '<%= grunt.template.today("yyyy-mm-dd") %>\n' +
-        '<%= pkg.homepage ? "* " + pkg.homepage + "\n" : "" %>' +
+        '<%= grunt.template.today("yyyy-mm-dd") + "\\n" %>' +
+        '<%= pkg.homepage ? "* " + pkg.homepage + "\\n" : "" %>' +
         '* Copyright (c) <%= grunt.template.today("yyyy") %> <%= pkg.author.name %>;' +
-        ' Licensed <%= _.pluck(pkg.licenses, "type").join(", ") %> */'
+        ' Licensed <%= _.pluck(pkg.licenses, "type").join(", ") %> */' + 
+        '<%= "\\n\\n" %>'
     },
-    lint: {
-      files: ['grunt.js', 'js/app/*.js']
+    jshint: {
+      files: ['Gruntfile.js', 'js/app/*.js']
     },
     clean: {
       folder: 'dist/'
@@ -22,38 +23,42 @@ module.exports = function(grunt) {
         options: {
           namespace: 'LT.templates'
         },
-        files: {
-          'dist/templates.js': ['js/app/templates/*.html']
+        templates: {
+          src: ['js/app/templates/*.html'],
+          dest: 'dist/templates.js'
         }
       }
     },
     concat: {
+      options: {
+        separator: '\r\n\r\n'
+      },
       dist: {
         src: ['js/app/utils.js', 'js/app/core.js', 'dist/templates.js', 'js/app/models.js', 'js/app/collections.js', 'js/app/views.js', 'js/app/app.js'],
         dest: 'dist/<%= pkg.name %>.<%= pkg.version %>.js'
       },
       dist_latest: {
-        src: '<config:concat.dist.src>',
+        src: ['<%= concat.dist.src %>'],
         dest: 'dist/<%= pkg.name %>.latest.js'
       },
       libs: {
         src: ['js/lib/underscore.1.4.3.min.js', 'js/lib/jquery.1.8.3.min.js', 'js/lib/jquery.jsonp-2.4.0.min.js', 'js/lib/jquery.qtip.master-20130221.min.js', 'js/lib/backbone.0.9.10.min.js', 'js/lib/tabletop-zzolo.master-20130402.min.js', 'js/lib/moment.2.0.0.min.js'],
         dest: 'dist/<%= pkg.name %>.libs.js',
-        separator: ';\r\n\r\n'
-      },
-      css_libs: {
-        src: ['css/lib/jquery.qtip.master-20130221.css'],
-        dest: 'dist/<%= pkg.name %>.libs.css',
-        separator: '\r\n\r\n'
+        options: {
+          separator: ';\r\n\r\n'
+        }
       }
     },
-    min: {
+    uglify: {
+      options: {
+        banner: '<%= meta.banner %>'
+      },
       dist: {
-        src: ['<banner:meta.banner>', '<config:concat.dist.dest>'],
+        src: ['<%= concat.dist.dest %>'],
         dest: 'dist/<%= pkg.name %>.<%= pkg.version %>.min.js'
       },
       dist_latest: {
-        src: ['<banner:meta.banner>', '<config:concat.dist_latest.dest>'],
+        src: ['<%= concat.dist_latest.dest %>'],
         dest: 'dist/<%= pkg.name %>.latest.min.js'
       }
     },
@@ -71,39 +76,19 @@ module.exports = function(grunt) {
         }
       },
       images: {
-        files: {
-          'dist/images/': 'css/images/*'
-        }
+        files: [
+          {
+            cwd: './css/images/',
+            expand: true,
+            filter: 'isFile',
+            src: ['*'],
+            dest: 'dist/images/'
+          }
+        ]
       }
-    },
-    watch: {
-      files: '<config:lint.files>',
-      tasks: 'lint'
-    },
-    jshint: {
-      options: {
-        curly: true,
-        eqeqeq: true,
-        immed: true,
-        latedef: true,
-        newcap: true,
-        noarg: true,
-        sub: true,
-        undef: true,
-        boss: true,
-        eqnull: true,
-        browser: true
-      },
-      globals: {
-        jQuery: true,
-        _: true,
-        Backbone: true,
-        Tabletop: true,
-        LT: true,
-        moment: true
-      }
-    },
-    uglify: {},
+    }
+    
+    /*
     s3: {
       // This is specific to MinnPost
       //
@@ -124,16 +109,20 @@ module.exports = function(grunt) {
         }
       ]
     }
+    */
   });
   
   // Load plugin tasks
-  grunt.loadNpmTasks('grunt-clean');
+  grunt.loadNpmTasks('grunt-contrib-concat');
+  grunt.loadNpmTasks('grunt-contrib-jshint');
+  grunt.loadNpmTasks('grunt-contrib-uglify');
   grunt.loadNpmTasks('grunt-contrib-copy');
-  grunt.loadNpmTasks('grunt-s3');
   grunt.loadNpmTasks('grunt-contrib-jst');
+  grunt.loadNpmTasks('grunt-contrib-clean');
+  //grunt.loadNpmTasks('grunt-s3');
 
   // Default task.
-  grunt.registerTask('default', 'lint clean jst concat min copy');
+  grunt.registerTask('default', ['jshint', 'clean', 'jst', 'concat', 'uglify', 'copy']);
   
   // Deploy task that uses environment variables.  Example
   // grunt deploy --s3bucket="our_bucket" --s3dir="projects/leg-tracker/"
