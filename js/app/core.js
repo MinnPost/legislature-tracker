@@ -273,7 +273,8 @@ else {
     recentChangeThreshold: 7,
     tabletopOptions: {},
     scrollOffset: false,
-    conferenceBill: true
+    conferenceBill: true,
+    recentImage: 'RecentUpdatedBill.png'
   };
   
 })(jQuery, window);

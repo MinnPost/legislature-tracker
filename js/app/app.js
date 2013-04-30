@@ -188,7 +188,7 @@
           title: 'Recent Actions',
           description: 'The following bills have been updated in the past ' +
             LT.options.recentChangeThreshold + ' days.',
-          image: 'RecentUpdatedBill.png'
+          image: LT.options.recentImage
         };
         
         this.bills.each(function(b) {
