@@ -134,11 +134,11 @@ else {
     parsed.categories = LT.parse.eCategories(tabletop.sheets('Categories').all());
     parsed.bills = LT.parse.eBills(tabletop.sheets('Bills').all());
     parsed.events = LT.parse.eEvents(tabletop.sheets('Events').all());
-    
+
     // Add events into bills
     _.each(_.groupBy(parsed.events, 'bill_id'), function(e, b) {
       _.each(parsed.bills, function(bill, i) {
-        if (bill.bill_id === b) {
+        if (bill.bill === b) {
           parsed.bills[i].custom_events = e;
         }
       });
@@ -163,6 +163,7 @@ else {
         LT.utils.getModel('OSBillModel', 'bill_id', { bill_id: row.bill_companion }) : undefined;
       row.bill_conference = (row.bill_conference && LT.options.conferenceBill) ?
         LT.utils.getModel('OSBillModel', 'bill_id', { bill_id: row.bill_conference }) : undefined;
+      
       return row;
     });
   };

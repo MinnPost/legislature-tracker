@@ -56,7 +56,13 @@ First make sure you have 3 sheets with the following columns:
     * ```title```
     * ```description```: Descriptions get split up when in the category list view and have a "more details" link.  By default, this is based on the number of words.  To handle longer texts with HTML, you can use ```<!-- break -->``` to define that break point.  Also note that is no description is given, then the application will use the primary bill summary which may or may not be useful and significant.
     * ```links```: Links field, see below.
-* ```Events``` (this is not fully supported yet)
+* ```Events```: Events are custom events like the stalling of a bill or committee that would otherwise not show up in the data from Open States.  This shows up as part of the overall bill information below the description.
+    * ```bill```: The primary bill ID.
+    * ```date```: A date in a format like ```'YYYY-MM-DD'```
+    * ```chamber```: This should be ```upper``` or ```lower```.
+    * ```title```: A title for the event.
+    * ```description```: A short description for the event.
+    * ```links```: Any links associated with the event.
 
 #### Link field formatting
 

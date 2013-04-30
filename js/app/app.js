@@ -156,6 +156,7 @@
       var bill_id = decodeURI(bill);
       
       bill = this.bills.where({ bill: bill_id })[0];
+      
       if (!bill) {
         this.navigate('/bill-detail/' + encodeURI(bill_id), { trigger: true, replace: true });
         return;

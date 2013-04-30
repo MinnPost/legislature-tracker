@@ -329,6 +329,13 @@
       if (!this.get('description')) {
         this.set('description', this.get('bill_primary').get('summary'));
       }
+      
+      // Sort custom events
+      if (this.get('custom_events')) {
+        this.set('custom_events', _.sortBy(this.get('custom_events'), function(e, i) {
+          return (e.date.unix() + i) * -1;
+        }));
+      }
     }
   });
   
