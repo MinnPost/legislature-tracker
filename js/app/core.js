@@ -29,6 +29,19 @@ else {
   LT.cache.models = {};
   
   /**
+   * Wrapper around console.log so older browsers don't
+   * complain.
+   *
+   * Shoud be used sparingly where throwing errors is not
+   * appropriate.
+   */
+  LT.log = function(text) {
+    if (!_.isUndefined(window.console)) {
+      window.console.log(text);
+    }
+  };
+  
+  /**
    * Utility functions for LT
    */
   LT.utils = {};
@@ -142,7 +155,7 @@ else {
         LT.utils.getModel('OSBillModel', 'bill_id', { bill_id: row.bill }) : undefined;
       row.bill_companion = (row.bill_companion) ?
         LT.utils.getModel('OSBillModel', 'bill_id', { bill_id: row.bill_companion }) : undefined;
-      row.bill_conference = (row.bill_conference) ?
+      row.bill_conference = (row.bill_conference && LT.options.conferenceBill) ?
         LT.utils.getModel('OSBillModel', 'bill_id', { bill_id: row.bill_conference }) : undefined;
       return row;
     });
@@ -152,8 +165,6 @@ else {
     return _.map(categories, function(row) {
       LT.parse.translateFields(LT.options.fieldTranslations.eCategories, row);
       row.links = LT.parse.eLinks(row.links);
-      row.open_states_subjects = LT.parse.csvCategories(row.open_states_subjects);
-      row.legislator_subjects = LT.parse.csvCategories(row.legislator_subjects);
       return row;
     });
   };
@@ -228,9 +239,7 @@ else {
     fieldTranslations: {
       eCategories: {
         'id': 'categoryid',
-        'short_title': 'shorttitle',
-        'open_states_subjects': 'openstatessubjects',
-        'legislator_subjects': 'legislatorsubjects'
+        'short_title': 'shorttitle'
       },
       eBills: {
         'bill': 'bill',
@@ -262,7 +271,9 @@ else {
     },
     imagePath: './css/images/',
     recentChangeThreshold: 7,
-    tabletopOptions: {}
+    tabletopOptions: {},
+    scrollOffset: false,
+    conferenceBill: true
   };
   
   LT.log = function(text){

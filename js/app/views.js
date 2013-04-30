@@ -35,11 +35,13 @@
     loading: function() {
       // The first (and second) load, we don't actually 
       // want to force the scroll
-      if (this.initialLoad === true) {
-        this.resetScrollView();
-      }
-      else {
-        this.initialLoad = (_.isUndefined(this.initialLoad)) ? false : true;
+      if (_.isNumber(LT.options.scrollOffset)) {
+        if (this.initialLoad === true) {
+          this.resetScrollView();
+        }
+        else {
+          this.initialLoad = (_.isUndefined(this.initialLoad)) ? false : true;
+        }
       }
       this.$el.html(this.templates.loading({}));
       return this;
@@ -173,7 +175,7 @@
     },
     
     resetScrollView: function() {
-      $('html, body').animate({ scrollTop: this.$el.offset().top - 15 }, 1000);
+      $('html, body').animate({ scrollTop: this.$el.offset().top - LT.options.scrollOffset }, 1000);
       return this;
     },
     

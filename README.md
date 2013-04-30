@@ -14,17 +14,19 @@ This is a frontend application.  Include the corresponding JS and CSS in your HT
 var app = new LT.Application(options);
 ```
 
-Currently, this application has specific parts to MinnPost, but the goal of the project is to make it easy for anyone else to use.  The best example right now is: ```example-minnpost.html```
+See ```index.html``` for a basic example using the 2013-2014 MN Legislature.
 
 ### Options
 
-When creating a new Legislature Tracker object, you can set the following options.  All available options and their defaults are in ```js/app/core.js```.
+When creating a new Legislature Tracker object, you can set the following options.  All default options are in ```js/app/core.js```.
 
 * ```el```: The element selector that will hold the application.
 * ```state```: The two character state code as used by Open States.
 * ```session```: The session key as used on Open States, like ```2013-2014```.
 * ```OSKey```: Your Open States API Key.
 * ```eKey```: Your Google Spreadsheet identifier. Be sure to publish your spreadsheet (File -> Publish to the web) to make it available via the Google Spreadsheet API.
+* ```conferenceBill```: This should be ```true``` or ```false``` to enable the handling of conference bills.  A conference bill is a third bill (other than the primary or companion) that is used often when the two bills are diverging significantly.
+* ```scrollOffset```: This turns on auto scrolling which will scroll the view window to the top of the application after the first click.  This is helpful if it is embedded in larger content or if there are long categories.  This will be an integer of pixels to offset where the top; for instance ```15``` equals 15 pixels above the application.
 * ```imagePath```:  'https://s3.amazonaws.com/data.minnpost/projects/legislature-tracker/images/',
 * ```legImageProxy```: If you want to proxy images from Open States, but in the URL prefix, like ```http://proxy.com/?url=```.  For instance we [this custom proxy](https://github.com/MinnPost/i-mage-proxerific).
 * ```aggregateURL```: An API JSON feed to get some aggregate bill counts.  This is specific to MinnPost (MN).
@@ -37,27 +39,25 @@ See [this spreadsheet for an example](https://docs.google.com/a/minnpost.com/spr
 First make sure you have 3 sheets with the following columns:
 
 * ```Categories```
-    * ```category_id```
-    * ```title```
-    * ```short_title```: Used for the top menu list.
-    * ```description```
-    * ```open_states_subjects```
-    * ```legislator_subjects```
+    * ```category_id```: the identifier that will be used in URL linking.  Should be something like ```social_issues```.
+    * ```title```: The text title.
+    * ```short_title```: Used for the top menu list.  If none is given, the first word from the category title will be used.
+    * ```description```: The full description.
     * ```links```: Links field, see below.
-    * ```image```: Name of image for the category.  These currently live in the images directory.
+    * ```image```: Name of image for the category.  By default, these pull from the images directory, which is configurable in the ```imagePath``` option.
 * ```Bills```
-    * ```bill```: The primary bill name, like ```SF 789```.
+    * ```bill```: The primary bill name, like ```SF 789```.  This should be formatted like ```A 1234``` with a space between the letter/chamber-appreviation and the number which should have no leading zeros.
     * ```companion_bill```
     * ```conference_bill```
     * ```categories```: Category IDs separated by commas.
     * ```title```
-    * ```description```: Descriptions get split up when in the category list view and have a "more details" link.  By default, this is based on the number of words.  To handle longer texts with HTML, you can use ```<!-- break -->``` to define that break point.
+    * ```description```: Descriptions get split up when in the category list view and have a "more details" link.  By default, this is based on the number of words.  To handle longer texts with HTML, you can use ```<!-- break -->``` to define that break point.  Also note that is no description is given, then the application will use the primary bill summary which may or may not be useful and significant.
     * ```links```: Links field, see below.
 * ```Events``` (this is not fully supported yet)
 
 #### Link field formatting
 
-There are a few fields that are a list of links.  You should use this subject so that they are parsed correctly.  Do note that the parser is pretty rudimentary so don't expect much.
+There are a few fields that are a list of links.  You should use this format so that they are parsed correctly.  Do note that the parser is pretty rudimentary so don't expect much.
 
 ```
 "Link text title|http://www.example.com/123", "Another link text title|http://www.example.com/154"
@@ -72,7 +72,7 @@ Currently, this application is based on how the Minnesota State Legislature work
 * Companion bills are manually designated.
 * When both primary and companion bills pass, but there are difference to reconcile, there is often a conference bill.
 * Sometimes a companion bill will get substituted, meaning it gets dropped and the primary bill is only used.
-* The legislature may actually re-use a bill number for difference bills.
+* The legislature may actually re-use a bill number for difference bills.  In the MN Leg, this is marked as an action with "substitued" in it.
 
 
 ## Building
@@ -119,7 +119,7 @@ For fetching models, specifically Open States data, we wrap fetching:
 
 #### Google Spreadsheets
 
-This application uses [Tabletop.js](https://github.com/jsoma/tabletop) to read in data from Google Spreadsheets.  Due to the fact that Google does not guarantee up time or ability to handle requests, it is good practice to cache the outputs for production.  Tabletop has some recent additions to handle proxy via saving the outputs to a place like S3, as well as more traditional proxy like [gs-proxy](https://github.com/MinnPost/gs-proxy). 
+This application uses [Tabletop.js](https://github.com/jsoma/tabletop) to read in data from Google Spreadsheets.  Due to the fact that Google does not guarantee up time or ability to handle requests, it is good practice to cache the outputs for production.  Tabletop has some recent additions to handle proxy via saving the outputs to a place like S3, as well as more traditional proxy like [gs-proxy](https://github.com/MinnPost/gs-proxy).  Use the ```tabletopOptions``` option to set any of the [tabletop options](https://github.com/jsoma/tabletop#the-moving-parts).
 
 ### Data Models
 
@@ -129,7 +129,7 @@ The editorial categories contain editorial bills (like meta bills), which refer 
 
 ### Hacks
 
-Currently, Tabletop.js extends Array so that indexOf is available.  This has some implications in browsers, especially in the context of for..in loops.  Because of bad code in our site that is not easily updatable, we are using a [custom version of Tabletop.js](https://github.com/zzolo/tabletop).  See [pull request](https://github.com/jsoma/tabletop/pull/15).
+Currently, Tabletop.js extends Array so that indexOf is available.  This has some implications in browsers, especially in the context of for..in loops.  Because of bad code may be in your site that is not easily updatable, we are using a [custom version of Tabletop.js](https://github.com/zzolo/tabletop).  See [pull request](https://github.com/jsoma/tabletop/pull/15).
 
 ## Attribution
 
