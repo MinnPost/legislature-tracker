@@ -372,10 +372,34 @@
       
       $.when.apply($, defers)
         .done(function() {
+          var unlisted_companions_defers = [];
           thisModel.get('bills').each(function(bill) {
-            bill.parseMeta();
+            if(!bill.get('bill_companion') && bill.get('bill_primary').get('companions') ){
+              var companion_bill_id = bill.get('bill_primary').get('companions')[0].bill_id.indexOf('SAME AS') >= 0 ? 
+                              bill.get('bill_primary').get('companions')[0].bill_id.replace("SAME AS ", "") : 
+                              undefined;
+              if (companion_bill_id){
+                var companion = LT.utils.getModel('OSBillModel', 'bill_id', {bill_id : companion_bill_id});
+                bill.set('bill_companion', companion);
+                unlisted_companions_defers.push(LT.utils.fetchModel(bill.get('bill_companion')));
+              }
+            }else{
+              bill.parseMeta();
+            }
           });
-          callback();
+
+          if(unlisted_companions_defers.length > 0){
+            $.when.apply($, unlisted_companions_defers)
+              .done(function(){
+                thisModel.get('bills').each(function(bill){
+                  bill.parseMeta();
+                });
+                callback();
+              })
+              .fail(error);
+          }else{ // if there aren't any unlisted companion bills to fetch.
+            callback();
+          }
         })
         .fail(error);
       return this;
