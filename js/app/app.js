@@ -194,7 +194,8 @@
         
         this.bills.each(function(b) {
           var c = b.get('categories');
-          
+          var hasBill = b.get('hasBill') ;
+          if(hasBill === true)
           if (Math.abs(parseInt(b.lastUpdatedAt().diff(moment(), 'days'), 10)) < LT.options.recentChangeThreshold) {
             c.push(category.id);
             b.set('categories', c);
@@ -219,13 +220,13 @@
       
         // First collect all the bill id's we need
         this.bills.each(function(bill) {
-          _.each(['bill_primary', 'bill_companion', 'bill_conference'], function(prop) {
+            _.each(['bill_primary', 'bill_companion', 'bill_conference'], function(prop) {
             if (bill.get(prop)) {
               billIDs.push(bill.get(prop).get('bill_id'));
             }
           });
         });
-        
+  
         var url = 'http://openstates.org/api/v1/bills/?state=' + LT.options.state +
           '&search_window=session:' + LT.options.session +
           '&bill_id__in=' + encodeURI(billIDs.join('|')) +

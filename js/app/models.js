@@ -151,15 +151,14 @@
    * Model Legislature Tracker for bill
    */
   LT.BillModel = Backbone.Model.extend({
-  
-    initialize: function(attr, options) {
+      initialize: function(attr, options) { 
       this.options = options;
-    },
-    
+      this.hasBill = attr.hasBill;
+     },
+   
     loadOSBills: function(callback, error) {
       var thisModel = this;
       var defers = [];
-      
       _.each(['bill_primary', 'bill_companion', 'bill_conference'], function(prop) {
         if (thisModel.get(prop)) {
           defers.push(LT.utils.fetchModel(thisModel.get(prop)));
@@ -175,6 +174,7 @@
     },
     
     loadCategories: function() {
+    
       if (this.get('categories')) {
         this.set('categories', _.map(this.get('categories'), function(c) {
           if (!_.isObject(c)) {
@@ -190,52 +190,53 @@
       var p = this.get('bill_primary');
       var c = this.get('bill_companion');
       var co = this.get('bill_conference');
-      
-      if (_.isUndefined(this.get('last_updated_at')) && p.get('updated_at')) {
-        last_updated_at = p.get('updated_at');
-        
-        if (c && c.get('updated_at')) {
-          last_updated_at = (c.get('updated_at').unix() >
-            last_updated_at.unix()) ?
-            c.get('updated_at') : last_updated_at;
-        }
-        if (co && co.get('updated_at')) {
-          last_updated_at = (co.get('updated_at').unix() >
-            last_updated_at.unix()) ?
-            co.get('updated_at') : last_updated_at;
-        }
-        this.set('last_updated_at', last_updated_at);
-      }
-      // Check if this bill loaded correctly
-      else if (_.isUndefined(this.get('last_updated_at')) && !p.get('updated_at')) {
-        LT.log('Could not fetch primary bill data from OpenStates. Check that the id ' + 
-          this.get('bill_primary').get('bill_id') + ' is formatted properly.');
-      }
+      if(this.hasBill === true)
+	      if (_.isUndefined(this.get('last_updated_at')) && p.get('updated_at')) {
+	        last_updated_at = p.get('updated_at');
+	        
+	        if (c && c.get('updated_at')) {
+	          last_updated_at = (c.get('updated_at').unix() >
+	            last_updated_at.unix()) ?
+	            c.get('updated_at') : last_updated_at;
+	        }
+	        if (co && co.get('updated_at')) {
+	          last_updated_at = (co.get('updated_at').unix() >
+	            last_updated_at.unix()) ?
+	            co.get('updated_at') : last_updated_at;
+	        }
+	        this.set('last_updated_at', last_updated_at);
+	      }
+	      // Check if this bill loaded correctly
+	      else if (_.isUndefined(this.get('last_updated_at')) && !p.get('updated_at')) {
+	        LT.log('Could not fetch primary bill data from OpenStates. Check that the id ' + 
+	          this.get('bill_primary').get('bill_id') + ' is formatted properly.');
+	      }
       
       return this.get('last_updated_at');
     },
     
     newestAction: function() {
+ 
       var newest_action;
       var p = this.get('bill_primary');
       var c = this.get('bill_companion');
       var co = this.get('bill_conference');
-      
-      if (_.isUndefined(this.get('newest_action')) && p.get('newest_action')) {
-        newest_action = p.get('newest_action');
-        
-        if (c && c.get('newest_action')) {
-          newest_action = (c.get('newest_action').date.unix() >
-            newest_action.date.unix()) ?
-            c.get('newest_action') : newest_action;
-        }
-        if (co && co.get('newest_action')) {
-          newest_action = (co.get('newest_action').date.unix() >
-            newest_action.date.unix()) ?
-            co.get('newest_action') : newest_action;
-        }
-        this.set('newest_action', newest_action);
-      }
+      if(this.hasBill === true)
+	      if (_.isUndefined(this.get('newest_action')) && p.get('newest_action')) {
+	        newest_action = p.get('newest_action');
+	        
+	        if (c && c.get('newest_action')) {
+	          newest_action = (c.get('newest_action').date.unix() >
+	            newest_action.date.unix()) ?
+	            c.get('newest_action') : newest_action;
+	        }
+	        if (co && co.get('newest_action')) {
+	          newest_action = (co.get('newest_action').date.unix() >
+	            newest_action.date.unix()) ?
+	            co.get('newest_action') : newest_action;
+	        }
+	        this.set('newest_action', newest_action);
+	      }
       
       return this.get('newest_action');
     },
@@ -271,13 +272,14 @@
       
       // If only primary, get the actions from there, or
       // if substituted, then just get from primary bill
-      if (!type.companion || type.substituted) {
-        actions.lower = this.get('bill_primary').getActionDate('passed_lower');
-        actions.upper = this.get('bill_primary').getActionDate('passed_upper');
-      }
+      if(this.hasBill === true)
+	      if (!type.companion || type.substituted) {
+	        actions.lower = this.get('bill_primary').getActionDate('passed_lower');
+	        actions.upper = this.get('bill_primary').getActionDate('passed_upper');
+	      }
       
       // If companion, get the actions from their respective bills
-      if (type.companion && !type.substituted) {
+      if (type.companion && !type.substituted && this.hasBill === true) {
         if (this.get('bill_primary').get('chamber') === 'upper') {
           actions.upper = this.get('bill_primary').getActionDate('passed_upper');
           actions.lower = this.get('bill_companion').getActionDate('passed_lower');
@@ -289,7 +291,7 @@
       }
       
       // If conference bill, get date if both chambers have passed
-      if (type.conference) {
+      if (type.conference && this.hasBill === true) {
           var lower = this.get('bill_conference').getActionDate('passed_lower');
           var upper = this.get('bill_conference').getActionDate('passed_upper');
             
@@ -300,28 +302,30 @@
       
       // Determine signed.  If conference, then use that, otherwise
       // use primary
-      if (type.conference) {
-        actions.signed = this.get('bill_conference').getActionDate('signed');
-      }
-      else {
-        actions.signed = this.get('bill_primary').getActionDate('signed');
-      }
+      if(this.hasBill === true)
+	      if (type.conference) {
+	        actions.signed = this.get('bill_conference').getActionDate('signed');
+	      }
+	      else {
+	        actions.signed = this.get('bill_primary').getActionDate('signed');
+	      }
       
       
       // Determine last updated date
-      if (type.conference) {
-        actions.last = this.get('bill_conference').getActionDate('last');
-      }
-      else if (type.companion) {
-        actions.last = (this.get('bill_companion').getActionDate('last').unix() >=
-          this.get('bill_primary').getActionDate('last').unix()) ?
-          this.get('bill_companion').getActionDate('last') :
-          this.get('bill_primary').getActionDate('last');
-      }
-      else  {
-        actions.last = this.get('bill_primary').getActionDate('last');
-      }
-      
+      if(this.hasBill === true)
+	      if (type.conference) {
+	        actions.last = this.get('bill_conference').getActionDate('last');
+	      }
+	      else if (type.companion) {
+	        actions.last = (this.get('bill_companion').getActionDate('last').unix() >=
+	          this.get('bill_primary').getActionDate('last').unix()) ?
+	          this.get('bill_companion').getActionDate('last') :
+	          this.get('bill_primary').getActionDate('last');
+	      }
+	      else  {
+	        actions.last = this.get('bill_primary').getActionDate('last');
+	      }
+	      
       this.set('actions', actions);
       this.set('bill_type', type);
       
@@ -381,8 +385,8 @@
         .done(function() {
           var unlisted_companions_defers = [];
           thisModel.get('bills').each(function(bill) {
-            if(!bill.get('bill_companion') && bill.get('bill_primary').get('companions') ){
-              var companion_bill_id = bill.get('bill_primary').get('companions')[0].bill_id.indexOf('SAME AS') >= 0 ? 
+         	 if(this.hasBill === true && !bill.get('bill_companion') && bill.get('bill_primary').get('companions') ){
+             	var companion_bill_id = bill.get('bill_primary').get('companions')[0].bill_id.indexOf('SAME AS') >= 0 ? 
                               bill.get('bill_primary').get('companions')[0].bill_id.replace("SAME AS ", "") : 
                               undefined;
               if (companion_bill_id){

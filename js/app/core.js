@@ -132,7 +132,11 @@ else {
     var parsed = {};
     
     parsed.categories = LT.parse.eCategories(tabletop.sheets('Categories').all());
-    parsed.bills = LT.parse.eBills(tabletop.sheets('Bills').all());
+    var eBills = tabletop.sheets('Bills').all();
+    if(eBills.length > LT.options.maxBills){
+      LT.log("The number of bills in your spreadsheet exceeds maxBills. Set the maxBills option to display them, but be aware that this may significantly slow down the Legislature Tracker.")
+    }
+    parsed.bills = LT.parse.eBills(eBills.slice(0, LT.options.maxBills));
     parsed.events = LT.parse.eEvents(tabletop.sheets('Events').all());
 
     // Add events into bills
@@ -155,7 +159,13 @@ else {
       // Break up categories into an array
       row.categories = (row.categories) ? row.categories.split(',') : [];
       row.categories = _.map(row.categories, _.trim);
-      
+     //if eBill does not have a bill number
+      if(!row.bill){
+      	row.hasBill = false;
+      	//use title as bill id for linking
+      	row.bill = row.title;
+      }else{
+      	row.hasBill = true;      
       // Create open states bill objects
       row.bill_primary = (row.bill) ?
         LT.utils.getModel('OSBillModel', 'bill_id', { bill_id: row.bill }) : undefined;
@@ -163,7 +173,7 @@ else {
         LT.utils.getModel('OSBillModel', 'bill_id', { bill_id: row.bill_companion }) : undefined;
       row.bill_conference = (row.bill_conference && LT.options.conferenceBill) ?
         LT.utils.getModel('OSBillModel', 'bill_id', { bill_id: row.bill_conference }) : undefined;
-      
+      }
       return row;
     });
   };
@@ -273,6 +283,7 @@ else {
         'Republican': 'R'
       }
     },
+    maxBills: 30, //raise this at your peril. could get very slow.
     substituteMatch: /substituted/i,
     imagePath: './css/images/',
     recentChangeThreshold: 7,
