@@ -26,6 +26,7 @@ When creating a new Legislature Tracker object, you can set the following option
 * ```OSKey```: Your Open States API Key.  You can get one at [services.sunlightlabs.com](http://services.sunlightlabs.com/).
 * ```eKey```: Your Google Spreadsheet identifier. Be sure to publish your spreadsheet (File -> Publish to the web) to make it available via the Google Spreadsheet API.
 * ```conferenceBill```: This should be ```true``` or ```false``` to enable the handling of conference bills.  A conference bill is a third bill (other than the primary or companion) that is used often when the two bills are diverging significantly.
+* ```substituteMatch```: Some legislatures will substitute bills, meaning they will use the same bill ID for essentially different bills.  This option sets the regular expression to match actions to determine if it substituted.  Define as ```false``` to turn off completely.
 * ```scrollOffset```: This turns on auto scrolling which will scroll the view window to the top of the application after the first click.  This is helpful if it is embedded in larger content or if there are long categories.  This will be an integer of pixels to offset where the top; for instance ```15``` equals 15 pixels above the application.
 * ```recentImage```: The name of the image file to use for the recent category.  Make blank to not have an image for recent.
 * ```imagePath```:  'https://s3.amazonaws.com/data.minnpost/projects/legislature-tracker/images/',

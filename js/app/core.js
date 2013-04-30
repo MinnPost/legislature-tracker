@@ -266,9 +266,7 @@ else {
         'Republican': 'R'
       }
     },
-    regex: {
-      substituteMatch: /substituted/i
-    },
+    substituteMatch: /substituted/i,
     imagePath: './css/images/',
     recentChangeThreshold: 7,
     tabletopOptions: {},

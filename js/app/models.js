@@ -107,13 +107,16 @@
     
     isSubstituted: function() {
       var sub = false;
-    
+      
       if (_.isBoolean(this.get('substitued'))) {
         sub = this.get('substitued');
       }
+      else if (LT.options.substituteMatch === false) {
+        sub = false;
+      }
       else {
         sub = _.find(this.get('actions'), function(a) {
-          return a.action.match(LT.options.regex.substituteMatch);
+          return a.action.match(LT.options.substituteMatch);
         });
         sub = (sub) ? true : false;
         this.set('substitued', sub);
