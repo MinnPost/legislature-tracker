@@ -132,7 +132,11 @@ else {
     var parsed = {};
     
     parsed.categories = LT.parse.eCategories(tabletop.sheets('Categories').all());
-    parsed.bills = LT.parse.eBills(tabletop.sheets('Bills').all());
+    var eBills = tabletop.sheets('Bills').all();
+    if(eBills.length > LT.options.maxBills){
+      LT.log("The number of bills in your spreadsheet exceeds maxBills. Set the maxBills option to display them, but be aware that this may significantly slow down the Legislature Tracker.")
+    }
+    parsed.bills = LT.parse.eBills(eBills.slice(0, LT.options.maxBills));
     parsed.events = LT.parse.eEvents(tabletop.sheets('Events').all());
 
     // Add events into bills
@@ -279,6 +283,7 @@ else {
         'Republican': 'R'
       }
     },
+    maxBills: 30, //raise this at your peril. could get very slow.
     substituteMatch: /substituted/i,
     imagePath: './css/images/',
     recentChangeThreshold: 7,

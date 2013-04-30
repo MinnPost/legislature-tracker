@@ -34,6 +34,7 @@ When creating a new Legislature Tracker object, you can set the following option
 * ```legImageProxy```: If you want to proxy images from Open States, use an URL prefix, like ```'http://proxy.com/?url='```.  For instance MinnPost made [this custom proxy](https://github.com/MinnPost/i-mage-proxerific).
 * ```tabletopOptions```: An object to override any of the [Tabletop.js](https://github.com/jsoma/tabletop) options.
 * ```aggregateURL```: An API JSON feed to get some aggregate bill counts.  This is specific to MinnPost (MN) and is NOT fully supported at the moment.
+* ```maxBills```: By default, 50; the maximum number of bills that will be loaded from your Google Spreadsheet. Since each bill requires a call to OpenStates, your app may become slow if you raise this (especially on slow connections and/or older browsers).
 
 ### Google spreadsheets setup
 
