@@ -47,7 +47,7 @@ First make sure you have 3 sheets with the following columns:
     * ```short_title```: Used for the top menu list.  If none is given, the first word from the category title will be used.
     * ```description```: The full description.
     * ```links```: Links field, see below.
-    * ```image```: Name of image for the category.  By default, these pull from the images directory, which is configurable in the ```imagePath``` option.
+    * ```image```: Name of image for the category.  By default, these pull from the images directory, which is configurable in the ```imagePath``` option.  Or if you use a full URL, starting with ```http``` it will use that directly.
 * ```Bills```
     * ```bill```: The primary bill name, like ```SF 789```.  This should be formatted like ```A 1234``` with a space between the letter/chamber-appreviation and the number which should have no leading zeros.
     * ```companion_bill```

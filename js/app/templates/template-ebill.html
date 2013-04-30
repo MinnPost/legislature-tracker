@@ -41,7 +41,7 @@
       <strong>Categories:</strong>
       <% _.each(bill.categories, function(c, i) { %>
         <a href="#/category/<%= c.get('id') %>">
-          <% if (c.get('image')) { %><img class="category-image" src="<%= LT.options.imagePath %><%= c.get('image') %>" /><% } %>
+          <% if (c.get('image')) { %><img class="category-image" src="<%= LT.utils.imagePath(c.get('image')) %>" /><% } %>
           <%= c.get('title') %></a><% if (i < bill.categories.length - 1) { %>,<% } %>
       <% }) %>
     </div>

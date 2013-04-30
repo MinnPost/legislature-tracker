@@ -4,7 +4,7 @@
 <div class="category-container">
   <h2>
     <% if (category.image) { %>
-      <img class="category-image" src="<%= LT.options.imagePath %><%= category.image %>" />
+      <img class="category-image" src="<%= LT.utils.imagePath(category.image) %>" />
     <% } %>
     
     <%= category.title %>

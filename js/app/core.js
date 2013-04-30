@@ -84,6 +84,12 @@ else {
     return output;
   };
   
+  // Make image path.  If the image path is a full
+  // path with http, then don't prepend image path
+  LT.utils.imagePath = function(image) {
+    return (image.indexOf('http') === 0) ? image : LT.imagePath + image;
+  };
+  
   /**
    * Template handling.  For development, we want to use
    * the template files directly, but for build, they should be

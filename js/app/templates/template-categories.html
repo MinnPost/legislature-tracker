@@ -24,7 +24,7 @@
         <div class="category-inner category-<%= _.cssClass(c.id) %>">
           <% if (c.image) { %>
             <a href="#/category/<%= encodeURI(c.id) %>">
-              <img class="category-image" src="<%= LT.options.imagePath %><%= c.image %>" />
+              <img class="category-image" src="<%= LT.utils.imagePath(c.image) %>" />
             </a>
           <% } %>
            
