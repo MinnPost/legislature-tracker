@@ -23,7 +23,7 @@ When creating a new Legislature Tracker object, you can set the following option
 * ```el```: The element selector that will hold the application.
 * ```state```: The two character state code as used by Open States.
 * ```session```: The session key as used on Open States, like ```2013-2014```.
-* ```OSKey```: Your Open States API Key.
+* ```OSKey```: Your Open States API Key.  You can get one at [services.sunlightlabs.com](http://services.sunlightlabs.com/).
 * ```eKey```: Your Google Spreadsheet identifier. Be sure to publish your spreadsheet (File -> Publish to the web) to make it available via the Google Spreadsheet API.
 * ```conferenceBill```: This should be ```true``` or ```false``` to enable the handling of conference bills.  A conference bill is a third bill (other than the primary or companion) that is used often when the two bills are diverging significantly.
 * ```scrollOffset```: This turns on auto scrolling which will scroll the view window to the top of the application after the first click.  This is helpful if it is embedded in larger content or if there are long categories.  This will be an integer of pixels to offset where the top; for instance ```15``` equals 15 pixels above the application.
