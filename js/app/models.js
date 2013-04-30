@@ -86,6 +86,13 @@
       });
       this.set('actions', swapper);
       
+      // Votes
+      swapper = this.get('votes');
+      _.each(swapper, function(a, i) {
+        swapper[i].date = (a.date) ? moment(a.date) : a.date;
+      });
+      this.set('votes', swapper);
+      
       // Add custom events to actions
       swapper = this.get('custom_events');
       if (_.isArray(swapper) && swapper.length > 0) {

@@ -63,6 +63,21 @@
       </div>
     </div>
   <% } %>
+
+  <% if (_.isArray(bill.votes) && bill.votes.length > 0) { %>
+    <div class="votes">
+      <h5>Votes</h5>
+      
+      <div class="votes-inner clear-block">
+        <% _.each(bill.votes, function(v) { %>
+          <%= v.date.format('MMM DD, YYYY') %>:
+          <%= v.motion %> <%= (v.passed) ? 'passed' : 'failed' %>:
+          <%= v.yes_count %> Y - 
+          <%= v.no_count %> N <br />
+        <% }) %>
+      </div>
+    </div>
+  <% } %>
   
   <div class="sources">
     <h5>Sources and full text</h5>

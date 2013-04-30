@@ -323,7 +323,8 @@ table {
 .ls .actions,
 .ls .sponsors,
 .ls .sources,
-.ls .e-links {
+.ls .e-links,
+.ls .votes {
   margin-bottom: 1em;
 }
 
@@ -430,6 +431,13 @@ table {
  */
 .ls .sources a {
   font-size: .75em;
+}
+
+/**
+ * Votes
+ */
+.ls .votes .votes-inner {
+  font-size: .85em;
 }
 
 /**
