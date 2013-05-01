@@ -96,10 +96,40 @@ Built versions will only be done for tagged releases.
 
 ## Deploying
 
-This is not currently working.  But the ideal would be an argument for bucket and directory to upload to s3.
+There are a couple general deploy methods that will transfer the dist folder somewhere.  Run these after running ```grunt```.
+
+### S3
+
+For authentication, make sure to set environment variables ```AWS_ACCESS_KEY_ID``` and ```AWS_SECRET_ACCESS_KEY```.  You can set these ad-hoc with the following commands:
 
 ```
-grunt deploy --s3bucket="our_bucket" --s3dir="projects/leg-tracker/"
+export AWS_ACCESS_KEY_ID=<YOUR KEY ID>
+export AWS_SECRET_ACCESS_KEY=<YOUR KEY>
+```
+
+Then run the following with the appropriate values filled in to upload files to S3.  The trailing slash on the ```s3dir``` is needed.
+
+```
+grunt deploy-s3 --s3bucket="our_bucket" --s3dir="path/to/dest/"
+```
+
+### FTP
+
+For authentication, you need to create a JSON file named ```.ftppass``` that will have the username and password in it.  See [grunt-ftp-deploy](https://github.com/zonak/grunt-ftp-deploy) for reference.
+
+```
+{
+  "leg-tracker-key": {
+    "username": "username1",
+    "password": "password1"
+  }
+}
+```
+
+Then run the following with the appropriate values filled in to upload files to the FTP server.  The port argument is optional and defaults to ```21```.
+
+```
+grunt deploy-ftp --ftpserver="example.com" --ftpdir="projects/leg-tracker/" --ftpport=21
 ```
 
 ## Architecture

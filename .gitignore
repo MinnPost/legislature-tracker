@@ -1,3 +1,4 @@
 !dist
 dist/templates.js
 node_modules
+.ftppass

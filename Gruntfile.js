@@ -1,6 +1,15 @@
 /*global module:false*/
 module.exports = function(grunt) {
 
+  // FTP deploy variables
+  var ftpserver = grunt.option('ftpserver') || '';
+  var ftpdir = grunt.option('ftpdir') || '';
+  var ftpport = parseInt(grunt.option('ftpport'), 10) || 21;
+
+  // S3 deploy variables
+  var s3bucket = grunt.option('s3bucket') || '';
+  var s3dir = grunt.option('s3dir') || '';
+
   // Project configuration.
   grunt.initConfig({
     pkg: grunt.file.readJSON('package.json'),
@@ -86,30 +95,37 @@ module.exports = function(grunt) {
           }
         ]
       }
-    }
-    
-    /*
-    s3: {
-      // This is specific to MinnPost
-      //
-      // These are assumed to be environment variables
-      // See https://npmjs.org/package/grunt-s3
-      //key: 'YOUR KEY',
-      //secret: 'YOUR SECRET',
-      bucket: '<% grunt.option("s3dir") %><%= process.env.s3bucket %>',
-      access: 'public-read',
-      upload: [
-        {
-          src: 'dist/*',
-          dest: '<%= grunt.option("s3dir") %>'
+    },
+    'ftp-deploy': {
+      deploy: {
+        auth: {
+          host: ftpserver,
+          port: ftpport,
+          authKey: 'leg-tracker-key'
         },
-        {
-          src: 'dist/images/*',
-          dest: '<%= grunt.option("s3dir") ? grunt.option("s3dir") + "images/" : "" %>'
-        }
-      ]
+        src: 'dist',
+        dest: ftpdir,
+        exclusions: ['dist/**/.DS_Store', 'dist/**/Thumbs.db']
+      }
+    },
+    s3: {
+      options: {
+        // This is specific to MinnPost
+        //
+        // These are assumed to be environment variables
+        // See https://npmjs.org/package/grunt-s3
+        //key: 'YOUR KEY',
+        //secret: 'YOUR SECRET',
+        bucket: s3bucket,
+        access: 'public-read'
+      },
+      deploy: {
+        upload: [
+          { src: 'dist/*', dest: s3dir },
+          { src: 'dist/images/*', dest: s3dir + 'images/' }
+        ]
+      }
     }
-    */
   });
   
   // Load plugin tasks
@@ -119,14 +135,20 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-copy');
   grunt.loadNpmTasks('grunt-contrib-jst');
   grunt.loadNpmTasks('grunt-contrib-clean');
-  //grunt.loadNpmTasks('grunt-s3');
+  grunt.loadNpmTasks('grunt-ftp-deploy');
+  grunt.loadNpmTasks('grunt-s3');
 
   // Default task.
   grunt.registerTask('default', ['jshint', 'clean', 'jst', 'concat', 'uglify', 'copy']);
   
   // Deploy task that uses environment variables.  Example
-  // grunt deploy --s3bucket="our_bucket" --s3dir="projects/leg-tracker/"
+  // grunt deploy-s3 --s3bucket="our_bucket" --s3dir="path/to/dest/"
   // Not working
-  grunt.registerTask('deploy', 's3');
+  grunt.registerTask('deploy-s3', ['s3']);
+  
+  // Deploy task for ftp that uses environment variables.  Example
+  // grunt deploy-ftp --ftpserver="example.com" --ftpdir="projects/leg-tracker/" --ftpport=22
+  // Not working
+  grunt.registerTask('deploy-ftp', ['ftp-deploy']);
 
 };
