@@ -43,30 +43,26 @@ The following are common options you may want to override.
 
 To override the naming of certain things, you can update the the translations config object.  To do this without overwriting or completely redefining the translation object, you should get the default options first, like so:
 
-```
-var options = _(LT.defaultOptions).extend({
-  el: '#legislature-tracker-container',
-  state: 'NY', 
-  session: '2013-2014',
-  OSKey: 'abc',
-  eKey: 'abc'
-});
-options['wordTranslations']['chamber']['lower'] = 'Assembly';
-```
+    var options = _(LT.defaultOptions).extend({
+      el: '#legislature-tracker-container',
+      state: 'NY', 
+      session: '2013-2014',
+      OSKey: 'abc',
+      eKey: 'abc'
+    });
+    options['wordTranslations']['chamber']['lower'] = 'Assembly';
 
 The default options are similar to:
 
-```
-chamber: {
-  'upper': 'Senate',
-  'lower': 'House'
-},
-partyAbbr: {
-  'Democratic-Farmer-Labor': 'DFL',
-  'Democratic': 'D',
-  'Republican': 'R'
-}
-```
+    chamber: {
+      'upper': 'Senate',
+      'lower': 'House'
+    },
+    partyAbbr: {
+      'Democratic-Farmer-Labor': 'DFL',
+      'Democratic': 'D',
+      'Republican': 'R'
+    }
 
 #### Advanced options
 
@@ -111,18 +107,14 @@ First make sure you have 3 sheets with the following columns:
 
 There are a few fields that are a list of links.  You should use this format so that they are parsed correctly.  Do note that the parser is pretty rudimentary so don't expect much.
 
-```
-"Link text title|http://www.example.com/123", "Another link text title|http://www.example.com/154"
-``` 
+    "Link text title|http://www.example.com/123", "Another link text title|http://www.example.com/154"
 
 ### Overriding templates
 
 You can override the HTML templates that are used in the application and thus change any of the wording or outputs.  Templates are using the [Backbone](http://backbonejs.org/) template system.  You can see the current templates in the ```js/app/templates/``` directory.  The compiled templates are stored in the ```LT.templates``` object.  You can override them with something like the following:
 
-```
-LT.templates = LT.templates || {};
-LT.templates['js/app/templates/template-header.html'] = _.template($('#new-template').html());
-```
+    LT.templates = LT.templates || {};
+    LT.templates['js/app/templates/template-header.html'] = _.template($('#new-template').html());
 
 ## How does your legislature work?
 
@@ -153,35 +145,27 @@ There are a couple general deploy methods that will transfer the dist folder som
 
 For authentication, make sure to set environment variables ```AWS_ACCESS_KEY_ID``` and ```AWS_SECRET_ACCESS_KEY```.  You can set these ad-hoc with the following commands:
 
-```
-export AWS_ACCESS_KEY_ID=<YOUR KEY ID>
-export AWS_SECRET_ACCESS_KEY=<YOUR KEY>
-```
+    export AWS_ACCESS_KEY_ID=<YOUR KEY ID>
+    export AWS_SECRET_ACCESS_KEY=<YOUR KEY>
 
 Then run the following with the appropriate values filled in to upload files to S3.  The trailing slash on the ```s3dir``` is needed.
 
-```
-grunt deploy-s3 --s3bucket="our_bucket" --s3dir="path/to/dest/"
-```
+    grunt deploy-s3 --s3bucket="our_bucket" --s3dir="path/to/dest/"
 
 ### FTP
 
 For authentication, you need to create a JSON file named ```.ftppass``` that will have the username and password in it.  See [grunt-ftp-deploy](https://github.com/zonak/grunt-ftp-deploy) for reference.
 
-```
-{
-  "leg-tracker-key": {
-    "username": "username1",
-    "password": "password1"
-  }
-}
-```
+    {
+      "leg-tracker-key": {
+        "username": "username1",
+        "password": "password1"
+      }
+    }
 
 Then run the following with the appropriate values filled in to upload files to the FTP server.  The port argument is optional and defaults to ```21```.
 
-```
-grunt deploy-ftp --ftpserver="example.com" --ftpdir="projects/leg-tracker/" --ftpport=21
-```
+    grunt deploy-ftp --ftpserver="example.com" --ftpdir="projects/leg-tracker/" --ftpport=21
 
 ## Architecture
 
