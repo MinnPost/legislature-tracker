@@ -4,7 +4,7 @@ An application to keep track of what is going on in a state legislature.  Using 
 
 It combines data from [Open States](http://openstates.org/) and editorial data collected with [Google Docs](https://docs.google.com/).  You can see some examples at [minnpost.github.io/legislature-tracker](http://minnpost.github.io/legislature-tracker/) and see it in production on [MinnPost](http://www.minnpost.com/data/2013/04/minnesota-legislative-bill-tracker).
 
-## Install and configuration
+## Installation and configuration
 
 This is a frontend application.  Include the corresponding JS and CSS in your HTML page, then call the following in your JS (see options below);
 
