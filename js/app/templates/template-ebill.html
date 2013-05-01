@@ -1,8 +1,7 @@
 <% if (!expandable) { %>
   <%= header %>
 <% } %>
-
-<div class="bill ebill <% if (expandable) { %>is-expandable<% } %>">
+<div class="bill ebill <% if (expandable) { %>is-expandable<% } %> <% if (!bill.hasBill) { %>no-bill<% } %>">
   <div class="bill-top">
     <div class="bill-status">
       <img class="lower <% if (bill.newest_action && Math.abs(parseInt(bill.newest_action.date.diff(moment(), 'days'))) < LT.options.recentChangeThreshold) { %>passed<% } %>" src="<%= LT.options.imagePath %>RecentChanges.png" title="<% if (bill.newest_action && Math.abs(parseInt(bill.newest_action.date.diff(moment(), 'days'))) < LT.options.recentChangeThreshold) { %>Recently changed<% } %>" />
