@@ -1,8 +1,64 @@
 /**
  * Main CSS for Legislature Tracker
  */
+ 
+/**
+ * Reset CSS by Eric Meyer
+ * http://meyerweb.com/eric/tools/css/reset/ 
+ * v2.0 | 20110126
+ * License: none (public domain)
+ */
+html, body, div, span, applet, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+a, abbr, acronym, address, big, cite, code,
+del, dfn, em, img, ins, kbd, q, s, samp,
+small, strike, strong, sub, sup, tt, var,
+b, u, i, center,
+dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td,
+article, aside, canvas, details, embed, 
+figure, figcaption, footer, header, hgroup, 
+menu, nav, output, ruby, section, summary,
+time, mark, audio, video {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  font-size: 100%;
+  font: inherit;
+  vertical-align: baseline;
+}
+/* HTML5 display-role reset for older browsers */
+article, aside, details, figcaption, figure, 
+footer, header, hgroup, menu, nav, section {
+  display: block;
+}
+body {
+  line-height: 1;
+}
+ol, ul {
+  list-style: none;
+}
+blockquote, q {
+  quotes: none;
+}
+blockquote:before, blockquote:after,
+q:before, q:after {
+  content: '';
+  content: none;
+}
+table {
+  border-collapse: collapse;
+  border-spacing: 0;
+}
+/**
+ * End reset css.
+ */
 
 
+/**
+ * Main container
+ */
 .ls {
   margin: 1em auto;
   font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
@@ -14,26 +70,50 @@
 .ls h2 {
   font-size: 2em;
   line-height: 1.25em;
+  font-weight: bold;
+  margin-bottom: .5em;
 }
 .ls h3 {
   font-size: 1.5em;
   margin-bottom: .5em;
+  font-weight: bold;
+  margin-bottom: .5em;
 }
 .ls h4 {
   font-size: 1.25em;
-  margin-top: .5em;
+  margin: .5em 0;
+  font-weight: bold;
 }
 .ls h5 {
   font-size: 1em;
-  margin-top: .5em;
+  margin: .5em 0 .25em 0;
+  font-weight: 600;
 }
 
-.ls p {
+.ls p,
+.ls .description {
   font-family: Georgia, "Times New Roman", Times,serif;
+  margin-bottom: 1em;
 }
 
 .ls ins {
   text-decoration: none;
+}
+
+.ls a,
+.ls a:hover,
+.ls a:visited {
+  color: #1568A2;
+  text-decoration: none;
+}
+
+.ls a:hover,
+.ls a:visited :hover{
+  text-decoration: underline;
+}
+
+.ls strong {
+  font-weight: bold;
 }
 
 /**
@@ -67,7 +147,7 @@
 
 .ls a.permalink {
   font-size: .5em;
-  background: transparent url('images/link-16x8-red.png') center right no-repeat;
+  background: transparent url('images/link-16x8-black.png') center right no-repeat;
   height: 8px;
   width: 16px;
   display: -moz-inline-stack;
@@ -228,7 +308,7 @@
 }
 
 .ls .category-container .e-links-list {
-  margin-bottom: 2em;
+  margin-bottom: 1em;
 }
 
 /**
@@ -243,8 +323,10 @@
 .ls .actions,
 .ls .sponsors,
 .ls .sources,
-.ls .e-links {
-  margin-bottom: 1.5em;
+.ls .e-links,
+.ls .votes,
+.ls .custom-events {
+  margin-bottom: 1em;
 }
 
 .ls .bill .e-bill-categories {
@@ -254,7 +336,7 @@
 
 .ls .bill .description,
 .ls .bill .latest-action {
-  margin-bottom: .5em;
+  margin-bottom: 1em;
 }
 
 .ls .bill .bill-update {
@@ -275,7 +357,7 @@
 }
 
 .ls .bill-top {
-  margin-bottom: 2em;
+  margin-bottom: 1.5em;
 }
 
 .ls .is-expandable .bill-top {
@@ -343,6 +425,20 @@
 .ls .bill .bill-details-link,
 .ls .bill .latest-action-label {
   display: none;
+}
+
+/**
+ * Sources
+ */
+.ls .sources a {
+  font-size: .75em;
+}
+
+/**
+ * Votes
+ */
+.ls .votes .votes-inner {
+  font-size: .85em;
 }
 
 /**

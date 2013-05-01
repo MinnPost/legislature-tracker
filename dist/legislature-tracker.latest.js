@@ -86,6 +86,7 @@
       (this.get(0).scrollHeight > this.height()) : false;
   };
 })(jQuery, window);
+
 /**
  * Core file for Legislature tracker.
  *
@@ -115,6 +116,19 @@ else {
   // with the same id.
   LT.cache = {};
   LT.cache.models = {};
+  
+  /**
+   * Wrapper around console.log so older browsers don't
+   * complain.
+   *
+   * Shoud be used sparingly where throwing errors is not
+   * appropriate.
+   */
+  LT.log = function(text) {
+    if (!_.isUndefined(window.console)) {
+      window.console.log(text);
+    }
+  };
   
   /**
    * Utility functions for LT
@@ -159,6 +173,12 @@ else {
     return output;
   };
   
+  // Make image path.  If the image path is a full
+  // path with http, then don't prepend image path
+  LT.utils.imagePath = function(image) {
+    return (image.indexOf('http') === 0) ? image : LT.imagePath + image;
+  };
+  
   /**
    * Template handling.  For development, we want to use
    * the template files directly, but for build, they should be
@@ -201,13 +221,20 @@ else {
     var parsed = {};
     
     parsed.categories = LT.parse.eCategories(tabletop.sheets('Categories').all());
-    parsed.bills = LT.parse.eBills(tabletop.sheets('Bills').all());
-    parsed.events = LT.parse.eEvents(tabletop.sheets('Events').all());
+    var eBills = tabletop.sheets('Bills').all();
     
+    // Handle max bills
+    if (eBills.length > LT.options.maxBills) {
+      LT.log('The number of bills in your spreadsheet exceeds maxBills. Set the maxBills option to display them, but be aware that this may significantly slow down the Legislature Tracker.');
+    }
+    
+    parsed.bills = LT.parse.eBills(eBills.slice(0, LT.options.maxBills));
+    parsed.events = LT.parse.eEvents(tabletop.sheets('Events').all());
+
     // Add events into bills
     _.each(_.groupBy(parsed.events, 'bill_id'), function(e, b) {
       _.each(parsed.bills, function(bill, i) {
-        if (bill.bill_id === b) {
+        if (bill.bill === b) {
           parsed.bills[i].custom_events = e;
         }
       });
@@ -224,14 +251,21 @@ else {
       // Break up categories into an array
       row.categories = (row.categories) ? row.categories.split(',') : [];
       row.categories = _.map(row.categories, _.trim);
-      
+     //if eBill does not have a bill number
+      if(!row.bill){
+        row.hasBill = false;
+        //use title as bill id for linking
+        row.bill = row.title;
+      }else{
+        row.hasBill = true;      
       // Create open states bill objects
       row.bill_primary = (row.bill) ?
         LT.utils.getModel('OSBillModel', 'bill_id', { bill_id: row.bill }) : undefined;
       row.bill_companion = (row.bill_companion) ?
         LT.utils.getModel('OSBillModel', 'bill_id', { bill_id: row.bill_companion }) : undefined;
-      row.bill_conference = (row.bill_conference) ?
+      row.bill_conference = (row.bill_conference && LT.options.conferenceBill) ?
         LT.utils.getModel('OSBillModel', 'bill_id', { bill_id: row.bill_conference }) : undefined;
+      }
       return row;
     });
   };
@@ -240,8 +274,6 @@ else {
     return _.map(categories, function(row) {
       LT.parse.translateFields(LT.options.fieldTranslations.eCategories, row);
       row.links = LT.parse.eLinks(row.links);
-      row.open_states_subjects = LT.parse.csvCategories(row.open_states_subjects);
-      row.legislator_subjects = LT.parse.csvCategories(row.legislator_subjects);
       return row;
     });
   };
@@ -316,9 +348,7 @@ else {
     fieldTranslations: {
       eCategories: {
         'id': 'categoryid',
-        'short_title': 'shorttitle',
-        'open_states_subjects': 'openstatessubjects',
-        'legislator_subjects': 'legislatorsubjects'
+        'short_title': 'shorttitle'
       },
       eBills: {
         'bill': 'bill',
@@ -345,471 +375,18 @@ else {
         'Republican': 'R'
       }
     },
-    regex: {
-      substituteMatch: /substituted/i
-    },
+    maxBills: 30, //raise this at your peril. could get very slow.
+    substituteMatch: /substituted/i,
     imagePath: './css/images/',
     recentChangeThreshold: 7,
-    tabletopOptions: {}
+    tabletopOptions: {},
+    scrollOffset: false,
+    conferenceBill: true,
+    recentImage: 'RecentUpdatedBill.png'
   };
   
 })(jQuery, window);
-this["LT"] = this["LT"] || {};
-this["LT"]["templates"] = this["LT"]["templates"] || {};
 
-this["LT"]["templates"]["js/app/templates/template-categories.html"] = function(obj){
-var __p='';var print=function(){__p+=Array.prototype.join.call(arguments, '')};
-with(obj||{}){
-__p+='\n<div class="categories-container">\n  ';
- if (LT.options.title) { 
-;__p+='\n    <h2>'+
-( LT.options.title )+
-'</h2>\n  ';
- } 
-;__p+='\n  \n  ';
- if (typeof LT.app.totalBills != 'undefined') { 
-;__p+='\n    <div class="aggregate-counts">\n      <span class="aggregate-stat">\n        <span class="aggregate-count-label">Bills introduced:</span>\n        <span class="aggregate-count-value">'+
-( _.numberFormatCommas(LT.app.totalBills) )+
-'</span>\n      </span>\n      \n      <span class="aggregate-stat">\n        <span class="aggregate-count-label">Bills signed:</span>\n        <span class="aggregate-count-value">'+
-( _.numberFormatCommas(LT.app.totalBillsSigned) )+
-'</span>\n      </span>\n    </div>\n  ';
- } 
-;__p+='\n\n  <ul class="category-list clear-block">\n    ';
- _.each(categories, function(c, i) { 
-;__p+='\n      <li class="category-item category-item-'+
-( i )+
-'">\n        <div class="category-inner category-'+
-( _.cssClass(c.id) )+
-'">\n          ';
- if (c.image) { 
-;__p+='\n            <a href="#/category/'+
-( encodeURI(c.id) )+
-'">\n              <img class="category-image" src="'+
-( LT.options.imagePath )+
-''+
-( c.image )+
-'" />\n            </a>\n          ';
- } 
-;__p+='\n           \n          <h3>\n            <a href="#/category/'+
-( encodeURI(c.id) )+
-'">\n              '+
-( c.title )+
-'\n            </a>\n          </h3>\n          \n          <div>\n            Watching \n            <strong>'+
-( c.bills.length )+
-'</strong>\n            ';
- if (c.total_bill_count) { 
-;__p+='\n              of '+
-( c.total_bill_count )+
-'\n            ';
- } 
-;__p+='\n            bills.\n          </div>\n        </div>\n      </li>\n    ';
- }) 
-;__p+='\n  </ul>\n</div>';
-}
-return __p;
-};
-
-this["LT"]["templates"]["js/app/templates/template-category.html"] = function(obj){
-var __p='';var print=function(){__p+=Array.prototype.join.call(arguments, '')};
-with(obj||{}){
-__p+='\n'+
-( header )+
-'\n\n<div class="category-container">\n  <h2>\n    ';
- if (category.image) { 
-;__p+='\n      <img class="category-image" src="'+
-( LT.options.imagePath )+
-''+
-( category.image )+
-'" />\n    ';
- } 
-;__p+='\n    \n    '+
-( category.title )+
-'\n  </h2>\n  \n  <p>'+
-( category.description )+
-'</p>\n  \n  ';
- if (_.isArray(category.links) && category.links.length > 0) { 
-;__p+='\n    <div class="e-links">\n      <h4>In the news</h4>\n      \n      <ul class="e-links-list">\n        ';
- _.each(category.links, function(l) { 
-;__p+='\n          <li><a href="'+
-( l.url )+
-'">'+
-( l.title )+
-'</a></li>\n        ';
- }) 
-;__p+='\n      </ul>\n    </div>\n  ';
- } 
-;__p+='\n  \n  <div class="clear-block bills-list">\n    ';
- category.bills.each(function(b) { 
-;__p+='\n      '+
-( templates.ebill({
-        bill: b.toJSON(),
-        expandable: true,
-        templates: templates
-      }) )+
-'\n    ';
- }); 
-;__p+='\n  </div>\n  \n  <div class="clear-block total-bill">\n    Watching \n    <strong>'+
-( category.bills.length )+
-'</strong>\n    ';
- if (typeof category.total_bill_count != 'undefined') { 
-;__p+='\n      of '+
-( category.total_bill_count )+
-'\n    ';
- } 
-;__p+='\n    bills in the '+
-( category.title )+
-' category.\n  </div>\n</div>';
-}
-return __p;
-};
-
-this["LT"]["templates"]["js/app/templates/template-ebill.html"] = function(obj){
-var __p='';var print=function(){__p+=Array.prototype.join.call(arguments, '')};
-with(obj||{}){
-__p+='';
- if (!expandable) { 
-;__p+='\n  '+
-( header )+
-'\n';
- } 
-;__p+='\n\n<div class="bill ebill ';
- if (expandable) { 
-;__p+='is-expandable';
- } 
-;__p+='">\n  <div class="bill-top">\n    <div class="bill-status">\n      <img class="lower ';
- if (bill.newest_action && Math.abs(parseInt(bill.newest_action.date.diff(moment(), 'days'))) < LT.options.recentChangeThreshold) { 
-;__p+='passed';
- } 
-;__p+='" src="'+
-( LT.options.imagePath )+
-'RecentChanges.png" title="';
- if (bill.newest_action && Math.abs(parseInt(bill.newest_action.date.diff(moment(), 'days'))) < LT.options.recentChangeThreshold) { 
-;__p+='Recently changed';
- } 
-;__p+='" />\n      \n      <img class="lower ';
- if (bill.actions.lower) { 
-;__p+='passed';
- } 
-;__p+='" src="'+
-( LT.options.imagePath )+
-'PassedHouse.png" title="';
- if (bill.actions.lower) { 
-;__p+='Passed House';
- } 
-;__p+='" />\n      \n      <img class="upper ';
- if (bill.actions.upper) { 
-;__p+='passed';
- } 
-;__p+='" src="'+
-( LT.options.imagePath )+
-'PassedSenate.png" title="';
- if (bill.actions.upper) { 
-;__p+='Passed Senate';
- } 
-;__p+='" />\n      \n      <img class="conference ';
- if (bill.bill_type.conference) { 
-;__p+='passed';
- } 
-;__p+='" src="'+
-( LT.options.imagePath )+
-'InConferenceCommittee.png" title="';
- if (bill.bill_type.conference) { 
-;__p+='Conference bill created';
- } 
-;__p+='" />\n      \n      <img class="signed ';
- if (bill.actions.signed) { 
-;__p+='passed';
- } 
-;__p+='" src="'+
-( LT.options.imagePath )+
-'SignedIntoLaw.png" title="';
- if (bill.actions.signed) { 
-;__p+='Signed into law by the Governor';
- } 
-;__p+='" />\n    </div>\n    \n    ';
- if (expandable) { 
-;__p+='<h3>';
- } else { 
-;__p+='<h2>';
- } 
-;__p+='\n      '+
-( bill.title )+
-'\n      <a class="permalink" title="Permanent link to bill" href="#/bill/'+
-( encodeURI(bill.bill) )+
-'"></a>\n    ';
- if (expandable) { 
-;__p+='</h3>';
- } else { 
-;__p+='</h2>';
- } 
-;__p+='\n    \n    ';
- if (bill.newest_action) { 
-;__p+='\n      <div class="latest-action">\n        Last action '+
-( bill.newest_action.date.fromNow() )+
-'.\n      </div>\n    ';
- } 
-;__p+='\n    \n    <div class="description">\n      ';
- if (bill.description.indexOf('<p') < 3) { 
-;__p+='\n        '+
-( _.ellipsisText(bill.description, 60) )+
-'\n      ';
- } else { 
-;__p+='\n        <p>'+
-( _.ellipsisText(bill.description, 60) )+
-'</p>\n      ';
- } 
-;__p+='\n    </div>\n    \n    <div class="e-bill-categories">\n      <strong>Categories:</strong>\n      ';
- _.each(bill.categories, function(c, i) { 
-;__p+='\n        <a href="#/category/'+
-( c.get('id') )+
-'">\n          ';
- if (c.get('image')) { 
-;__p+='<img class="category-image" src="'+
-( LT.options.imagePath )+
-''+
-( c.get('image') )+
-'" />';
- } 
-;__p+='\n          '+
-( c.get('title') )+
-'</a>';
- if (i < bill.categories.length - 1) { 
-;__p+=',';
- } 
-;__p+='\n      ';
- }) 
-;__p+='\n    </div>\n    \n    ';
- if (expandable) { 
-;__p+='\n      <a href="#" class="bill-expand">More detail</a>\n      <a href="#/bill/'+
-( encodeURI(bill.bill) )+
-'" class="bill-details-link">More detail</a>\n    ';
- } 
-;__p+='\n  </div>\n  \n  <div class="bill-bottom">\n    ';
- if (_.isArray(bill.links) && bill.links.length > 0) { 
-;__p+='\n      <div class="e-links">\n        <h4>In the news</h4>\n        <ul class="e-links-list">\n          ';
- _.each(bill.links, function(l) { 
-;__p+='\n            <li><a href="'+
-( l.url )+
-'">'+
-( l.title )+
-'</a></li>\n          ';
- }) 
-;__p+='\n        </ul>\n      </div>\n    ';
- } 
-;__p+='\n\n    ';
- if (_.isObject(bill.bill_conference)) { 
-;__p+='\n      <div class="conference-bill">\n        <div class="conference-bill-inner clear-block">\n          '+
-( templates.osbill({
-            title: 'Conference Bill',
-            bill: bill.bill_conference.toJSON(),
-            templates: templates
-          }) )+
-'\n        </div>\n      </div>\n      \n      <a class="expand-other-bills" href="#">Show other bills</a>\n    ';
- } 
-;__p+='\n    \n    <div class="clear-block ';
- if (_.isObject(bill.bill_conference)) { 
-;__p+='has-conference-bill';
- } 
-;__p+='">\n      ';
- if (_.isObject(bill.bill_primary)) { 
-;__p+='\n        <div class="primary-bill ';
- if (_.isObject(bill.bill_companion)) { 
-;__p+='with-companion';
- } 
-;__p+='">\n          <div class="primary-bill-inner clear-block">\n            '+
-( templates.osbill({
-              title: 'Primary Bill',
-              bill: bill.bill_primary.toJSON(),
-              templates: templates
-            }) )+
-'\n          </div>\n        </div>\n      ';
- } 
-;__p+='\n      \n      ';
- if (_.isObject(bill.bill_companion)) { 
-;__p+='\n        <div class="companion-bill">\n          <div class="companion-bill-inner clear-block">\n            '+
-( templates.osbill({
-              title: 'Companion Bill',
-              bill: bill.bill_companion.toJSON(),
-              templates: templates
-            }) )+
-'\n          </div>\n        </div>\n      ';
- } 
-;__p+='\n    </div>\n  </div>\n</div>';
-}
-return __p;
-};
-
-this["LT"]["templates"]["js/app/templates/template-error.html"] = function(obj){
-var __p='';var print=function(){__p+=Array.prototype.join.call(arguments, '')};
-with(obj||{}){
-__p+='<div class="error-container">\n  <div class="error"><span>There was an error.</span></div>\n</div>';
-}
-return __p;
-};
-
-this["LT"]["templates"]["js/app/templates/template-header.html"] = function(obj){
-var __p='';var print=function(){__p+=Array.prototype.join.call(arguments, '')};
-with(obj||{}){
-__p+='<div class="ls-header-container">\n  <div class="ls-header">\n    <a class="all-categories-link" href="#/">\n      <img src="'+
-( LT.options.imagePath )+
-'back-100-85.png" />\n      All Categories\n    </a>\n    \n    <span class="categories-nav">\n      &nbsp;&nbsp;|&nbsp;&nbsp;\n      ';
- _.each(categories, function(c) { 
-;__p+='\n        <a class="" href="#/category/'+
-( c.id )+
-'" title="'+
-( c.title )+
-'">\n          '+
-( (c.short_title) ? c.short_title : c.title.split(' ')[0] )+
-'\n        </a>&nbsp;&nbsp;\n      ';
- }) 
-;__p+='\n    </span>\n  </div>\n</div>';
-}
-return __p;
-};
-
-this["LT"]["templates"]["js/app/templates/template-legislator.html"] = function(obj){
-var __p='';var print=function(){__p+=Array.prototype.join.call(arguments, '')};
-with(obj||{}){
-__p+='\n<div class="legislator">\n  ';
- if (LT.options.legImageProxy) { 
-;__p+='\n    <img src="'+
-( LT.options.legImageProxy )+
-''+
-( encodeURI(photo_url) )+
-'" />\n  ';
- } else { 
-;__p+='\n    <img src="'+
-( photo_url )+
-'" />\n  ';
- } 
-;__p+='\n  \n  <div class="legislator-info">\n    '+
-( full_name )+
-'<br />\n    ';
- if (typeof district != 'undefined') { 
-;__p+='\n      District '+
-( district )+
-'\n    ';
- } 
-;__p+='\n    ';
- if (typeof party != 'undefined') { 
-;__p+='\n      ('+
-( LT.utils.translate('partyAbbr', party) )+
-') \n    ';
- } 
-;__p+=' <br />\n    ';
- if (typeof chamber != 'undefined') { 
-;__p+='\n      '+
-( LT.utils.translate('chamber', chamber) )+
-'\n    ';
- } 
-;__p+='\n  </div>\n</div>';
-}
-return __p;
-};
-
-this["LT"]["templates"]["js/app/templates/template-loading.html"] = function(obj){
-var __p='';var print=function(){__p+=Array.prototype.join.call(arguments, '')};
-with(obj||{}){
-__p+='<div class="loading-general-container">\n  <div class="loading-general"><span>Loading...</span></div>\n</div>';
-}
-return __p;
-};
-
-this["LT"]["templates"]["js/app/templates/template-osbill.html"] = function(obj){
-var __p='';var print=function(){__p+=Array.prototype.join.call(arguments, '')};
-with(obj||{}){
-__p+='';
- if (typeof detailed != 'undefined' && detailed)  { 
-;__p+='\n  '+
-( header )+
-'\n';
- } 
-;__p+='\n\n<div class="osbill">\n  <h4>\n    ';
- if (typeof title != 'undefined') { 
-;__p+='\n      '+
-( title )+
-' ('+
-( bill.bill_id )+
-')\n    ';
- } else { 
-;__p+='\n      '+
-( bill.bill_id )+
-'\n    ';
- } 
-;__p+='\n    <a class="permalink" title="Permanent link to bill" href="#/bill-detail/'+
-( encodeURI(bill.bill_id) )+
-'"></a>\n  </h4>\n  \n  ';
- if (typeof detailed != 'undefined' && detailed) { 
-;__p+='\n    <p class="description">\n      '+
-( bill.title )+
-'\n    </p>\n  ';
- } 
-;__p+='\n\n  <div class="sponsors primary-sponsors">\n    <h5>Primary sponsors</h5>\n    \n    <div class="clear-block">\n      ';
- _.each(bill.sponsors, function(s) { 
-;__p+='\n        ';
- if (s.type === 'primary') { 
-;__p+='\n          <div class="sponsor" data-leg-id="'+
-( s.leg_id )+
-'" data-sponsor-type="'+
-( s.type )+
-'">\n            '+
-( s.name )+
-' ('+
-( s.type )+
-')\n          </div>\n        ';
- } 
-;__p+='\n      ';
- }) 
-;__p+='\n    </div>\n  </div>\n  \n  <div class="actions">\n    <h5><span class="latest-action-label">Latest </span>Actions</h5>\n    \n    <div class="actions-inner">\n      ';
- _.each(bill.actions, function(a) { 
-;__p+='\n        ';
- if (a.date) { 
-;__p+='\n          <div>\n            '+
-( a.date.format('MMM DD, YYYY') )+
-':  \n            '+
-( a.action )+
-'\n            ('+
-( LT.utils.translate('chamber', a.actor) )+
-')\n          </div>\n        ';
- } 
-;__p+=' \n      ';
- }) 
-;__p+='\n    </div>\n  </div>\n\n  ';
- if (bill.sponsors.length > 1) { 
-;__p+='\n    <div class="sponsors co-sponsors clear-block">\n      <h5>Co-Sponsors</h5>\n      \n      <div class="co-sponsors-inner clear-block">\n        ';
- _.each(bill.sponsors, function(s) { 
-;__p+='\n          ';
- if (s.type !== 'primary') { 
-;__p+='\n            <div class="sponsor" data-leg-id="'+
-( s.leg_id )+
-'" data-sponsor-type="'+
-( s.type )+
-'">\n              '+
-( s.name )+
-' ('+
-( s.type )+
-')\n            </div>\n          ';
- } 
-;__p+='\n        ';
- }) 
-;__p+='\n      </div>\n    </div>\n  ';
- } 
-;__p+='\n  \n  <div class="sources">\n    <h5>Full Text</h5>\n    \n    <a href="https://www.revisor.mn.gov/bills/text.php?number='+
-( encodeURI(bill.bill_id) )+
-'&session=ls88&version=list&session_number=0&session_year=2013" target="_blank">Full text of '+
-( bill.bill_id )+
-'.</a> <br />\n    \n    ';
- _.each(bill.sources, function(s) { 
-;__p+='\n      <a href="'+
-( s.url )+
-'" target="_blank">'+
-( bill.bill_id )+
-' on the MN State Legislature site.</a> <br />\n    ';
- }) 
-;__p+='\n  </div>\n</div>';
-}
-return __p;
-};
 /**
  * Models for the Legislature Tracker app.
  */
@@ -898,6 +475,13 @@ return __p;
       });
       this.set('actions', swapper);
       
+      // Votes
+      swapper = this.get('votes');
+      _.each(swapper, function(a, i) {
+        swapper[i].date = (a.date) ? moment(a.date) : a.date;
+      });
+      this.set('votes', swapper);
+      
       // Add custom events to actions
       swapper = this.get('custom_events');
       if (_.isArray(swapper) && swapper.length > 0) {
@@ -919,13 +503,16 @@ return __p;
     
     isSubstituted: function() {
       var sub = false;
-    
+      
       if (_.isBoolean(this.get('substitued'))) {
         sub = this.get('substitued');
       }
+      else if (LT.options.substituteMatch === false) {
+        sub = false;
+      }
       else {
         sub = _.find(this.get('actions'), function(a) {
-          return a.action.match(LT.options.regex.substituteMatch);
+          return a.action.match(LT.options.substituteMatch);
         });
         sub = (sub) ? true : false;
         this.set('substitued', sub);
@@ -953,15 +540,14 @@ return __p;
    * Model Legislature Tracker for bill
    */
   LT.BillModel = Backbone.Model.extend({
-  
-    initialize: function(attr, options) {
+      initialize: function(attr, options) { 
       this.options = options;
-    },
-    
+      this.hasBill = attr.hasBill;
+     },
+   
     loadOSBills: function(callback, error) {
       var thisModel = this;
       var defers = [];
-      
       _.each(['bill_primary', 'bill_companion', 'bill_conference'], function(prop) {
         if (thisModel.get(prop)) {
           defers.push(LT.utils.fetchModel(thisModel.get(prop)));
@@ -977,6 +563,7 @@ return __p;
     },
     
     loadCategories: function() {
+    
       if (this.get('categories')) {
         this.set('categories', _.map(this.get('categories'), function(c) {
           if (!_.isObject(c)) {
@@ -992,47 +579,53 @@ return __p;
       var p = this.get('bill_primary');
       var c = this.get('bill_companion');
       var co = this.get('bill_conference');
-      
-      if (_.isUndefined(this.get('last_updated_at')) && p.get('updated_at')) {
-        last_updated_at = p.get('updated_at');
-        
-        if (c && c.get('updated_at')) {
-          last_updated_at = (c.get('updated_at').unix() >
-            last_updated_at.unix()) ?
-            c.get('updated_at') : last_updated_at;
+      if(this.hasBill === true)
+        if (_.isUndefined(this.get('last_updated_at')) && p.get('updated_at')) {
+          last_updated_at = p.get('updated_at');
+          
+          if (c && c.get('updated_at')) {
+            last_updated_at = (c.get('updated_at').unix() >
+              last_updated_at.unix()) ?
+              c.get('updated_at') : last_updated_at;
+          }
+          if (co && co.get('updated_at')) {
+            last_updated_at = (co.get('updated_at').unix() >
+              last_updated_at.unix()) ?
+              co.get('updated_at') : last_updated_at;
+          }
+          this.set('last_updated_at', last_updated_at);
         }
-        if (co && co.get('updated_at')) {
-          last_updated_at = (co.get('updated_at').unix() >
-            last_updated_at.unix()) ?
-            co.get('updated_at') : last_updated_at;
+        // Check if this bill loaded correctly
+        else if (_.isUndefined(this.get('last_updated_at')) && !p.get('updated_at')) {
+          LT.log('Could not fetch primary bill data from OpenStates. Check that the id ' + 
+            this.get('bill_primary').get('bill_id') + ' is formatted properly.');
         }
-        this.set('last_updated_at', last_updated_at);
-      }
       
       return this.get('last_updated_at');
     },
     
     newestAction: function() {
+ 
       var newest_action;
       var p = this.get('bill_primary');
       var c = this.get('bill_companion');
       var co = this.get('bill_conference');
-      
-      if (_.isUndefined(this.get('newest_action')) && p.get('newest_action')) {
-        newest_action = p.get('newest_action');
-        
-        if (c && c.get('newest_action')) {
-          newest_action = (c.get('newest_action').date.unix() >
-            newest_action.date.unix()) ?
-            c.get('newest_action') : newest_action;
+      if(this.hasBill === true)
+        if (_.isUndefined(this.get('newest_action')) && p.get('newest_action')) {
+          newest_action = p.get('newest_action');
+          
+          if (c && c.get('newest_action')) {
+            newest_action = (c.get('newest_action').date.unix() >
+              newest_action.date.unix()) ?
+              c.get('newest_action') : newest_action;
+          }
+          if (co && co.get('newest_action')) {
+            newest_action = (co.get('newest_action').date.unix() >
+              newest_action.date.unix()) ?
+              co.get('newest_action') : newest_action;
+          }
+          this.set('newest_action', newest_action);
         }
-        if (co && co.get('newest_action')) {
-          newest_action = (co.get('newest_action').date.unix() >
-            newest_action.date.unix()) ?
-            co.get('newest_action') : newest_action;
-        }
-        this.set('newest_action', newest_action);
-      }
       
       return this.get('newest_action');
     },
@@ -1068,13 +661,14 @@ return __p;
       
       // If only primary, get the actions from there, or
       // if substituted, then just get from primary bill
-      if (!type.companion || type.substituted) {
-        actions.lower = this.get('bill_primary').getActionDate('passed_lower');
-        actions.upper = this.get('bill_primary').getActionDate('passed_upper');
-      }
+      if(this.hasBill === true)
+        if (!type.companion || type.substituted) {
+          actions.lower = this.get('bill_primary').getActionDate('passed_lower');
+          actions.upper = this.get('bill_primary').getActionDate('passed_upper');
+        }
       
       // If companion, get the actions from their respective bills
-      if (type.companion && !type.substituted) {
+      if (type.companion && !type.substituted && this.hasBill === true) {
         if (this.get('bill_primary').get('chamber') === 'upper') {
           actions.upper = this.get('bill_primary').getActionDate('passed_upper');
           actions.lower = this.get('bill_companion').getActionDate('passed_lower');
@@ -1086,7 +680,7 @@ return __p;
       }
       
       // If conference bill, get date if both chambers have passed
-      if (type.conference) {
+      if (type.conference && this.hasBill === true) {
           var lower = this.get('bill_conference').getActionDate('passed_lower');
           var upper = this.get('bill_conference').getActionDate('passed_upper');
             
@@ -1097,30 +691,44 @@ return __p;
       
       // Determine signed.  If conference, then use that, otherwise
       // use primary
-      if (type.conference) {
-        actions.signed = this.get('bill_conference').getActionDate('signed');
-      }
-      else {
-        actions.signed = this.get('bill_primary').getActionDate('signed');
-      }
+      if(this.hasBill === true)
+        if (type.conference) {
+          actions.signed = this.get('bill_conference').getActionDate('signed');
+        }
+        else {
+          actions.signed = this.get('bill_primary').getActionDate('signed');
+        }
       
       
       // Determine last updated date
-      if (type.conference) {
-        actions.last = this.get('bill_conference').getActionDate('last');
-      }
-      else if (type.companion) {
-        actions.last = (this.get('bill_companion').getActionDate('last').unix() >=
-          this.get('bill_primary').getActionDate('last').unix()) ?
-          this.get('bill_companion').getActionDate('last') :
-          this.get('bill_primary').getActionDate('last');
-      }
-      else  {
-        actions.last = this.get('bill_primary').getActionDate('last');
-      }
-      
+      if(this.hasBill === true)
+        if (type.conference) {
+          actions.last = this.get('bill_conference').getActionDate('last');
+        }
+        else if (type.companion) {
+          actions.last = (this.get('bill_companion').getActionDate('last').unix() >=
+            this.get('bill_primary').getActionDate('last').unix()) ?
+            this.get('bill_companion').getActionDate('last') :
+            this.get('bill_primary').getActionDate('last');
+        }
+        else  {
+          actions.last = this.get('bill_primary').getActionDate('last');
+        }
+        
       this.set('actions', actions);
       this.set('bill_type', type);
+      
+      // Description
+      if (!this.get('description')) {
+        this.set('description', this.get('bill_primary').get('summary'));
+      }
+      
+      // Sort custom events
+      if (this.get('custom_events')) {
+        this.set('custom_events', _.sortBy(this.get('custom_events'), function(e, i) {
+          return (e.date.unix() + i) * -1;
+        }));
+      }
     }
   });
   
@@ -1164,10 +772,34 @@ return __p;
       
       $.when.apply($, defers)
         .done(function() {
+          var unlisted_companions_defers = [];
           thisModel.get('bills').each(function(bill) {
-            bill.parseMeta();
+            if(this.hasBill === true && !bill.get('bill_companion') && bill.get('bill_primary').get('companions') ){
+               var companion_bill_id = bill.get('bill_primary').get('companions')[0].bill_id.indexOf('SAME AS') >= 0 ? 
+                              bill.get('bill_primary').get('companions')[0].bill_id.replace("SAME AS ", "") : 
+                              undefined;
+              if (companion_bill_id){
+                var companion = LT.utils.getModel('OSBillModel', 'bill_id', {bill_id : companion_bill_id});
+                bill.set('bill_companion', companion);
+                unlisted_companions_defers.push(LT.utils.fetchModel(bill.get('bill_companion')));
+              }
+            }else{
+              bill.parseMeta();
+            }
           });
-          callback();
+
+          if(unlisted_companions_defers.length > 0){
+            $.when.apply($, unlisted_companions_defers)
+              .done(function(){
+                thisModel.get('bills').each(function(bill){
+                  bill.parseMeta();
+                });
+                callback();
+              })
+              .fail(error);
+          }else{ // if there aren't any unlisted companion bills to fetch.
+            callback();
+          }
         })
         .fail(error);
       return this;
@@ -1175,6 +807,7 @@ return __p;
   });
 
 })(jQuery, window);
+
 /**
  * Collections for Legislature Tracker
  */
@@ -1223,6 +856,7 @@ return __p;
   });
 
 })(jQuery, window);
+
 /**
  * Views for the Legislator Tracker app
  */
@@ -1260,11 +894,13 @@ return __p;
     loading: function() {
       // The first (and second) load, we don't actually 
       // want to force the scroll
-      if (this.initialLoad === true) {
-        this.resetScrollView();
-      }
-      else {
-        this.initialLoad = (_.isUndefined(this.initialLoad)) ? false : true;
+      if (_.isNumber(LT.options.scrollOffset)) {
+        if (this.initialLoad === true) {
+          this.resetScrollView();
+        }
+        else {
+          this.initialLoad = (_.isUndefined(this.initialLoad)) ? false : true;
+        }
       }
       this.$el.html(this.templates.loading({}));
       return this;
@@ -1398,13 +1034,18 @@ return __p;
     },
     
     resetScrollView: function() {
-      $('html, body').animate({ scrollTop: this.$el.offset().top - 15 }, 1000);
+      $('html, body').animate({ scrollTop: this.$el.offset().top - LT.options.scrollOffset }, 1000);
       return this;
     },
     
     navigationGlue: function() {
       var containerTop = this.$el.offset().top;
       var $navigation = $('.ls-header');
+    
+      // The header container should be as high as the
+      // the header so that it does not jump when
+      // its gets glued
+      $('.ls-header-container').height($navigation.outerHeight());
       
       $(w).scroll(function() {
         var $this = $(this);
@@ -1444,6 +1085,7 @@ return __p;
   });
   
 })(jQuery, window);
+
 /**
  * Main application container for the Legislature Tracker
  *
@@ -1602,6 +1244,7 @@ return __p;
       var bill_id = decodeURI(bill);
       
       bill = this.bills.where({ bill: bill_id })[0];
+      
       if (!bill) {
         this.navigate('/bill-detail/' + encodeURI(bill_id), { trigger: true, replace: true });
         return;
@@ -1634,12 +1277,13 @@ return __p;
           title: 'Recent Actions',
           description: 'The following bills have been updated in the past ' +
             LT.options.recentChangeThreshold + ' days.',
-          image: 'RecentUpdatedBill.png'
+          image: LT.options.recentImage
         };
         
         this.bills.each(function(b) {
           var c = b.get('categories');
-          
+          var hasBill = b.get('hasBill') ;
+          if(hasBill === true)
           if (Math.abs(parseInt(b.lastUpdatedAt().diff(moment(), 'days'), 10)) < LT.options.recentChangeThreshold) {
             c.push(category.id);
             b.set('categories', c);
@@ -1664,13 +1308,13 @@ return __p;
       
         // First collect all the bill id's we need
         this.bills.each(function(bill) {
-          _.each(['bill_primary', 'bill_companion', 'bill_conference'], function(prop) {
+            _.each(['bill_primary', 'bill_companion', 'bill_conference'], function(prop) {
             if (bill.get(prop)) {
               billIDs.push(bill.get(prop).get('bill_id'));
             }
           });
         });
-        
+  
         var url = 'http://openstates.org/api/v1/bills/?state=' + LT.options.state +
           '&search_window=session:' + LT.options.session +
           '&bill_id__in=' + encodeURI(billIDs.join('|')) +
