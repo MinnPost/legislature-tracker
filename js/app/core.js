@@ -87,7 +87,7 @@ else {
   // Make image path.  If the image path is a full
   // path with http, then don't prepend image path
   LT.utils.imagePath = function(image) {
-    return (image.indexOf('http') === 0) ? image : LT.imagePath + image;
+    return (image.indexOf('http') === 0) ? image : LT.options.imagePath + image;
   };
   
   /**
@@ -99,7 +99,7 @@ else {
    */
   LT.templates = LT.templates || {};
   LT.utils.getTemplate = function(name, assignment, property, callback) {
-    var templatePath = 'js/app/templates/' + name + '.html';
+    var templatePath = LT.options.templatePath + name + '.html';
     
     if (!_.isUndefined(LT.templates[templatePath])) {
       assignment[property] = LT.templates[templatePath];
@@ -289,6 +289,7 @@ else {
     maxBills: 30, //raise this at your peril. could get very slow.
     substituteMatch: /substituted/i,
     imagePath: './css/images/',
+    templatePath: './js/app/templates/',
     recentChangeThreshold: 7,
     tabletopOptions: {},
     scrollOffset: false,

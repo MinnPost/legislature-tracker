@@ -5,41 +5,72 @@
   <title>Legislature Tracker</title>
   <meta name="viewport" content="width=device-width, initial-scale=1"></meta>
 
-
   <!-- Include CSS -->
-  <link rel="stylesheet" href="./dist/legislature-tracker.latest.css" type="text/css">
-  <!--[if lte IE 8]>
-    <link rel="stylesheet" href="./dist/legislature-tracker.latest.ie.css" type="text/css">
-  <![endif]-->
+  <link rel="stylesheet" href="./gh-pages/bootstrap-2.3.1.min.css" type="text/css">
+  <style type="text/css">
+    /* Customize the navbar links to be fill the entire space of the .navbar */
+    .navbar .navbar-inner {
+      padding: 0;
+    }
+    .navbar .nav {
+      margin: 0;
+      display: table;
+      width: 100%;
+    }
+    .navbar .nav li {
+      display: table-cell;
+      width: 1%;
+      float: none;
+    }
+    .navbar .nav li a {
+      font-weight: bold;
+      text-align: center;
+      border-left: 1px solid rgba(255,255,255,.75);
+      border-right: 1px solid rgba(0,0,0,.1);
+    }
+    .navbar .nav li:first-child a {
+      border-left: 0;
+      border-radius: 3px 0 0 3px;
+    }
+    .navbar .nav li:last-child a {
+      border-right: 0;
+      border-radius: 0 3px 3px 0;
+    }
+  </style>
 </head>
 
 <body>
-
-  <!-- Application HTML -->
-  <div id="legislature-tracker-container" style="max-width: 960px; margin: 1em auto;">
+  <div class="container">
+    
+    <div class="masthead">
+        <h4 class="muted">Examples</h4>
+        <div class="navbar">
+          <div class="navbar-inner">
+            <div class="container">
+              <ul class="nav">
+                <li><a href="./examples/ny-dev.html">NY</a></li>
+                <li><a href="./examples/mn-dev.html">MN</a></li>
+              </ul>
+            </div>
+          </div>
+        </div><!-- /.navbar -->
+      </div>
+  
+    <div class="readme-content"><em>Loading content...</em></div>
   </div>
         
     
   <!-- Application libraries and JS -->
   <script type="text/javascript" src="./dist/legislature-tracker.libs.js"></script>
-  <script type="text/javascript" src="./dist/legislature-tracker.latest.min.js"></script>
+  <script type="text/javascript" src="./gh-pages/markdown-master-20130501.js"></script>
 
 
   <!-- Run application -->
   <script type="text/javascript">
     (function($, w, undefined) {
-      // This examples uses the 2013-2014 MN Legislature.
-      var options = _(LT.defaultOptions).extend({
-        el: '#legislature-tracker-container',
-        state: 'MN', 
-        session: '2013-2014',
-        OSKey: '49c5c72c157d4b37892ddb52c63d06be',
-        eKey: '0AtX8MXQ89fOKdFNaY1Nzc3p6MjJQdll1VEZwSDkzWEE',
-        legImageProxy: 'http://i-mage-proxerific.herokuapp.com/resize?size=100x100&url=',
+      $.get('./README.md', function(readme) {
+        $('.readme-content').html(markdown.toHTML(readme));
       });
-      
-      var app = new LT.Application(options);
-      
     })(jQuery, window);
   </script>
 

@@ -39,6 +39,7 @@ The following are common options you may want to override.
 * ```recentImage```: The name of the image file to use for the recent category.  Make blank to not have an image for the recent category.
 * ```recentChangeThreshold```: The number of days to determine if a bill will be put in the recent category.  The default is ```7``` days.
 * ```imagePath```:  The place to find images.  This path is simply prepended to images and should have a trailing slash.  For instance ```'https://example.com/images/'```, or ```'./images/'```.  To customize images, the ideal is to copy the images found in ```css/images/``` to your new directory and add or replace images as needed.
+* ```templatePath```:  The place to find templates.  This is only really needed if you are not using the built version.
 
 #### Translation options
 

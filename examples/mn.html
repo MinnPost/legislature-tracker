@@ -7,9 +7,9 @@
 
 
   <!-- Include CSS -->
-  <link rel="stylesheet" href="./dist/legislature-tracker.latest.css" type="text/css">
+  <link rel="stylesheet" href="../dist/legislature-tracker.latest.css" type="text/css">
   <!--[if lte IE 8]>
-    <link rel="stylesheet" href="./dist/legislature-tracker.latest.ie.css" type="text/css">
+    <link rel="stylesheet" href="../dist/legislature-tracker.latest.ie.css" type="text/css">
   <![endif]-->
 </head>
 
@@ -21,23 +21,24 @@
         
     
   <!-- Application libraries and JS -->
-  <script type="text/javascript" src="./dist/legislature-tracker.libs.js"></script>
-  <script type="text/javascript" src="./dist/legislature-tracker.latest.min.js"></script>
+  <script type="text/javascript" src="../dist/legislature-tracker.libs.js"></script>
+  <script type="text/javascript" src="../dist/legislature-tracker.latest.min.js"></script>
 
 
   <!-- Run application -->
   <script type="text/javascript">
     (function($, w, undefined) {
+      // This examples uses the 2013-2014 MN Legislature.
       var options = _(LT.defaultOptions).extend({
         el: '#legislature-tracker-container',
-        state: 'NY', 
+        state: 'MN', 
         session: '2013-2014',
         OSKey: '49c5c72c157d4b37892ddb52c63d06be',
-        eKey: '0Ag1Wo8bRevTLdE8tbmpFM1pCRXBWZUVvUE1kMFBGNEE',
-        recentImage: '',
+        eKey: '0AtX8MXQ89fOKdFNaY1Nzc3p6MjJQdll1VEZwSDkzWEE',
+        legImageProxy: 'http://i-mage-proxerific.herokuapp.com/resize?size=100x100&url=',
+        imagePath: '../css/images/'
       });
-      options['wordTranslations']['chamber']['lower'] = 'Assembly';
-
+      
       var app = new LT.Application(options);
       
     })(jQuery, window);
