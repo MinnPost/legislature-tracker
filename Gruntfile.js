@@ -28,14 +28,12 @@ module.exports = function(grunt) {
       folder: 'dist/'
     },
     jst: {
-      compile: {
-        options: {
-          namespace: 'LT.templates'
-        },
-        templates: {
-          src: ['js/app/templates/*.html'],
-          dest: 'dist/templates.js'
-        }
+      options: {
+        namespace: 'LT.templates'
+      },
+      templates: {
+        src: ['js/app/templates/*.html'],
+        dest: 'dist/templates.js'
       }
     },
     concat: {

@@ -99,14 +99,15 @@ else {
    */
   LT.templates = LT.templates || {};
   LT.utils.getTemplate = function(name, assignment, property, callback) {
-    var templatePath = LT.options.templatePath + name + '.html';
+    var templatePath = 'js/app/templates/' + name + '.html';
+    var templateGETPath = LT.options.templatePath + name + '.html';
     
     if (!_.isUndefined(LT.templates[templatePath])) {
       assignment[property] = LT.templates[templatePath];
     }
     else {
       $.ajax({
-        url: templatePath,
+        url: templateGETPath,
         method: 'GET',
         async: false,
         contentType: 'text',
