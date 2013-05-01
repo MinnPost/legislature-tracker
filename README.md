@@ -27,14 +27,20 @@ When creating a new Legislature Tracker object, you can set the following option
 * ```eKey```: Your Google Spreadsheet identifier. Be sure to publish your spreadsheet (File -> Publish to the web) to make it available via the Google Spreadsheet API.
 * ```conferenceBill```: This should be ```true``` or ```false``` to enable the handling of conference bills.  A conference bill is a third bill (other than the primary or companion) that is used often when the two bills are diverging significantly.
 * ```substituteMatch```: Some legislatures will substitute bills, meaning they will use the same bill ID for essentially different bills.  This option sets the regular expression to match actions to determine if it substituted.  Define as ```false``` to turn off completely.
-* ```scrollOffset```: This turns on auto scrolling which will scroll the view window to the top of the application after the first click.  This is helpful if it is embedded in larger content or if there are long categories.  This will be an integer of pixels to offset where the top; for instance ```15``` equals 15 pixels above the application.
 * ```recentImage```: The name of the image file to use for the recent category.  Make blank to not have an image for the recent category.
 * ```recentChangeThreshold```: The number of days to determine if a bill will be put in the recent category.  The default is ```7``` days.
 * ```imagePath```:  The place to find images.  This path is simply prepended to images and should have a trailing slash.  For instance ```'https://example.com/images/'```, or ```'./images/'```.  To customize images, the ideal is to copy the images found in ```css/images/``` to your new directory and add or replace images as needed.
 * ```legImageProxy```: If you want to proxy images from Open States, use an URL prefix, like ```'http://proxy.com/?url='```.  For instance MinnPost made [this custom proxy](https://github.com/MinnPost/i-mage-proxerific).
-* ```tabletopOptions```: An object to override any of the [Tabletop.js](https://github.com/jsoma/tabletop) options.
+
+### Advanced Options
+
+These options are set the same as basic options, but their default setting will work fine for most users. 
+
 * ```aggregateURL```: An API JSON feed to get some aggregate bill counts.  This is specific to MinnPost (MN) and is NOT fully supported at the moment.
 * ```maxBills```: By default, 50; the maximum number of bills that will be loaded from your Google Spreadsheet. Since each bill requires a call to OpenStates, your app may become slow if you raise this (especially on slow connections and/or older browsers).
+* ```tabletopOptions```: An object to override any of the [Tabletop.js](https://github.com/jsoma/tabletop) options.
+* ```scrollOffset```: This turns on auto scrolling which will scroll the view window to the top of the application after the first click.  This is helpful if it is embedded in larger content or if there are long categories.  This will be an integer of pixels to offset where the top; for instance ```15``` equals 15 pixels above the application.
+
 
 ### Google spreadsheets setup
 
