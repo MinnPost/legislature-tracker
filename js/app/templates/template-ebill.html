@@ -22,7 +22,13 @@
       <a class="permalink" title="Permanent link to bill" href="#/bill/<%= encodeURI(bill.bill) %>"></a>
     <% if (expandable) { %></h3><% } else { %></h2><% } %>
     
-    <% if (bill.newest_action) { %>
+    <% if (!bill.hasBill){ %>
+      <div class="latest-action">
+        This bill has not been assigned an id yet.
+      </div>
+    <% } %>
+    
+     <% if (bill.newest_action) { %>
       <div class="latest-action">
         Last action <%= bill.newest_action.date.fromNow() %>.
       </div>
