@@ -27,6 +27,7 @@
     "grunt-contrib-jst": "*",
     "grunt-contrib-clean": "*",
     "grunt-ftp-deploy": "*",
+    "grunt-sftp-deploy": "*",
     "grunt-s3": "*"
   }, 
   "licenses": [

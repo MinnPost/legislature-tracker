@@ -155,6 +155,10 @@ else {
     return parsed;
   };
   
+  LT.parse.validateBillNumber = function(bill_num){
+    return /[A-Z] [1-9][0-9]*/.test(bill_num)
+  }
+
   LT.parse.eBills = function(bills) {
     return _.map(bills, function(row) {
       LT.parse.translateFields(LT.options.fieldTranslations.eBills, row);
@@ -171,6 +175,10 @@ else {
       }else{
         row.hasBill = true;      
       // Create open states bill objects
+      if(!LT.parse.validateBillNumber(row.bill)){
+        LT.log('Invalid bill number "' + row.bill + '", see documentation.')
+      }
+
       row.bill_primary = (row.bill) ?
         LT.utils.getModel('OSBillModel', 'bill_id', { bill_id: row.bill }) : undefined;
       row.bill_companion = (row.bill_companion) ?

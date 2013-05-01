@@ -106,6 +106,18 @@ module.exports = function(grunt) {
         exclusions: ['dist/**/.DS_Store', 'dist/**/Thumbs.db']
       }
     },
+    'sftp-deploy': {
+      deploy: {
+        auth: {
+          host: ftpserver,
+          port: ftpport,
+          authKey: 'leg-tracker-key'
+        },
+        src: 'dist',
+        dest: ftpdir,
+        exclusions: ['dist/**/.DS_Store', 'dist/**/Thumbs.db']
+      }
+    },
     s3: {
       options: {
         // This is specific to MinnPost
@@ -134,6 +146,7 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-jst');
   grunt.loadNpmTasks('grunt-contrib-clean');
   grunt.loadNpmTasks('grunt-ftp-deploy');
+  grunt.loadNpmTasks('grunt-sftp-deploy');
   grunt.loadNpmTasks('grunt-s3');
 
   // Default task.
@@ -148,5 +161,10 @@ module.exports = function(grunt) {
   // grunt deploy-ftp --ftpserver="example.com" --ftpdir="projects/leg-tracker/" --ftpport=21
   // Not working
   grunt.registerTask('deploy-ftp', ['ftp-deploy']);
+  
+  // Deploy task for sft.  Same as sftp
+  // grunt deploy-sftp --ftpserver="example.com" --ftpdir="/path/to/dest/" --ftpport=22
+  // Not working
+  grunt.registerTask('deploy-sftp', ['sftp-deploy']);
 
 };

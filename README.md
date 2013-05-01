@@ -130,12 +130,12 @@ The Legislature tracker tries to take these subtleties into account, but may not
 
 ## Building
 
-Built versions will only be done for tagged releases.
+Built versions will only be regularly committed for tagged releases.
 
-1. Uses [grunt](http://gruntjs.com/).  To install: ```npm install -g grunt-cli && npm install```
-1. Update version in: ```package.json```
+1. Uses [grunt](http://gruntjs.com/) which depends on [Node](http://nodejs.org/).  To install: ```npm install -g grunt-cli && npm install```
+1. (for specific version) Update version in: ```package.json```
 1. Run: ```grunt```
-1. Tag release with appropriate version: ```git tag 0.1.1```
+1. (for specific version) Tag release with appropriate version: ```git tag 0.1.1```
 
 ## Deploying
 
@@ -166,6 +166,14 @@ For authentication, you need to create a JSON file named ```.ftppass``` that wil
 Then run the following with the appropriate values filled in to upload files to the FTP server.  The port argument is optional and defaults to ```21```.
 
     grunt deploy-ftp --ftpserver="example.com" --ftpdir="projects/leg-tracker/" --ftpport=21
+    
+### SFTP
+
+Same as FTP deploying.  Checkout the [grunt-sftp-deploy](https://github.com/thrashr888/grunt-sftp-deploy) for intricacies.  Example:
+
+    grunt deploy-sftp --ftpserver="example.com" --ftpdir="/path/to/dest/" --ftpport=22
+
+
 
 ## Architecture
 
@@ -210,4 +218,4 @@ Currently, Tabletop.js extends Array so that indexOf is available.  This has som
 
 ## Attribution
 
-* Icons provided by <a href="http://thenounproject.com/" target="_blank">The Noun Project</a>.  Congress by Martha Ormiston; Energy by NDSTR; GayMarriage by MaurizioFusillo; Education by Thibault Geffroy; Time by Richard de Vos; Capital by Jonathan Keating; Paper by Tom Schott; Bank by Ilaria Baggio; Group by Alexandra Coscovelnita; Check mark by Spencer Cohen; Back by John Chapman.
+* Some icons provided by [The Noun Project](http://thenounproject.com/).  Congress by Martha Ormiston; Energy by NDSTR; GayMarriage by MaurizioFusillo; Education by Thibault Geffroy; Time by Richard de Vos; Capital by Jonathan Keating; Paper by Tom Schott; Bank by Ilaria Baggio; Group by Alexandra Coscovelnita; Check mark by Spencer Cohen; Back by John Chapman.
