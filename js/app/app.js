@@ -196,10 +196,10 @@
           var c = b.get('categories');
           var hasBill = b.get('hasBill') ;
           if(hasBill === true)
-	          if (Math.abs(parseInt(b.lastUpdatedAt().diff(moment(), 'days'), 10)) < LT.options.recentChangeThreshold) {
-	            c.push(category.id);
-	            b.set('categories', c);
-	          }
+            if (Math.abs(parseInt(b.lastUpdatedAt().diff(moment(), 'days'), 10)) < LT.options.recentChangeThreshold) {
+              c.push(category.id);
+              b.set('categories', c);
+            }
         });
         
         this.categories.add(LT.utils.getModel('CategoryModel', 'id', category));
