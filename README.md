@@ -1,12 +1,10 @@
 # Legislature Tracker
 
-An application to keep track of what is going on in a state legislature.  Using editorial expertise and the Sunlight Lab's Open States API, this application aims to create a curated view of what is going on in a state's legislature session.
+An application to keep track of what is going on in a state legislature.  Using editorial expertise and the Sunlight Lab's Open States API, this application creates a curated view of what is going on in a state's legislature session.
 
-It combines data from [Open States](http://openstates.org/) and editorial data collected in with [Google Docs](https://docs.google.com/).
+It combines data from [Open States](http://openstates.org/) and editorial data collected with [Google Docs](https://docs.google.com/).  You can see some examples at [minnpost.github.io/legislature-tracker](http://minnpost.github.io/legislature-tracker/) and see it in production on [MinnPost](http://www.minnpost.com/data/2013/04/minnesota-legislative-bill-tracker).
 
-Currently in action at [MinnPost](http://www.minnpost.com/data/2013/04/minnesota-legislative-bill-tracker).
-
-## Install
+## Install and configuration
 
 This is a frontend application.  Include the corresponding JS and CSS in your HTML page, then call the following in your JS (see options below);
 
@@ -14,7 +12,7 @@ This is a frontend application.  Include the corresponding JS and CSS in your HT
 var app = new LT.Application(options);
 ```
 
-See ```index.html``` for a basic example using the 2013-2014 MN Legislature.
+See ```examples/*``` for good examples of how to use the application.
 
 ### Options
 
@@ -80,7 +78,6 @@ These options are set the same as basic options, but their default setting will 
 * ```tabletopOptions```: An object to override any of the [Tabletop.js](https://github.com/jsoma/tabletop) options.
 * ```aggregateURL```: An API JSON feed to get some aggregate bill counts.  This is specific to MinnPost (MN) and is NOT fully supported at the moment.
 
-
 ### Google spreadsheets setup
 
 See [this spreadsheet for an example](https://docs.google.com/a/minnpost.com/spreadsheet/ccc?key=0AtX8MXQ89fOKdFNaY1Nzc3p6MjJQdll1VEZwSDkzWEE#gid=1).  There are options to change the column name mapping, but this is not well supported yet.
@@ -118,7 +115,16 @@ There are a few fields that are a list of links.  You should use this format so 
 "Link text title|http://www.example.com/123", "Another link text title|http://www.example.com/154"
 ``` 
 
-### How does your legislature work?
+### Overriding templates
+
+You can override the HTML templates that are used in the application and thus change any of the wording or outputs.  Templates are using the [Backbone](http://backbonejs.org/) template system.  You can see the current templates in the ```js/app/templates/``` directory.  The compiled templates are stored in the ```LT.templates``` object.  You can override them with something like the following:
+
+```
+LT.templates = LT.templates || {};
+LT.templates['js/app/templates/template-header.html'] = _.template($('#new-template').html());
+```
+
+## How does your legislature work?
 
 The Open States data is very good structured data about bills, but it is basic data that does not account for the subtleties of how legislatures work.
 
