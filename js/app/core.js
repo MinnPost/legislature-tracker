@@ -133,9 +133,12 @@ else {
     
     parsed.categories = LT.parse.eCategories(tabletop.sheets('Categories').all());
     var eBills = tabletop.sheets('Bills').all();
-    if(eBills.length > LT.options.maxBills){
-      LT.log("The number of bills in your spreadsheet exceeds maxBills. Set the maxBills option to display them, but be aware that this may significantly slow down the Legislature Tracker.")
+    
+    // Handle max bills
+    if (eBills.length > LT.options.maxBills) {
+      LT.log('The number of bills in your spreadsheet exceeds maxBills. Set the maxBills option to display them, but be aware that this may significantly slow down the Legislature Tracker.');
     }
+    
     parsed.bills = LT.parse.eBills(eBills.slice(0, LT.options.maxBills));
     parsed.events = LT.parse.eEvents(tabletop.sheets('Events').all());
 
@@ -161,11 +164,11 @@ else {
       row.categories = _.map(row.categories, _.trim);
      //if eBill does not have a bill number
       if(!row.bill){
-      	row.hasBill = false;
-      	//use title as bill id for linking
-      	row.bill = row.title;
+        row.hasBill = false;
+        //use title as bill id for linking
+        row.bill = row.title;
       }else{
-      	row.hasBill = true;      
+        row.hasBill = true;      
       // Create open states bill objects
       row.bill_primary = (row.bill) ?
         LT.utils.getModel('OSBillModel', 'bill_id', { bill_id: row.bill }) : undefined;
