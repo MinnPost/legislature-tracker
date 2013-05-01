@@ -147,7 +147,7 @@ module.exports = function(grunt) {
   grunt.registerTask('deploy-s3', ['s3']);
   
   // Deploy task for ftp that uses environment variables.  Example
-  // grunt deploy-ftp --ftpserver="example.com" --ftpdir="projects/leg-tracker/" --ftpport=22
+  // grunt deploy-ftp --ftpserver="example.com" --ftpdir="projects/leg-tracker/" --ftpport=21
   // Not working
   grunt.registerTask('deploy-ftp', ['ftp-deploy']);
 
