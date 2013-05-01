@@ -20,26 +20,64 @@ See ```index.html``` for a basic example using the 2013-2014 MN Legislature.
 
 When creating a new Legislature Tracker object, you can set the following options.  All default options are in ```js/app/core.js```.
 
+#### Required options
+
+The following are required for the application to work correctly
+
 * ```el```: The element selector that will hold the application.
 * ```state```: The two character state code as used by Open States.
 * ```session```: The session key as used on Open States, like ```'2013-2014'```.
 * ```OSKey```: Your Open States API Key.  You can get one at [services.sunlightlabs.com](http://services.sunlightlabs.com/).
 * ```eKey```: Your Google Spreadsheet identifier. Be sure to publish your spreadsheet (File -> Publish to the web) to make it available via the Google Spreadsheet API.
+
+#### Common options
+
+The following are common options you may want to override.
+
 * ```conferenceBill```: This should be ```true``` or ```false``` to enable the handling of conference bills.  A conference bill is a third bill (other than the primary or companion) that is used often when the two bills are diverging significantly.
-* ```substituteMatch```: Some legislatures will substitute bills, meaning they will use the same bill ID for essentially different bills.  This option sets the regular expression to match actions to determine if it substituted.  Define as ```false``` to turn off completely.
+* ```substituteMatch```: Some legislatures will substitute bills, meaning that a companion bill will substitue for the primary bill.  This option sets the regular expression to match actions to determine if it substituted.  Define as ```false``` to turn off completely.
 * ```recentImage```: The name of the image file to use for the recent category.  Make blank to not have an image for the recent category.
 * ```recentChangeThreshold```: The number of days to determine if a bill will be put in the recent category.  The default is ```7``` days.
 * ```imagePath```:  The place to find images.  This path is simply prepended to images and should have a trailing slash.  For instance ```'https://example.com/images/'```, or ```'./images/'```.  To customize images, the ideal is to copy the images found in ```css/images/``` to your new directory and add or replace images as needed.
-* ```legImageProxy```: If you want to proxy images from Open States, use an URL prefix, like ```'http://proxy.com/?url='```.  For instance MinnPost made [this custom proxy](https://github.com/MinnPost/i-mage-proxerific).
 
-### Advanced Options
+#### Translation options
+
+To override the naming of certain things, you can update the the translations config object.  To do this without overwriting or completely redefining the translation object, you should get the default options first, like so:
+
+```
+var options = _(LT.defaultOptions).extend({
+  el: '#legislature-tracker-container',
+  state: 'NY', 
+  session: '2013-2014',
+  OSKey: 'abc',
+  eKey: 'abc'
+});
+options['wordTranslations']['chamber']['lower'] = 'Assembly';
+```
+
+The default options are similar to:
+
+```
+chamber: {
+  'upper': 'Senate',
+  'lower': 'House'
+},
+partyAbbr: {
+  'Democratic-Farmer-Labor': 'DFL',
+  'Democratic': 'D',
+  'Republican': 'R'
+}
+```
+
+#### Advanced options
 
 These options are set the same as basic options, but their default setting will work fine for most users. 
 
-* ```aggregateURL```: An API JSON feed to get some aggregate bill counts.  This is specific to MinnPost (MN) and is NOT fully supported at the moment.
+* ```legImageProxy```: If you want to proxy images from Open States, use an URL prefix, like ```'http://proxy.com/?url='```.  For instance MinnPost made [this custom proxy](https://github.com/MinnPost/i-mage-proxerific).
 * ```maxBills```: By default, 50; the maximum number of bills that will be loaded from your Google Spreadsheet. Since each bill requires a call to OpenStates, your app may become slow if you raise this (especially on slow connections and/or older browsers).
-* ```tabletopOptions```: An object to override any of the [Tabletop.js](https://github.com/jsoma/tabletop) options.
 * ```scrollOffset```: This turns on auto scrolling which will scroll the view window to the top of the application after the first click.  This is helpful if it is embedded in larger content or if there are long categories.  This will be an integer of pixels to offset where the top; for instance ```15``` equals 15 pixels above the application.
+* ```tabletopOptions```: An object to override any of the [Tabletop.js](https://github.com/jsoma/tabletop) options.
+* ```aggregateURL```: An API JSON feed to get some aggregate bill counts.  This is specific to MinnPost (MN) and is NOT fully supported at the moment.
 
 
 ### Google spreadsheets setup
