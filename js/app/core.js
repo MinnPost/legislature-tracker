@@ -163,13 +163,7 @@ else {
       // Break up categories into an array
       row.categories = (row.categories) ? row.categories.split(',') : [];
       row.categories = _.map(row.categories, _.trim);
-     //if eBill does not have a bill number
-      if(!row.bill){
-        row.hasBill = false;
-        //use title as bill id for linking
-        row.bill = row.title;
-      }else{
-        row.hasBill = true;      
+            
       // Create open states bill objects
       row.bill_primary = (row.bill) ?
         LT.utils.getModel('OSBillModel', 'bill_id', { bill_id: row.bill }) : undefined;
@@ -177,7 +171,18 @@ else {
         LT.utils.getModel('OSBillModel', 'bill_id', { bill_id: row.bill_companion }) : undefined;
       row.bill_conference = (row.bill_conference && LT.options.conferenceBill) ?
         LT.utils.getModel('OSBillModel', 'bill_id', { bill_id: row.bill_conference }) : undefined;
+      
+      // Check if there is a bill provided.  It is alright if there is
+      // no bill provided as some legislatures don't produce
+      // bill IDs until late in the process
+      row.hasBill = true;
+      if (!row.bill) {
+        row.hasBill = false;
+        
+        // We still want to make a bill ID for linking purposes
+        row.bill = _.cssClass(row.title.toLowerCase());
       }
+      
       return row;
     });
   };
