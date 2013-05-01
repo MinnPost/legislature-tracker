@@ -1,12 +1,10 @@
 # Legislature Tracker
 
-An application to keep track of what is going on in a state legislature.  Using editorial expertise and the Sunlight Lab's Open States API, this application aims to create a curated view of what is going on in a state's legislature session.
+An application to keep track of what is going on in a state legislature.  Using editorial expertise and the Sunlight Lab's Open States API, this application creates a curated view of what is going on in a state's legislature session.
 
-It combines data from [Open States](http://openstates.org/) and editorial data collected in with [Google Docs](https://docs.google.com/).
+It combines data from [Open States](http://openstates.org/) and editorial data collected with [Google Docs](https://docs.google.com/).  You can see some examples at [minnpost.github.io/legislature-tracker](http://minnpost.github.io/legislature-tracker/) and see it in production on [MinnPost](http://www.minnpost.com/data/2013/04/minnesota-legislative-bill-tracker).
 
-Currently in action at [MinnPost](http://www.minnpost.com/data/2013/04/minnesota-legislative-bill-tracker).
-
-## Install
+## Installation and configuration
 
 This is a frontend application.  Include the corresponding JS and CSS in your HTML page, then call the following in your JS (see options below);
 
@@ -14,7 +12,7 @@ This is a frontend application.  Include the corresponding JS and CSS in your HT
 var app = new LT.Application(options);
 ```
 
-See ```index.html``` for a basic example using the 2013-2014 MN Legislature.
+See ```examples/*``` for good examples of how to use the application.
 
 ### Options
 
@@ -45,30 +43,26 @@ The following are common options you may want to override.
 
 To override the naming of certain things, you can update the the translations config object.  To do this without overwriting or completely redefining the translation object, you should get the default options first, like so:
 
-```
-var options = _(LT.defaultOptions).extend({
-  el: '#legislature-tracker-container',
-  state: 'NY', 
-  session: '2013-2014',
-  OSKey: 'abc',
-  eKey: 'abc'
-});
-options['wordTranslations']['chamber']['lower'] = 'Assembly';
-```
+    var options = _(LT.defaultOptions).extend({
+      el: '#legislature-tracker-container',
+      state: 'NY', 
+      session: '2013-2014',
+      OSKey: 'abc',
+      eKey: 'abc'
+    });
+    options['wordTranslations']['chamber']['lower'] = 'Assembly';
 
 The default options are similar to:
 
-```
-chamber: {
-  'upper': 'Senate',
-  'lower': 'House'
-},
-partyAbbr: {
-  'Democratic-Farmer-Labor': 'DFL',
-  'Democratic': 'D',
-  'Republican': 'R'
-}
-```
+    chamber: {
+      'upper': 'Senate',
+      'lower': 'House'
+    },
+    partyAbbr: {
+      'Democratic-Farmer-Labor': 'DFL',
+      'Democratic': 'D',
+      'Republican': 'R'
+    }
 
 #### Advanced options
 
@@ -79,7 +73,6 @@ These options are set the same as basic options, but their default setting will 
 * ```scrollOffset```: This turns on auto scrolling which will scroll the view window to the top of the application after the first click.  This is helpful if it is embedded in larger content or if there are long categories.  This will be an integer of pixels to offset where the top; for instance ```15``` equals 15 pixels above the application.
 * ```tabletopOptions```: An object to override any of the [Tabletop.js](https://github.com/jsoma/tabletop) options.
 * ```aggregateURL```: An API JSON feed to get some aggregate bill counts.  This is specific to MinnPost (MN) and is NOT fully supported at the moment.
-
 
 ### Google spreadsheets setup
 
@@ -114,11 +107,16 @@ First make sure you have 3 sheets with the following columns:
 
 There are a few fields that are a list of links.  You should use this format so that they are parsed correctly.  Do note that the parser is pretty rudimentary so don't expect much.
 
-```
-"Link text title|http://www.example.com/123", "Another link text title|http://www.example.com/154"
-``` 
+    "Link text title|http://www.example.com/123", "Another link text title|http://www.example.com/154"
 
-### How does your legislature work?
+### Overriding templates
+
+You can override the HTML templates that are used in the application and thus change any of the wording or outputs.  Templates are using the [Backbone](http://backbonejs.org/) template system.  You can see the current templates in the ```js/app/templates/``` directory.  The compiled templates are stored in the ```LT.templates``` object.  You can override them with something like the following:
+
+    LT.templates = LT.templates || {};
+    LT.templates['js/app/templates/template-header.html'] = _.template($('#new-template').html());
+
+## How does your legislature work?
 
 The Open States data is very good structured data about bills, but it is basic data that does not account for the subtleties of how legislatures work.
 
@@ -147,35 +145,27 @@ There are a couple general deploy methods that will transfer the dist folder som
 
 For authentication, make sure to set environment variables ```AWS_ACCESS_KEY_ID``` and ```AWS_SECRET_ACCESS_KEY```.  You can set these ad-hoc with the following commands:
 
-```
-export AWS_ACCESS_KEY_ID=<YOUR KEY ID>
-export AWS_SECRET_ACCESS_KEY=<YOUR KEY>
-```
+    export AWS_ACCESS_KEY_ID=<YOUR KEY ID>
+    export AWS_SECRET_ACCESS_KEY=<YOUR KEY>
 
 Then run the following with the appropriate values filled in to upload files to S3.  The trailing slash on the ```s3dir``` is needed.
 
-```
-grunt deploy-s3 --s3bucket="our_bucket" --s3dir="path/to/dest/"
-```
+    grunt deploy-s3 --s3bucket="our_bucket" --s3dir="path/to/dest/"
 
 ### FTP
 
 For authentication, you need to create a JSON file named ```.ftppass``` that will have the username and password in it.  See [grunt-ftp-deploy](https://github.com/zonak/grunt-ftp-deploy) for reference.
 
-```
-{
-  "leg-tracker-key": {
-    "username": "username1",
-    "password": "password1"
-  }
-}
-```
+    {
+      "leg-tracker-key": {
+        "username": "username1",
+        "password": "password1"
+      }
+    }
 
 Then run the following with the appropriate values filled in to upload files to the FTP server.  The port argument is optional and defaults to ```21```.
 
-```
-grunt deploy-ftp --ftpserver="example.com" --ftpdir="projects/leg-tracker/" --ftpport=21
-```
+    grunt deploy-ftp --ftpserver="example.com" --ftpdir="projects/leg-tracker/" --ftpport=21
 
 ## Architecture
 
