@@ -218,4 +218,4 @@ Currently, Tabletop.js extends Array so that indexOf is available.  This has som
 
 ## Attribution
 
-* Icons provided by <a href="http://thenounproject.com/" target="_blank">The Noun Project</a>.  Congress by Martha Ormiston; Energy by NDSTR; GayMarriage by MaurizioFusillo; Education by Thibault Geffroy; Time by Richard de Vos; Capital by Jonathan Keating; Paper by Tom Schott; Bank by Ilaria Baggio; Group by Alexandra Coscovelnita; Check mark by Spencer Cohen; Back by John Chapman.
+* Some icons provided by [The Noun Project](http://thenounproject.com/).  Congress by Martha Ormiston; Energy by NDSTR; GayMarriage by MaurizioFusillo; Education by Thibault Geffroy; Time by Richard de Vos; Capital by Jonathan Keating; Paper by Tom Schott; Bank by Ilaria Baggio; Group by Alexandra Coscovelnita; Check mark by Spencer Cohen; Back by John Chapman.
