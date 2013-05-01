@@ -35,7 +35,7 @@ The following are required for the application to work correctly
 The following are common options you may want to override.
 
 * ```conferenceBill```: This should be ```true``` or ```false``` to enable the handling of conference bills.  A conference bill is a third bill (other than the primary or companion) that is used often when the two bills are diverging significantly.
-* ```substituteMatch```: Some legislatures will substitute bills, meaning that a companion bill will substitue for the primary bill.  This option sets the regular expression to match actions to determine if it substituted.  Define as ```false``` to turn off completely.
+* ```substituteMatch```: Some legislatures will substitute the companion bill, meaning it gets dropped and the primary bill is only used.  This option sets the regular expression to match actions to determine if it substituted.  Define as ```false``` to turn off completely.
 * ```recentImage```: The name of the image file to use for the recent category.  Make blank to not have an image for the recent category.
 * ```recentChangeThreshold```: The number of days to determine if a bill will be put in the recent category.  The default is ```7``` days.
 * ```imagePath```:  The place to find images.  This path is simply prepended to images and should have a trailing slash.  For instance ```'https://example.com/images/'```, or ```'./images/'```.  To customize images, the ideal is to copy the images found in ```css/images/``` to your new directory and add or replace images as needed.
@@ -121,12 +121,12 @@ There are a few fields that are a list of links.  You should use this format so 
 
 The Open States data is very good structured data about bills, but it is basic data that does not account for the subtleties of how legislatures work.
 
-Currently, this application is based on how the Minnesota State Legislature works.  This means there are certain assumptions, such as the following:
+The Legislature tracker tries to take these subtleties into account, but may not be good enough for your legislature.  Please open an issue in the queue to discuss how to address other use cases.  This is currently handling the following:
 
-* Companion bills are manually designated.
+* Companion bills can be manually designated, or if not provided, the system will try to read the Open States companion bill that is designated.
 * When both primary and companion bills pass, but there are difference to reconcile, there is often a conference bill.
 * Sometimes a companion bill will get substituted, meaning it gets dropped and the primary bill is only used.
-* The legislature may actually re-use a bill number for difference bills.  In the MN Leg, this is marked as an action with "substitued" in it.
+* Some legislatures will not assign a bill right away even though it is known that it is being discussed.  If there is no primary bill provided, a bill will be "stubbed" out in the interface.
 
 
 ## Building
