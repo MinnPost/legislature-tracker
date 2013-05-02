@@ -159,26 +159,31 @@
       var thisModel = this;
       var defers = [];
       
-      // If there are no bills, just keep going
-      if (!this.get('hasBill')) {
-        this.parseMeta();
-        callback();
-      }
-      else {
-        _.each(['bill_primary', 'bill_companion', 'bill_conference'], function(prop) {
-          if (thisModel.get(prop)) {
-            defers.push(LT.utils.fetchModel(thisModel.get(prop)));
-          }
-        });
-        $.when.apply($, defers)
-          .done(function() {
-            thisModel.parseMeta();
-            callback();
-          })
-          .fail(error);
-      }
+      _.each(['bill_primary', 'bill_companion', 'bill_conference'], function(prop) {
+        if (thisModel.get('hasBill') && thisModel.get(prop)) {
+          defers.push(LT.utils.fetchModel(thisModel.get(prop)));
+        }
+      });
+      
+      return $.when.apply($, defers);
+    },
+    
+    loadOSCompanion: function() {
+      var thisModel = this;
+      var match;
+      var defers = [];
+    
+      if (this.get('hasBill') === true && !this.get('bill_companion') && 
+        _.isObject(this.get('bill_primary')) && _.isArray(this.get('bill_primary').get('companions'))) {
         
-      return this;
+        match = LT.parse.detectCompanionBill(this.get('bill_primary').get('companions')[0].bill_id);
+        if (match) {
+          this.set('bill_companion', LT.utils.getModel('OSBillModel', 'bill_id', { bill_id : match }));
+          defers.push(LT.utils.fetchModel(this.get('bill_companion')));
+        }
+      }
+      
+      return $.when.apply($, defers);
     },
     
     loadCategories: function() {
@@ -382,56 +387,27 @@
       var thisModel = this;
       
       this.get('bills').each(function(bill) {     
-        _.each(['bill_primary', 'bill_companion', 'bill_conference'], function(prop) {
-          if (bill.get(prop)) {
-            defers.push(LT.utils.fetchModel(bill.get(prop)));
-          }
-        });
+        defers.push(bill.loadOSBills());
       });
       
-      $.when.apply($, defers)
-        .done(function() {
-          var unlistedCompanionsDefers = [];
-          
-          // Check if there are companions in the OS bill but not in the
-          // eBill
-          thisModel.get('bills').each(function(bill) {
-            var match;
-          
-            if (bill.get('hasBill') === true && !bill.get('bill_companion') && 
-              _.isArray(bill.get('bill_primary').get('companions'))) {
-              
-              match = LT.parse.detectCompanionBill(bill.get('bill_primary').get('companions')[0].bill_id);
-              if (match) {
-                bill.set('bill_companion', LT.utils.getModel('OSBillModel', 'bill_id', { bill_id : match }));
-                unlistedCompanionsDefers.push(LT.utils.fetchModel(bill.get('bill_companion')));
-              }
-              else {
-                bill.parseMeta();
-              }
-            }
-            else {
-              bill.parseMeta();
-            }
+      // Queue bills
+      $.when.apply($, defers).done(function() {
+        var companionDefers = [];
+        
+        // Queue any companions
+        thisModel.get('bills').each(function(bill) {     
+          companionDefers.push(bill.loadOSCompanion());
+        });
+        
+        $.when.apply($, companionDefers).done(function() {
+          thisModel.get('bills').each(function(bill) {  
+            bill.parseMeta();
           });
-
-          // If we found companions that we need to load up,
-          // then do that.
-          if (unlistedCompanionsDefers.length > 0) {
-            $.when.apply($, unlistedCompanionsDefers)
-              .done(function() {
-                thisModel.get('bills').each(function(bill) {
-                  bill.parseMeta();
-                });
-                callback();
-              })
-              .fail(error);
-          }
-          else {
-            callback();
-          }
-        })
-        .fail(error);
+          
+          callback();
+        }).fail(error);
+      }).fail(error);
+      
       return this;
     }
   });

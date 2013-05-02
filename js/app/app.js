@@ -163,9 +163,12 @@
       }
       
       this.mainView.loading();
-      bill.loadOSBills(function() {
-        thisRouter.mainView.renderEBill(bill);
-      }, thisRouter.error);
+      bill.loadOSBills().done(function() {
+        bill.loadOSCompanion().done(function() {
+          bill.parseMeta();
+          thisRouter.mainView.renderEBill(bill);
+        });
+      }).fail(thisRouter.error);
     },
     
     // osBill route
