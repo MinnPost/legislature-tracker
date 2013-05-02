@@ -391,20 +391,15 @@
       $.when.apply($, defers)
         .done(function() {
           var unlistedCompanionsDefers = [];
-          var match = false;
         
           // Check if there are companions in the OS bill but not in the
           // eBill
           thisModel.get('bills').each(function(bill) {
             if (bill.get('hasBill') === true && !bill.get('bill_companion') && 
               bill.get('bill_primary').get('companions')) {
-              
-              // TODO: Make this companion check configurable
-              match = bill.get('bill_primary').get('companions')[0].bill_id.indexOf('SAME AS') >= 0 ? 
-                bill.get('bill_primary').get('companions')[0].bill_id.replace("SAME AS ", "") : false;
-              
-              if (match) {
-                bill.set('bill_companion', LT.utils.getModel('OSBillModel', 'bill_id', { bill_id : match }));
+              var companion_bill_id = LT.parse.detectCompanionBill(bill.get('bill_primary').get('companions'));
+              if (companion_bill_id){
+                bill.set('bill_companion', LT.utils.getModel('OSBillModel', 'bill_id', { bill_id : companion_bill_id }));
                 unlistedCompanionsDefers.push(LT.utils.fetchModel(bill.get('bill_companion')));
               }
             }

@@ -156,7 +156,7 @@ else {
   };
   
   LT.parse.validateBillNumber = function(bill_num){
-    return (/[A-Z] [1-9][0-9]*/).test(bill_num);
+    return LT.options.billNumberFormat.test(bill_num);
   };
 
   LT.parse.eBills = function(bills) {
@@ -271,6 +271,29 @@ else {
     return category.split('", "');
   };
   
+  LT.parse.detectCompanionBill = function(companions){
+    var typeof_options_detectCompanionBill = typeof LT.options.detectCompanionBill
+    if(typeof_options_detectCompanionBill == "function"){
+      var companion_bill_id =  LT.options.detectCompanionBill(bill_id);
+      return LT.parse.validateBillNumber(companion_bill_id) ? companion_bill_id : undefined;
+    }else if(typeof_options_detectCompanionBill == "boolean"){
+      return undefined;
+    }else{
+
+      // e.g.
+      // > /SAME AS ([A-Z] [1-9][0-9]*)/.exec("SAME AS A 1234")
+      //   ["SAME AS A 1234", "A 1234"]
+      try{
+        var bill_id = companions[0].bill_id;
+      }catch(e){
+        LT.log("Error: detectCompanionBill must be a regex, `false` or a function.");
+        return undefined;
+      }
+      var result = LT.options.detectCompanionBill.exec(bill_id);
+      return (result && LT.parse.validateBillNumber(result)) ? result[1] : undefined;
+    }
+  }
+
   // Handle changing field names
   LT.parse.translateFields = function(translation, row) {
     _.each(translation, function(input, output) {
@@ -315,6 +338,7 @@ else {
         'Republican': 'R'
       }
     },
+    detectCompanionBill: /.*/, //either a regex or a function 
     maxBills: 30,
     substituteMatch: (/substituted/i),
     imagePath: './css/images/',
@@ -324,7 +348,8 @@ else {
     scrollOffset: false,
     conferenceBill: true,
     recentImage: 'RecentUpdatedBill.png',
-    chamberLabel: false
+    chamberLabel: false,
+    billNumberFormat: /[A-Z]+ [1-9][0-9]*/
   };
   
 })(jQuery, window);

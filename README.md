@@ -38,6 +38,7 @@ The following are common options you may want to override.
 * ```recentChangeThreshold```: The number of days to determine if a bill will be put in the recent category.  The default is ```7``` days.
 * ```imagePath```:  The place to find images.  This path is simply prepended to images and should have a trailing slash.  For instance ```'https://example.com/images/'```, or ```'./images/'```.  To customize images, the ideal is to copy the images found in ```css/images/``` to your new directory and add or replace images as needed.
 * ```templatePath```:  The place to find templates.  This is only really needed if you are not using the built version.
+* ```detectCompanionBill```: Optional. A function or a regular expression to parse OpenStates' companion bill IDs into a bill number for automatically pairing bills with their companions in the other chamber. If a regex, it will be called using `exec` on the first member of the `companions` array's `bill_id` and member 1 (i.e the 2nd member) of the returned array will be used to find the companion. If a function, it will be called on the entire `companions` array and its return value used to find the companion; return `undefined` or another false-y value if no companion can be found. If false, Legislature Tracker will not attempt to find companion bills.
 
 #### Translation options
 
@@ -74,6 +75,7 @@ These options are set the same as basic options, but their default setting will 
 * ```scrollOffset```: This turns on auto scrolling which will scroll the view window to the top of the application after the first click.  This is helpful if it is embedded in larger content or if there are long categories.  This will be an integer of pixels to offset where the top; for instance ```15``` equals 15 pixels above the application.
 * ```tabletopOptions```: An object to override any of the [Tabletop.js](https://github.com/jsoma/tabletop) options.
 * ```aggregateURL```: An API JSON feed to get some aggregate bill counts.  This is specific to MinnPost (MN) and is NOT fully supported at the moment.
+* ```billNumberFormat```: A regex for detecting if a bill number is valid for your state. The default, `/[A-Z]+ [1-9][0-9]*/` works well for most states, matching bill numbers like `H 1234`, `S 1234` or `SB 1234`.
 
 ### Google spreadsheets setup
 
