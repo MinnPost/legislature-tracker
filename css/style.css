@@ -116,6 +116,10 @@ table {
   font-weight: bold;
 }
 
+.ls em {
+  font-style: italic;
+}
+
 /**
  * General styles
  */
