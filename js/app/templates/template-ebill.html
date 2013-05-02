@@ -51,7 +51,7 @@
       <% }) %>
     </div>
     
-    <% if (expandable) { %>
+    <% if (expandable && !(!bill.hasBill && bill.description.split(' ').length < 60 && !(_.isArray(bill.links) && bill.links.length > 0))) { %>
       <a href="#" class="bill-expand">More detail</a>
       <a href="#/bill/<%= encodeURI(bill.bill) %>" class="bill-details-link">More detail</a>
     <% } %>
