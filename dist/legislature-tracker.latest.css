@@ -4,23 +4,22 @@
  
 /**
  * Reset CSS by Eric Meyer
- * http://meyerweb.com/eric/tools/css/reset/ 
- * v2.0 | 20110126
- * License: none (public domain)
+ * based on http://meyerweb.com/eric/tools/css/reset/ 
  */
-html, body, div, span, applet, object, iframe,
-h1, h2, h3, h4, h5, h6, p, blockquote, pre,
-a, abbr, acronym, address, big, cite, code,
-del, dfn, em, img, ins, kbd, q, s, samp,
-small, strike, strong, sub, sup, tt, var,
-b, u, i, center,
-dl, dt, dd, ol, ul, li,
-fieldset, form, label, legend,
-table, caption, tbody, tfoot, thead, tr, th, td,
-article, aside, canvas, details, embed, 
-figure, figcaption, footer, header, hgroup, 
-menu, nav, output, ruby, section, summary,
-time, mark, audio, video {
+.ls div, .ls span,
+.ls h1, .ls h2, .ls h3, .ls h4, .ls h5, .ls h6, 
+.ls p, .ls blockquote, .ls pre,
+.ls a, .ls abbr, .ls acronym, .ls code,
+.ls em, .ls img, .ls ins,
+.ls small, .ls strike, .ls strong, .ls sub, 
+.ls sup, .ls tt, .ls b, .ls u, .ls i, .ls center,
+.ls dl, .ls dt, .ls dd, .ls ol, .ls ul, .ls li,
+.ls table, .ls caption, .ls tbody, .ls tfoot, 
+.ls thead, .ls tr, .ls th, .ls td,
+.ls article, .ls aside, .ls canvas, .ls details, 
+.ls embed, .ls figure, .ls figcaption, .ls footer, 
+.ls header, .ls hgroup, 
+.ls menu, .ls nav, .ls output, .ls section, .ls summary {
   margin: 0;
   padding: 0;
   border: 0;
@@ -29,25 +28,25 @@ time, mark, audio, video {
   vertical-align: baseline;
 }
 /* HTML5 display-role reset for older browsers */
-article, aside, details, figcaption, figure, 
-footer, header, hgroup, menu, nav, section {
+.ls article, .ls aside, .ls details, .ls figcaption, .ls figure, 
+.ls footer, .ls header, .ls hgroup, .ls menu, .ls nav, .ls section {
   display: block;
 }
-body {
+.ls {
   line-height: 1;
 }
-ol, ul {
+.ls ol, .ls ul {
   list-style: none;
 }
-blockquote, q {
+.ls blockquote, .ls q {
   quotes: none;
 }
-blockquote:before, blockquote:after,
-q:before, q:after {
+.ls blockquote:before, .ls blockquote:after,
+.ls q:before, .ls q:after {
   content: '';
   content: none;
 }
-table {
+.ls table {
   border-collapse: collapse;
   border-spacing: 0;
 }
@@ -114,6 +113,10 @@ table {
 
 .ls strong {
   font-weight: bold;
+}
+
+.ls em {
+  font-style: italic;
 }
 
 /**
@@ -373,9 +376,15 @@ table {
 .ls .bills-list .bill.is-expandable {
   border: 1px solid #DDDDDD;
   padding: 2.5%;
+/*
   -moz-border-bottom-right-radius: 10px;
   -webkit-border-bottom-right-radius: 10px;
   border-bottom-right-radius: 10px;
+*/
+}
+
+.ls .bills-list .bill.no-bill{
+	border: 1px dashed #DDDDDD;
 }
 
 .ls .primary-bill {
