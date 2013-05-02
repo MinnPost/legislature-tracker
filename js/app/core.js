@@ -156,7 +156,7 @@ else {
   };
   
   LT.parse.validateBillNumber = function(bill_num){
-    return /[A-Z] [1-9][0-9]*/.test(bill_num)
+    return /[A-Z]+ [1-9][0-9]*/.test(bill_num)
   }
 
   LT.parse.eBills = function(bills) {
@@ -258,7 +258,7 @@ else {
     }else if(typeof_options_detectCompanionBill == "boolean"){
       return undefined;
     }else{
-      
+
       // e.g.
       // > /SAME AS ([A-Z] [1-9][0-9]*)/.exec("SAME AS A 1234")
       //   ["SAME AS A 1234", "A 1234"]

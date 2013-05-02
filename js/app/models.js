@@ -388,7 +388,6 @@
             console.log(bill);
             if(bill.get('hasBill') === true && !bill.get('bill_companion') && bill.get('bill_primary').get('companions') ){
                var companion_bill_id = LT.parse.detectCompanionBill(bill.get('bill_primary').get('companions'));
-               console.log(companion_bill_id);
               if (companion_bill_id){
                 var companion = LT.utils.getModel('OSBillModel', 'bill_id', {bill_id : companion_bill_id});
                 bill.set('bill_companion', companion);
