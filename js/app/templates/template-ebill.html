@@ -99,7 +99,7 @@
         <div class="primary-bill <% if (_.isObject(bill.bill_companion)) { %>with-companion<% } %>">
           <div class="primary-bill-inner clear-block">
             <%= templates.osbill({
-              title: 'Primary Bill',
+              title: (LT.options.chamberLabel) ? LT.utils.translate('chamber', bill.bill_primary.get('chamber')) + ' Bill' : 'Primary Bill',
               bill: bill.bill_primary.toJSON(),
               templates: templates
             }) %>
@@ -111,7 +111,7 @@
         <div class="companion-bill">
           <div class="companion-bill-inner clear-block">
             <%= templates.osbill({
-              title: 'Companion Bill',
+              title: (LT.options.chamberLabel) ? LT.utils.translate('chamber', bill.bill_companion.get('chamber')) + ' Bill' : 'Companion Bill',
               bill: bill.bill_companion.toJSON(),
               templates: templates
             }) %>

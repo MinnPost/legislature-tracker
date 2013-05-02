@@ -308,7 +308,8 @@ else {
     tabletopOptions: {},
     scrollOffset: false,
     conferenceBill: true,
-    recentImage: 'RecentUpdatedBill.png'
+    recentImage: 'RecentUpdatedBill.png',
+    chamberLabel: false
   };
   
 })(jQuery, window);
