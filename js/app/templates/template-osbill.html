@@ -82,7 +82,7 @@
   <div class="sources">
     <h5>Sources and full text</h5>
     <% _.each(bill.sources, function(s) { %>
-      <a href="<%= s.url %>" target="_blank"><%= s.url %></a> <br />
+      <a href="<%= s.url %>" target="_blank">Full text at <%= _.parseURL(s.url).hostname %></a> <br />
     <% }) %>
   </div>
 </div>
