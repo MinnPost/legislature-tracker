@@ -156,7 +156,7 @@ else {
   };
   
   LT.parse.validateBillNumber = function(bill_num){
-    return /[A-Z]+ [1-9][0-9]*/.test(bill_num)
+    return LT.options.billNumberFormat.test(bill_num);
   };
 
   LT.parse.eBills = function(bills) {
@@ -348,7 +348,8 @@ else {
     scrollOffset: false,
     conferenceBill: true,
     recentImage: 'RecentUpdatedBill.png',
-    chamberLabel: false
+    chamberLabel: false,
+    billNumberFormat: /[A-Z]+ [1-9][0-9]*/
   };
   
 })(jQuery, window);

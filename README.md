@@ -75,6 +75,7 @@ These options are set the same as basic options, but their default setting will 
 * ```scrollOffset```: This turns on auto scrolling which will scroll the view window to the top of the application after the first click.  This is helpful if it is embedded in larger content or if there are long categories.  This will be an integer of pixels to offset where the top; for instance ```15``` equals 15 pixels above the application.
 * ```tabletopOptions```: An object to override any of the [Tabletop.js](https://github.com/jsoma/tabletop) options.
 * ```aggregateURL```: An API JSON feed to get some aggregate bill counts.  This is specific to MinnPost (MN) and is NOT fully supported at the moment.
+* ```billNumberFormat```: A regex for detecting if a bill number is valid for your state. The default, `/[A-Z]+ [1-9][0-9]*/` works well for most states, matching bill numbers like `H 1234`, `S 1234` or `SB 1234`.
 
 ### Google spreadsheets setup
 
