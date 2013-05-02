@@ -251,6 +251,27 @@ else {
     return category.split('", "');
   };
   
+  LT.parse.detectCompanionBill = function(companions){
+    var typeof_options_detectCompanionBill = typeof LT.options.detectCompanionBill
+    if(typeof_options_detectCompanionBill == "function"){
+      return LT.options.detectCompanionBill(bill_id);
+    }else if(typeof_options_detectCompanionBill == "boolean"){
+      return undefined;
+    }else{
+      
+      // e.g.
+      // > /SAME AS ([A-Z] [1-9][0-9]*)/.exec("SAME AS A 1234")
+      //   ["SAME AS A 1234", "A 1234"]
+      try{
+        var bill_id = companions[0].bill_id;
+        return (result = LT.options.detectCompanionBill.exec(bill_id) ) ? result[1] : undefined;
+      }catch(e){
+        LT.log("Error: detectCompanionBill must be a regex, `false` or a function.");
+        return undefined;
+      }
+    }
+  }
+
   // Handle changing field names
   LT.parse.translateFields = function(translation, row) {
     _.each(translation, function(input, output) {
@@ -295,6 +316,7 @@ else {
         'Republican': 'R'
       }
     },
+    detectCompanionBill: /.*/, //either a regex or a function 
     maxBills: 30, //raise this at your peril. could get very slow.
     substituteMatch: /substituted/i,
     imagePath: './css/images/',

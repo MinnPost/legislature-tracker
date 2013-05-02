@@ -38,6 +38,7 @@ The following are common options you may want to override.
 * ```recentChangeThreshold```: The number of days to determine if a bill will be put in the recent category.  The default is ```7``` days.
 * ```imagePath```:  The place to find images.  This path is simply prepended to images and should have a trailing slash.  For instance ```'https://example.com/images/'```, or ```'./images/'```.  To customize images, the ideal is to copy the images found in ```css/images/``` to your new directory and add or replace images as needed.
 * ```templatePath```:  The place to find templates.  This is only really needed if you are not using the built version.
+* ```detectCompanionBill```: Optional. A function or a regular expression to parse OpenStates' companion bill IDs into a bill number for automatically pairing bills with their companions in the other chamber. If a regex, it will be called using `exec` on the first member of the `companions` array's `bill_id` and member 1 (i.e the 2nd member) of the returned array will be used to find the companion. If a function, it will be called on the entire `companions` array and its return value used to find the companion; return `undefined` or another false-y value if no companion can be found. If false, Legislature Tracker will not attempt to find companion bills.
 
 #### Translation options
 

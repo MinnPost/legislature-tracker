@@ -385,10 +385,10 @@
         .done(function() {
           var unlisted_companions_defers = [];
           thisModel.get('bills').each(function(bill) {
-            if(this.hasBill === true && !bill.get('bill_companion') && bill.get('bill_primary').get('companions') ){
-               var companion_bill_id = bill.get('bill_primary').get('companions')[0].bill_id.indexOf('SAME AS') >= 0 ? 
-                              bill.get('bill_primary').get('companions')[0].bill_id.replace("SAME AS ", "") : 
-                              undefined;
+            console.log(bill);
+            if(bill.get('hasBill') === true && !bill.get('bill_companion') && bill.get('bill_primary').get('companions') ){
+               var companion_bill_id = LT.parse.detectCompanionBill(bill.get('bill_primary').get('companions'));
+               console.log(companion_bill_id);
               if (companion_bill_id){
                 var companion = LT.utils.getModel('OSBillModel', 'bill_id', {bill_id : companion_bill_id});
                 bill.set('bill_companion', companion);
