@@ -59,7 +59,10 @@
         templatePath: '../js/app/templates/',
         chamberLabel: true,
         osBillParse: function(osBill) {
-          osBill.set('hooked', true);
+          osBill.set('sources', _.map(osBill.get('sources'), function(s, i) {
+            s.text = 'SOURCE [' + i + ']';
+            return s;
+          }));
         }
       });
       options['wordTranslations']['chamber']['lower'] = 'Assembly';

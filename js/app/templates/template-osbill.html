@@ -84,7 +84,13 @@
     
     <% var sourceCount = 0; %>
     <% _.each(bill.sources, function(s) {  sourceCount++ ; %>
-      <a href="<%= s.url %>" target="_blank">Source at <%= _.parseURL(s.url).hostname %> [<%= sourceCount %>]</a> <br />
+      <a href="<%= s.url %>" target="_blank">
+        <% if (s.text) { %>
+          <%= s.text %>
+        <% } else { %>
+          Source at <%= _.parseURL(s.url).hostname %> [<%= sourceCount %>]
+        <% } %>
+      </a> <br />
     <% }) %>
   </div>
 </div>
