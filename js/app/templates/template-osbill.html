@@ -80,11 +80,11 @@
   <% } %>
   
   <div class="sources">
-    <h5>Sources and full text</h5>
+    <h5>Sources</h5>
     
     <% var sourceCount = 0; %>
     <% _.each(bill.sources, function(s) {  sourceCount++ ; %>
-      <a href="<%= s.url %>" target="_blank">Source and text at <%= _.parseURL(s.url).hostname %> [<%= sourceCount %>]</a> <br />
+      <a href="<%= s.url %>" target="_blank">Source at <%= _.parseURL(s.url).hostname %> [<%= sourceCount %>]</a> <br />
     <% }) %>
   </div>
 </div>
