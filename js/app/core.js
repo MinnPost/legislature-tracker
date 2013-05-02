@@ -179,7 +179,6 @@ else {
         LT.log('Invalid primary bill number "' + row.bill + '" for row ' + row.rowNumber + ', see documentation.');
       }
       
-      row.bill_companion = undefined;
       if (row.bill_companion && LT.parse.validateBillNumber(row.bill_companion)) {
         row.bill_companion = LT.utils.getModel('OSBillModel', 'bill_id', { bill_id: row.bill_companion });
       }
@@ -187,7 +186,6 @@ else {
         LT.log('Invalid companion bill number "' + row.bill_companion + '" for row ' + row.rowNumber + ', see documentation.');
       }
       
-      row.bill_conference = undefined;
       if (row.bill_conference && LT.parse.validateBillNumber(row.bill_conference)) {
         row.bill_conference = LT.utils.getModel('OSBillModel', 'bill_id', { bill_id: row.bill_conference });
       }
@@ -298,6 +296,8 @@ else {
         delete row[input];
       }
     });
+    
+    return row;
   };
   
   // Default options
