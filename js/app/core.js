@@ -157,7 +157,7 @@ else {
   
   LT.parse.validateBillNumber = function(bill_num){
     return /[A-Z]+ [1-9][0-9]*/.test(bill_num)
-  }
+  };
 
   LT.parse.eBills = function(bills) {
     return _.map(bills, function(row) {
@@ -167,25 +167,45 @@ else {
       // Break up categories into an array
       row.categories = (row.categories) ? row.categories.split(',') : [];
       row.categories = _.map(row.categories, _.trim);
-     //if eBill does not have a bill number
-      if(!row.bill){
-        row.hasBill = false;
-        //use title as bill id for linking
-        row.bill = row.title;
-      }else{
-        row.hasBill = true;      
-      // Create open states bill objects
-      if(!LT.parse.validateBillNumber(row.bill)){
-        LT.log('Invalid bill number "' + row.bill + '", see documentation.')
-      }
 
-      row.bill_primary = (row.bill) ?
-        LT.utils.getModel('OSBillModel', 'bill_id', { bill_id: row.bill }) : undefined;
-      row.bill_companion = (row.bill_companion) ?
-        LT.utils.getModel('OSBillModel', 'bill_id', { bill_id: row.bill_companion }) : undefined;
-      row.bill_conference = (row.bill_conference && LT.options.conferenceBill) ?
-        LT.utils.getModel('OSBillModel', 'bill_id', { bill_id: row.bill_conference }) : undefined;
+      // Create open states bill objects and check that they are in the correct
+      // format, otherwise we will get a bad response from the API
+      // call which will cause a bunch of failures.
+      row.bill_primary = undefined;
+      if (row.bill && LT.parse.validateBillNumber(row.bill)) {
+        row.bill_primary = LT.utils.getModel('OSBillModel', 'bill_id', { bill_id: row.bill });
       }
+      else if (row.bill && !LT.parse.validateBillNumber(row.bill)) {
+        LT.log('Invalid primary bill number "' + row.bill + '" for row ' + row.rowNumber + ', see documentation.');
+      }
+      
+      row.bill_companion = undefined;
+      if (row.bill_companion && LT.parse.validateBillNumber(row.bill_companion)) {
+        row.bill_companion = LT.utils.getModel('OSBillModel', 'bill_id', { bill_id: row.bill_companion });
+      }
+      else if (row.bill_companion && !LT.parse.validateBillNumber(row.bill_companion)) {
+        LT.log('Invalid companion bill number "' + row.bill_companion + '" for row ' + row.rowNumber + ', see documentation.');
+      }
+      
+      row.bill_conference = undefined;
+      if (row.bill_conference && LT.parse.validateBillNumber(row.bill_conference)) {
+        row.bill_conference = LT.utils.getModel('OSBillModel', 'bill_id', { bill_id: row.bill_conference });
+      }
+      else if (row.bill_conference && !LT.parse.validateBillNumber(row.bill_conference)) {
+        LT.log('Invalid conference bill number "' + row.bill_conference + '" for row ' + row.rowNumber + ', see documentation.');
+      }
+      
+      // Check if there is a bill provided.  It is alright if there is
+      // no bill provided as some legislatures don't produce
+      // bill IDs until late in the process
+      row.hasBill = true;
+      if (!row.bill || row.bill_primary === undefined) {
+        row.hasBill = false;
+        
+        // We still want to make a bill ID for linking purposes
+        row.bill = _.cssClass(row.title.toLowerCase());
+      }
+      
       return row;
     });
   };
@@ -254,7 +274,8 @@ else {
   LT.parse.detectCompanionBill = function(companions){
     var typeof_options_detectCompanionBill = typeof LT.options.detectCompanionBill
     if(typeof_options_detectCompanionBill == "function"){
-      return LT.options.detectCompanionBill(bill_id);
+      var companion_bill_id =  LT.options.detectCompanionBill(bill_id);
+      return LT.parse.validateBillNumber(companion_bill_id) ? companion_bill_id : undefined;
     }else if(typeof_options_detectCompanionBill == "boolean"){
       return undefined;
     }else{
@@ -264,11 +285,12 @@ else {
       //   ["SAME AS A 1234", "A 1234"]
       try{
         var bill_id = companions[0].bill_id;
-        return (result = LT.options.detectCompanionBill.exec(bill_id) ) ? result[1] : undefined;
       }catch(e){
         LT.log("Error: detectCompanionBill must be a regex, `false` or a function.");
         return undefined;
       }
+      var result = LT.options.detectCompanionBill.exec(bill_id);
+      return (result && LT.parse.validateBillNumber(result)) ? result[1] : undefined;
     }
   }
 
@@ -317,15 +339,16 @@ else {
       }
     },
     detectCompanionBill: /.*/, //either a regex or a function 
-    maxBills: 30, //raise this at your peril. could get very slow.
-    substituteMatch: /substituted/i,
+    maxBills: 30,
+    substituteMatch: (/substituted/i),
     imagePath: './css/images/',
     templatePath: './js/app/templates/',
     recentChangeThreshold: 7,
     tabletopOptions: {},
     scrollOffset: false,
     conferenceBill: true,
-    recentImage: 'RecentUpdatedBill.png'
+    recentImage: 'RecentUpdatedBill.png',
+    chamberLabel: false
   };
   
 })(jQuery, window);

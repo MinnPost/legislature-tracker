@@ -64,6 +64,14 @@
       }
       
       return output;
+    },
+    
+    // A simple URL parser as stolen from
+    // https://gist.github.com/jlong/2428561
+    parseURL: function(url) {
+      var parser = document.createElement('a');
+      parser.href = url;
+      return parser;
     }
   });
   
