@@ -248,6 +248,7 @@
     },
     
     parseMeta: function() {
+    
       // We need to get actions and meta data from individual 
       // bills.  This could get a bit complicated...
       var actions = {
@@ -270,7 +271,7 @@
           return (e.date.unix() + i) * -1;
         }));
       }
-      
+
       // If there are osBill data to go through
       if (this.get('hasBill')) {
         // The companion or primary bill can stop being relevant.  This is noted
@@ -342,7 +343,7 @@
           this.set('description', this.get('bill_primary').get('summary'));
         }
       }
-        
+      
       this.set('actions', actions);
       this.set('bill_type', type);
       
@@ -391,19 +392,25 @@
       $.when.apply($, defers)
         .done(function() {
           var unlistedCompanionsDefers = [];
-        
+          
           // Check if there are companions in the OS bill but not in the
           // eBill
           thisModel.get('bills').each(function(bill) {
+            var match;
+          
             if (bill.get('hasBill') === true && !bill.get('bill_companion') && 
-              bill.get('bill_primary').get('companions')) {
-              var companion_bill_id = LT.parse.detectCompanionBill(bill.get('bill_primary').get('companions'));
-              if (companion_bill_id){
-                bill.set('bill_companion', LT.utils.getModel('OSBillModel', 'bill_id', { bill_id : companion_bill_id }));
+              _.isArray(bill.get('bill_primary').get('companions'))) {
+              
+              match = LT.parse.detectCompanionBill(bill.get('bill_primary').get('companions')[0].bill_id);
+              if (match) {
+                bill.set('bill_companion', LT.utils.getModel('OSBillModel', 'bill_id', { bill_id : match }));
                 unlistedCompanionsDefers.push(LT.utils.fetchModel(bill.get('bill_companion')));
               }
+              else {
+                bill.parseMeta();
+              }
             }
-            else{
+            else {
               bill.parseMeta();
             }
           });
@@ -412,7 +419,7 @@
           // then do that.
           if (unlistedCompanionsDefers.length > 0) {
             $.when.apply($, unlistedCompanionsDefers)
-              .done(function(){
+              .done(function() {
                 thisModel.get('bills').each(function(bill) {
                   bill.parseMeta();
                 });
