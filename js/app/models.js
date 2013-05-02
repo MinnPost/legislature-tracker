@@ -106,6 +106,11 @@
       
       // Figure out newest
       this.set('newest_action', this.get('actions')[0]);
+      
+      // All for hook
+      if (LT.options.osBillParse && _.isFunction(LT.options.osBillParse)) {
+        LT.options.osBillParse(this);
+      }
     },
     
     getActionDate: function(type) {

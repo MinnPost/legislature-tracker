@@ -344,7 +344,8 @@ else {
     recentImage: 'RecentUpdatedBill.png',
     chamberLabel: false,
     detectCompanionBill: (/([A-Z]+ [1-9][0-9]*)$/),
-    billNumberFormat: (/[A-Z]+ [1-9][0-9]*/)
+    billNumberFormat: (/[A-Z]+ [1-9][0-9]*/),
+    osBillParse: false
   };
   
 })(jQuery, window);

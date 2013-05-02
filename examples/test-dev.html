@@ -57,7 +57,10 @@
         eKey: '0AjYft7IGrHzNdENILV9DU056SkxNQ2tIaHNGMnRlZUE',
         imagePath: '../css/images/',
         templatePath: '../js/app/templates/',
-        chamberLabel: true
+        chamberLabel: true,
+        osBillParse: function(osBill) {
+          osBill.set('hooked', true);
+        }
       });
       options['wordTranslations']['chamber']['lower'] = 'Assembly';
 
