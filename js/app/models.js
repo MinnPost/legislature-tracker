@@ -336,15 +336,15 @@
         else  {
           actions.last = this.get('bill_primary').getActionDate('last');
         }
+      
+        // Description
+        if (!this.get('description')) {
+          this.set('description', this.get('bill_primary').get('summary'));
+        }
       }
         
       this.set('actions', actions);
       this.set('bill_type', type);
-      
-      // Description
-      if (!this.get('description')) {
-        this.set('description', this.get('bill_primary').get('summary'));
-      }
       
       return this;
     }
