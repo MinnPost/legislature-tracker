@@ -271,6 +271,8 @@ else {
     return category.split('", "');
   };
   
+  // Looks at text and tries to find a bill, used for
+  // getting the companion bill automatically
   LT.parse.detectCompanionBill = function(companionText) {
     var parsed, bill;
     
@@ -281,7 +283,6 @@ else {
     }
     else if (_.isRegExp(LT.options.detectCompanionBill)) {
       parsed = LT.options.detectCompanionBill.exec(companionText);
-      console.log(parsed);
       bill = (parsed && LT.parse.validateBillNumber(parsed[1])) ? parsed[1] : undefined;
     }
     
