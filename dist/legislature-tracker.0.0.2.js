@@ -441,7 +441,8 @@ else {
     recentImage: 'RecentUpdatedBill.png',
     chamberLabel: false,
     detectCompanionBill: (/([A-Z]+ [1-9][0-9]*)$/),
-    billNumberFormat: (/[A-Z]+ [1-9][0-9]*/)
+    billNumberFormat: (/[A-Z]+ [1-9][0-9]*/),
+    osBillParse: false
   };
   
 })(jQuery, window);
@@ -699,7 +700,7 @@ __p += ',';
 __p += '\n      ';
  }) ;
 __p += '\n    </div>\n    \n    ';
- if (expandable) { ;
+ if (expandable && !(!bill.hasBill && bill.description.split(' ').length < 60 && !(_.isArray(bill.links) && bill.links.length > 0))) { ;
 __p += '\n      <a href="#" class="bill-expand">More detail</a>\n      <a href="#/bill/' +
 ((__t = ( encodeURI(bill.bill) )) == null ? '' : __t) +
 '" class="bill-details-link">More detail</a>\n    ';
@@ -961,17 +962,25 @@ __p += '\n          ' +
  }) ;
 __p += '\n      </div>\n    </div>\n  ';
  } ;
-__p += '\n  \n  <div class="sources">\n    <h5>Sources and full text</h5>\n    \n    ';
+__p += '\n  \n  <div class="sources">\n    <h5>Sources</h5>\n    \n    ';
  var sourceCount = 0; ;
 __p += '\n    ';
  _.each(bill.sources, function(s) {  sourceCount++ ; ;
 __p += '\n      <a href="' +
 ((__t = ( s.url )) == null ? '' : __t) +
-'" target="_blank">Source and text at ' +
+'" target="_blank">\n        ';
+ if (s.text) { ;
+__p += '\n          ' +
+((__t = ( s.text )) == null ? '' : __t) +
+'\n        ';
+ } else { ;
+__p += '\n          Source at ' +
 ((__t = ( _.parseURL(s.url).hostname )) == null ? '' : __t) +
 ' [' +
 ((__t = ( sourceCount )) == null ? '' : __t) +
-']</a> <br />\n    ';
+']\n        ';
+ } ;
+__p += '\n      </a> <br />\n    ';
  }) ;
 __p += '\n  </div>\n</div>';
 
@@ -1087,6 +1096,11 @@ return __p
       
       // Figure out newest
       this.set('newest_action', this.get('actions')[0]);
+      
+      // All for hook
+      if (LT.options.osBillParse && _.isFunction(LT.options.osBillParse)) {
+        LT.options.osBillParse(this);
+      }
     },
     
     getActionDate: function(type) {
@@ -1140,26 +1154,31 @@ return __p
       var thisModel = this;
       var defers = [];
       
-      // If there are no bills, just keep going
-      if (!this.get('hasBill')) {
-        this.parseMeta();
-        callback();
-      }
-      else {
-        _.each(['bill_primary', 'bill_companion', 'bill_conference'], function(prop) {
-          if (thisModel.get(prop)) {
-            defers.push(LT.utils.fetchModel(thisModel.get(prop)));
-          }
-        });
-        $.when.apply($, defers)
-          .done(function() {
-            thisModel.parseMeta();
-            callback();
-          })
-          .fail(error);
-      }
+      _.each(['bill_primary', 'bill_companion', 'bill_conference'], function(prop) {
+        if (thisModel.get('hasBill') && thisModel.get(prop)) {
+          defers.push(LT.utils.fetchModel(thisModel.get(prop)));
+        }
+      });
+      
+      return $.when.apply($, defers);
+    },
+    
+    loadOSCompanion: function() {
+      var thisModel = this;
+      var match;
+      var defers = [];
+    
+      if (this.get('hasBill') === true && !this.get('bill_companion') && 
+        _.isObject(this.get('bill_primary')) && _.isArray(this.get('bill_primary').get('companions'))) {
         
-      return this;
+        match = LT.parse.detectCompanionBill(this.get('bill_primary').get('companions')[0].bill_id);
+        if (match) {
+          this.set('bill_companion', LT.utils.getModel('OSBillModel', 'bill_id', { bill_id : match }));
+          defers.push(LT.utils.fetchModel(this.get('bill_companion')));
+        }
+      }
+      
+      return $.when.apply($, defers);
     },
     
     loadCategories: function() {
@@ -1363,56 +1382,27 @@ return __p
       var thisModel = this;
       
       this.get('bills').each(function(bill) {     
-        _.each(['bill_primary', 'bill_companion', 'bill_conference'], function(prop) {
-          if (bill.get(prop)) {
-            defers.push(LT.utils.fetchModel(bill.get(prop)));
-          }
-        });
+        defers.push(bill.loadOSBills());
       });
       
-      $.when.apply($, defers)
-        .done(function() {
-          var unlistedCompanionsDefers = [];
-          
-          // Check if there are companions in the OS bill but not in the
-          // eBill
-          thisModel.get('bills').each(function(bill) {
-            var match;
-          
-            if (bill.get('hasBill') === true && !bill.get('bill_companion') && 
-              _.isArray(bill.get('bill_primary').get('companions'))) {
-              
-              match = LT.parse.detectCompanionBill(bill.get('bill_primary').get('companions')[0].bill_id);
-              if (match) {
-                bill.set('bill_companion', LT.utils.getModel('OSBillModel', 'bill_id', { bill_id : match }));
-                unlistedCompanionsDefers.push(LT.utils.fetchModel(bill.get('bill_companion')));
-              }
-              else {
-                bill.parseMeta();
-              }
-            }
-            else {
-              bill.parseMeta();
-            }
+      // Queue bills
+      $.when.apply($, defers).done(function() {
+        var companionDefers = [];
+        
+        // Queue any companions
+        thisModel.get('bills').each(function(bill) {     
+          companionDefers.push(bill.loadOSCompanion());
+        });
+        
+        $.when.apply($, companionDefers).done(function() {
+          thisModel.get('bills').each(function(bill) {  
+            bill.parseMeta();
           });
-
-          // If we found companions that we need to load up,
-          // then do that.
-          if (unlistedCompanionsDefers.length > 0) {
-            $.when.apply($, unlistedCompanionsDefers)
-              .done(function() {
-                thisModel.get('bills').each(function(bill) {
-                  bill.parseMeta();
-                });
-                callback();
-              })
-              .fail(error);
-          }
-          else {
-            callback();
-          }
-        })
-        .fail(error);
+          
+          callback();
+        }).fail(error);
+      }).fail(error);
+      
       return this;
     }
   });
@@ -1862,9 +1852,12 @@ return __p
       }
       
       this.mainView.loading();
-      bill.loadOSBills(function() {
-        thisRouter.mainView.renderEBill(bill);
-      }, thisRouter.error);
+      bill.loadOSBills().done(function() {
+        bill.loadOSCompanion().done(function() {
+          bill.parseMeta();
+          thisRouter.mainView.renderEBill(bill);
+        });
+      }).fail(thisRouter.error);
     },
     
     // osBill route
