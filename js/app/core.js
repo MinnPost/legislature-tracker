@@ -283,8 +283,9 @@ else {
       // e.g.
       // > /SAME AS ([A-Z] [1-9][0-9]*)/.exec("SAME AS A 1234")
       //   ["SAME AS A 1234", "A 1234"]
+      var bill_id;
       try{
-        var bill_id = companions[0].bill_id;
+        bill_id = companions[0].bill_id;
       }catch(e){
         LT.log("Error: detectCompanionBill must be a regex, `false` or a function.");
         return undefined;
