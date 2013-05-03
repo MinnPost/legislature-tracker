@@ -182,8 +182,6 @@ Same as FTP deploying.  Checkout the [grunt-sftp-deploy](https://github.com/thra
 
     grunt deploy-sftp --ftpserver="example.com" --ftpdir="/path/to/dest/" --ftpport=22
 
-
-
 ## Architecture
 
 The basic idea of the application is pulling together editorial knowledge about bills and combining it with Open States data about the bills to create a focused and useful interface to keep track of the important activities of a legislature session.
@@ -191,6 +189,10 @@ The basic idea of the application is pulling together editorial knowledge about 
 ```OS``` prefixes refer to Open States data, while ```E``` or ```e``` prefixes refer to editorial data and objects.
 
 Each editorial (or meta) bill refers to one or more Open States (or actual) bill.
+
+### Cross-browser compatibility
+
+The goal of this project is to be compatible with all major modern browsers including IE8.  The application should work fine in IE7, but it may be a bit slow.
 
 ### Frameworks and libraries
 
