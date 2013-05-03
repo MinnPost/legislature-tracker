@@ -10,11 +10,13 @@
    */
   _.mixin({
     trim: function(str) {
-      if (!String.prototype.trim) {
-        str = str.replace(/^\s+|\s+$/g, '');
-      }
-      else {
-        str = str.trim();
+      if (_.isString(str)) {
+        if (!String.prototype.trim) {
+          str = str.replace(/^\s+|\s+$/g, '');
+        }
+        else {
+          str = str.trim();
+        }
       }
       
       return str;
