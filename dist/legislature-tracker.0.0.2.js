@@ -10,11 +10,13 @@
    */
   _.mixin({
     trim: function(str) {
-      if (!String.prototype.trim) {
-        str = str.replace(/^\s+|\s+$/g, '');
-      }
-      else {
-        str = str.trim();
+      if (_.isString(str)) {
+        if (!String.prototype.trim) {
+          str = str.replace(/^\s+|\s+$/g, '');
+        }
+        else {
+          str = str.trim();
+        }
       }
       
       return str;
@@ -270,21 +272,21 @@ else {
       // call which will cause a bunch of failures.
       row.bill_primary = undefined;
       if (row.bill && LT.parse.validateBillNumber(row.bill)) {
-        row.bill_primary = LT.utils.getModel('OSBillModel', 'bill_id', { bill_id: row.bill });
+        row.bill_primary = LT.utils.getModel('OSBillModel', 'bill_id', { bill_id: _.trim(row.bill) });
       }
       else if (row.bill && !LT.parse.validateBillNumber(row.bill)) {
         LT.log('Invalid primary bill number "' + row.bill + '" for row ' + row.rowNumber + ', see documentation.');
       }
       
       if (row.bill_companion && LT.parse.validateBillNumber(row.bill_companion)) {
-        row.bill_companion = LT.utils.getModel('OSBillModel', 'bill_id', { bill_id: row.bill_companion });
+        row.bill_companion = LT.utils.getModel('OSBillModel', 'bill_id', { bill_id: _.trim(row.bill_companion) });
       }
       else if (row.bill_companion && !LT.parse.validateBillNumber(row.bill_companion)) {
         LT.log('Invalid companion bill number "' + row.bill_companion + '" for row ' + row.rowNumber + ', see documentation.');
       }
       
       if (row.bill_conference && LT.parse.validateBillNumber(row.bill_conference)) {
-        row.bill_conference = LT.utils.getModel('OSBillModel', 'bill_id', { bill_id: row.bill_conference });
+        row.bill_conference = LT.utils.getModel('OSBillModel', 'bill_id', { bill_id: _.trim(row.bill_conference) });
       }
       else if (row.bill_conference && !LT.parse.validateBillNumber(row.bill_conference)) {
         LT.log('Invalid conference bill number "' + row.bill_conference + '" for row ' + row.rowNumber + ', see documentation.');
@@ -381,7 +383,7 @@ else {
       bill = (parsed && LT.parse.validateBillNumber(parsed[1])) ? parsed[1] : undefined;
     }
     
-    return bill;
+    return _.trim(bill);
   };
 
   // Handle changing field names
