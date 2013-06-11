@@ -1171,7 +1171,8 @@ return __p
       var defers = [];
     
       if (this.get('hasBill') === true && !this.get('bill_companion') && 
-        _.isObject(this.get('bill_primary')) && _.isArray(this.get('bill_primary').get('companions'))) {
+        _.isObject(this.get('bill_primary')) && _.isArray(this.get('bill_primary').get('companions')) &&
+          _.isObject(this.get('bill_primary').get('companions')[0])) {
         
         match = LT.parse.detectCompanionBill(this.get('bill_primary').get('companions')[0].bill_id);
         if (match) {
