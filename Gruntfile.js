@@ -1,15 +1,6 @@
 /*global module:false*/
 module.exports = function(grunt) {
 
-  // FTP deploy variables
-  var ftpserver = grunt.option('ftpserver') || '';
-  var ftpdir = grunt.option('ftpdir') || '';
-  var ftpport = parseInt(grunt.option('ftpport'), 10) || 21;
-
-  // S3 deploy variables
-  var s3bucket = grunt.option('s3bucket') || '';
-  var s3dir = grunt.option('s3dir') || '';
-
   // Project configuration.
   grunt.initConfig({
     pkg: grunt.file.readJSON('package.json'),
@@ -18,15 +9,21 @@ module.exports = function(grunt) {
         '<%= grunt.template.today("yyyy-mm-dd") + "\\n" %>' +
         '<%= pkg.homepage ? "* " + pkg.homepage + "\\n" : "" %>' +
         '* Copyright (c) <%= grunt.template.today("yyyy") %> <%= pkg.author.name %>;' +
-        ' Licensed <%= _.pluck(pkg.licenses, "type").join(", ") %> */' + 
+        ' Licensed <%= _.pluck(pkg.licenses, "type").join(", ") %> */' +
         '<%= "\\n\\n" %>'
     },
+
+    // JS code quality
     jshint: {
       files: ['Gruntfile.js', 'js/*.js']
     },
+
+    // Cleanup dist filder
     clean: {
       folder: 'dist/'
     },
+
+    // Embed in template files
     jst: {
       options: {
         namespace: 'LT.templates'
@@ -36,6 +33,8 @@ module.exports = function(grunt) {
         dest: 'dist/templates.js'
       }
     },
+
+    // Combine files
     concat: {
       options: {
         separator: '\r\n\r\n'
@@ -71,6 +70,8 @@ module.exports = function(grunt) {
         }
       }
     },
+
+    // Minify files
     uglify: {
       options: {
         banner: '<%= meta.banner %>'
@@ -108,51 +109,9 @@ module.exports = function(grunt) {
           }
         ]
       }
-    },
-    'ftp-deploy': {
-      deploy: {
-        auth: {
-          host: ftpserver,
-          port: ftpport,
-          authKey: 'leg-tracker-key'
-        },
-        src: 'dist',
-        dest: ftpdir,
-        exclusions: ['dist/**/.DS_Store', 'dist/**/Thumbs.db']
-      }
-    },
-    'sftp-deploy': {
-      deploy: {
-        auth: {
-          host: ftpserver,
-          port: ftpport,
-          authKey: 'leg-tracker-key'
-        },
-        src: 'dist',
-        dest: ftpdir,
-        exclusions: ['dist/**/.DS_Store', 'dist/**/Thumbs.db']
-      }
-    },
-    s3: {
-      options: {
-        // This is specific to MinnPost
-        //
-        // These are assumed to be environment variables
-        // See https://npmjs.org/package/grunt-s3
-        //key: 'YOUR KEY',
-        //secret: 'YOUR SECRET',
-        bucket: s3bucket,
-        access: 'public-read'
-      },
-      deploy: {
-        upload: [
-          { src: 'dist/*', dest: s3dir },
-          { src: 'dist/images/*', dest: s3dir + 'images/' }
-        ]
-      }
     }
   });
-  
+
   // Load plugin tasks
   grunt.loadNpmTasks('grunt-contrib-concat');
   grunt.loadNpmTasks('grunt-contrib-jshint');
@@ -160,26 +119,7 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-copy');
   grunt.loadNpmTasks('grunt-contrib-jst');
   grunt.loadNpmTasks('grunt-contrib-clean');
-  grunt.loadNpmTasks('grunt-ftp-deploy');
-  grunt.loadNpmTasks('grunt-sftp-deploy');
-  grunt.loadNpmTasks('grunt-s3');
 
   // Default task.
   grunt.registerTask('default', ['jshint', 'clean', 'jst', 'concat', 'uglify', 'copy']);
-  
-  // Deploy task that uses environment variables.  Example
-  // grunt deploy-s3 --s3bucket="our_bucket" --s3dir="path/to/dest/"
-  // Not working
-  grunt.registerTask('deploy-s3', ['s3']);
-  
-  // Deploy task for ftp that uses environment variables.  Example
-  // grunt deploy-ftp --ftpserver="example.com" --ftpdir="projects/leg-tracker/" --ftpport=21
-  // Not working
-  grunt.registerTask('deploy-ftp', ['ftp-deploy']);
-  
-  // Deploy task for sft.  Same as sftp
-  // grunt deploy-sftp --ftpserver="example.com" --ftpdir="/path/to/dest/" --ftpport=22
-  // Not working
-  grunt.registerTask('deploy-sftp', ['sftp-deploy']);
-
 };

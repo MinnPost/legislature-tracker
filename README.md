@@ -153,42 +153,6 @@ Built versions will only be regularly committed for tagged releases.
 1. Run: ```grunt```
 1. (for specific version) Tag release with appropriate version: ```git tag 0.1.1```
 
-## Deploying
-
-There are a couple general deploy methods that will transfer the dist folder somewhere.  Run these after running ```grunt```.
-
-### S3
-
-For authentication, make sure to set environment variables ```AWS_ACCESS_KEY_ID``` and ```AWS_SECRET_ACCESS_KEY```.  You can set these ad-hoc with the following commands:
-
-    export AWS_ACCESS_KEY_ID=<YOUR KEY ID>
-    export AWS_SECRET_ACCESS_KEY=<YOUR KEY>
-
-Then run the following with the appropriate values filled in to upload files to S3.  The trailing slash on the ```s3dir``` is needed.
-
-    grunt deploy-s3 --s3bucket="our_bucket" --s3dir="path/to/dest/"
-
-### FTP
-
-For authentication, you need to create a JSON file named ```.ftppass``` that will have the username and password in it.  See [grunt-ftp-deploy](https://github.com/zonak/grunt-ftp-deploy) for reference.
-
-    {
-      "leg-tracker-key": {
-        "username": "username1",
-        "password": "password1"
-      }
-    }
-
-Then run the following with the appropriate values filled in to upload files to the FTP server.  The port argument is optional and defaults to ```21```.
-
-    grunt deploy-ftp --ftpserver="example.com" --ftpdir="projects/leg-tracker/" --ftpport=21
-    
-### SFTP
-
-Same as FTP deploying.  Checkout the [grunt-sftp-deploy](https://github.com/thrashr888/grunt-sftp-deploy) for intricacies.  Example:
-
-    grunt deploy-sftp --ftpserver="example.com" --ftpdir="/path/to/dest/" --ftpport=22
-
 ## Architecture
 
 The basic idea of the application is pulling together editorial knowledge about bills and combining it with Open States data about the bills to create a focused and useful interface to keep track of the important activities of a legislature session.
