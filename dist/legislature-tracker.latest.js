@@ -18,18 +18,18 @@
           str = str.trim();
         }
       }
-      
+
       return str;
     },
-    
+
     cssClass: function(str) {
       return str.replace(/[^a-z0-9]/g, '-');
     },
-    
+
     numberFormatCommas: function(number) {
       return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
     },
-    
+
     ellipsisText: function(text, wordCount) {
       // The default is to count words and create an ellipsis break
       // there that will be handled by showing and hiding the relevant
@@ -43,7 +43,7 @@
       var templateEllipsis = '<ins class="ellipsis-ellipsis">...</ins>';
       var templateEnd = '<ins class="ellipsis-end">[[[TEXT]]]</ins>';
       var slice, sliceStart, sliceEnd, words;
-      
+
       // Look for break, otherwise use word count
       if (text.indexOf(templateBreak) !== -1) {
         slice = text.indexOf(templateBreak);
@@ -64,10 +64,10 @@
           output += templateEnd.replace('[[[TEXT]]]', sliceEnd.join(' ')) + ' ';
         }
       }
-      
+
       return output;
     },
-    
+
     // A simple URL parser as stolen from
     // https://gist.github.com/jlong/2428561
     parseURL: function(url) {
@@ -76,17 +76,20 @@
       return parser;
     }
   });
-  
+
 
   /**
-   * Override Backbone's ajax function to use $.jsonp
+   * Override Backbone's ajax function to use jsonp
    */
-  if (_.isFunction(Backbone.$.jsonp)) {
-    Backbone.ajax = function() {
-      return Backbone.$.jsonp.apply(Backbone.$, arguments);
-    };
-  }
-  
+  Backbone.ajax = function() {
+    var options = arguments;
+
+    if (options[0].dataTypeForce !== true) {
+      options[0].dataType = 'jsonp';
+    }
+    return Backbone.$.ajax.apply(Backbone.$, options);
+  };
+
   /**
    * Basic jQuery plugin to see if element
    * has a scroll bar.
@@ -126,7 +129,7 @@ else {
   // with the same id.
   LT.cache = {};
   LT.cache.models = {};
-  
+
   /**
    * Wrapper around console.log so older browsers don't
    * complain.
@@ -139,28 +142,28 @@ else {
       window.console.log(text);
     }
   };
-  
+
   /**
    * Utility functions for LT
    */
   LT.utils = {};
-  
+
   // Make new model, and utilize cache
   LT.utils.getModel = function(model, idAttr, attr, options) {
     var hash = model + ':' + idAttr + ':' + attr[idAttr];
     options = options || LT.options;
-  
+
     if (_.isUndefined(LT.cache.models[hash])) {
       LT.cache.models[hash] = new LT[model](attr, options);
     }
-    
+
     return LT.cache.models[hash];
   };
-  
+
   // Fetch model, unless has already been fetched.
   LT.utils.fetchModel = function(model) {
     var defer;
-  
+
     if (model.get('fetched') !== true) {
       return model.fetch();
     }
@@ -170,25 +173,25 @@ else {
       return defer;
     }
   };
-  
+
   // Translate words, usually for presentation
   LT.utils.translate = function(section, input) {
     var output = input;
-    
-    if (_.isObject(LT.options.wordTranslations[section]) && 
+
+    if (_.isObject(LT.options.wordTranslations[section]) &&
       _.isString(LT.options.wordTranslations[section][input])) {
       output = LT.options.wordTranslations[section][input];
     }
-    
+
     return output;
   };
-  
+
   // Make image path.  If the image path is a full
   // path with http, then don't prepend image path
   LT.utils.imagePath = function(image) {
     return (image.indexOf('http') === 0) ? image : LT.options.imagePath + image;
   };
-  
+
   /**
    * Template handling.  For development, we want to use
    * the template files directly, but for build, they should be
@@ -200,7 +203,7 @@ else {
   LT.utils.getTemplate = function(name, assignment, property, callback) {
     var templatePath = 'js/app/templates/' + name + '.html';
     var templateGETPath = LT.options.templatePath + name + '.html';
-    
+
     if (!_.isUndefined(LT.templates[templatePath])) {
       assignment[property] = LT.templates[templatePath];
     }
@@ -221,7 +224,7 @@ else {
       });
     }
   };
-  
+
   /**
    * Parsing out data from spreadsheet.
    *
@@ -230,15 +233,15 @@ else {
   LT.parse = LT.parse || {};
   LT.parse.eData = function(tabletop) {
     var parsed = {};
-    
+
     parsed.categories = LT.parse.eCategories(tabletop.sheets('Categories').all());
     var eBills = tabletop.sheets('Bills').all();
-    
+
     // Handle max bills
     if (eBills.length > LT.options.maxBills) {
       LT.log('The number of bills in your spreadsheet exceeds maxBills. Set the maxBills option to display them, but be aware that this may significantly slow down the Legislature Tracker.');
     }
-    
+
     parsed.bills = LT.parse.eBills(eBills.slice(0, LT.options.maxBills));
     parsed.events = LT.parse.eEvents(tabletop.sheets('Events').all());
 
@@ -250,10 +253,10 @@ else {
         }
       });
     });
-    
+
     return parsed;
   };
-  
+
   LT.parse.validateBillNumber = function(bill_num){
     return LT.options.billNumberFormat.test(bill_num);
   };
@@ -262,7 +265,7 @@ else {
     return _.map(bills, function(row) {
       LT.parse.translateFields(LT.options.fieldTranslations.eBills, row);
       row.links = LT.parse.eLinks(row.links);
-      
+
       // Break up categories into an array
       row.categories = (row.categories) ? row.categories.split(',') : [];
       row.categories = _.map(row.categories, _.trim);
@@ -277,36 +280,36 @@ else {
       else if (row.bill && !LT.parse.validateBillNumber(row.bill)) {
         LT.log('Invalid primary bill number "' + row.bill + '" for row ' + row.rowNumber + ', see documentation.');
       }
-      
+
       if (row.bill_companion && LT.parse.validateBillNumber(row.bill_companion)) {
         row.bill_companion = LT.utils.getModel('OSBillModel', 'bill_id', { bill_id: _.trim(row.bill_companion) });
       }
       else if (row.bill_companion && !LT.parse.validateBillNumber(row.bill_companion)) {
         LT.log('Invalid companion bill number "' + row.bill_companion + '" for row ' + row.rowNumber + ', see documentation.');
       }
-      
+
       if (row.bill_conference && LT.parse.validateBillNumber(row.bill_conference)) {
         row.bill_conference = LT.utils.getModel('OSBillModel', 'bill_id', { bill_id: _.trim(row.bill_conference) });
       }
       else if (row.bill_conference && !LT.parse.validateBillNumber(row.bill_conference)) {
         LT.log('Invalid conference bill number "' + row.bill_conference + '" for row ' + row.rowNumber + ', see documentation.');
       }
-      
+
       // Check if there is a bill provided.  It is alright if there is
       // no bill provided as some legislatures don't produce
       // bill IDs until late in the process
       row.hasBill = true;
       if (!row.bill || row.bill_primary === undefined) {
         row.hasBill = false;
-        
+
         // We still want to make a bill ID for linking purposes
         row.bill = _.cssClass(row.title.toLowerCase());
       }
-      
+
       return row;
     });
   };
-  
+
   LT.parse.eCategories = function(categories) {
     return _.map(categories, function(row) {
       LT.parse.translateFields(LT.options.fieldTranslations.eCategories, row);
@@ -314,32 +317,32 @@ else {
       return row;
     });
   };
-  
+
   LT.parse.eEvents = function(events) {
     return _.map(events, function(row) {
       LT.parse.translateFields(LT.options.fieldTranslations.eEvents, row);
       row.links = LT.parse.eLinks(row.links);
       row.date = moment(row.date);
-      
+
       // Add some things to fit format of Open States actions
       row.type = [ 'custom' ];
       return row;
     });
   };
-  
+
   // "Title to link|http://minnpost.com", "Another link|http://minnpost.com"
   LT.parse.eLinks = function(link) {
     var links = [];
     link = _.trim(link);
-    
+
     if (link.length === 0) {
       return links;
     }
-    
+
     // Remove first and last quotes
     link = (link.substring(0, 1) === '"') ? link.substring(1) : link;
     link = (link.substring(link.length - 1, link.length) === '"') ? link.slice(0, -1) : link;
-    
+
     // Separate out the parts
     links = link.split('", "');
     links = _.map(links, function(l) {
@@ -348,31 +351,31 @@ else {
         url: l.split('|')[1]
       };
     });
-    
+
     return links;
   };
-  
+
   // "Environmental", "Energy"
   LT.parse.csvCategories = function(category) {
     category = _.trim(category);
     if (category.length === 0) {
       return [];
     }
-    
+
     // Remove first and last quotes
     category = (category.substring(0, 1) === '"') ? category.substring(1) : category;
-    category = (category.substring(category.length - 1, category.length) === '"') ? 
+    category = (category.substring(category.length - 1, category.length) === '"') ?
       category.slice(0, -1) : category;
-    
+
     // Separate out the parts
     return category.split('", "');
   };
-  
+
   // Looks at text and tries to find a bill, used for
   // getting the companion bill automatically
   LT.parse.detectCompanionBill = function(companionText) {
     var parsed, bill;
-    
+
     // Handle function or handle regex
     if (_.isFunction(LT.options.detectCompanionBill)) {
       parsed = LT.options.detectCompanionBill(companionText);
@@ -382,7 +385,7 @@ else {
       parsed = LT.options.detectCompanionBill.exec(companionText);
       bill = (parsed && LT.parse.validateBillNumber(parsed[1])) ? parsed[1] : undefined;
     }
-    
+
     return _.trim(bill);
   };
 
@@ -390,15 +393,15 @@ else {
   LT.parse.translateFields = function(translation, row) {
     _.each(translation, function(input, output) {
       row[output] = row[input];
-      
+
       if (output !== input) {
         delete row[input];
       }
     });
-    
+
     return row;
   };
-  
+
   // Default options
   LT.defaultOptions = {
     sheetsWanted: ['Categories', 'Bills', 'Events'],
@@ -446,7 +449,7 @@ else {
     billNumberFormat: (/[A-Z]+ [1-9][0-9]*/),
     osBillParse: false
   };
-  
+
 })(jQuery, window);
 
 this["LT"] = this["LT"] || {};
@@ -993,9 +996,9 @@ return __p
 /**
  * Models for the Legislature Tracker app.
  */
- 
+
 (function($, w, undefined) {
-  
+
   /**
    * Base Model for Open States items
    */
@@ -1003,36 +1006,36 @@ return __p
     urlBase: function() {
       return 'http://openstates.org/api/v1/';
     },
-    
+
     urlEnd: function() {
       return '/?apikey=' + encodeURI(LT.options.OSKey) + '&callback=?';
     },
-    
+
     url: function() {
-      return this.urlBase() + encodeURI(this.osType) + '/' + 
+      return this.urlBase() + encodeURI(this.osType) + '/' +
         encodeURI(this.id) + this.urlEnd();
     },
-    
+
     initialize: function(attr, options) {
       this.options = options;
-      
+
       this.on('sync', function(model, resp) {
         // Mark as fetched so we can use some caching
         model.set('fetched', true);
       });
     }
   });
-  
+
   /**
    * Model for Open States State
    */
   LT.OSStateModel = LT.OSModel.extend({
     url: function() {
-      return this.urlBase() + 'metadata/'  + encodeURI(this.options.state) + 
+      return this.urlBase() + 'metadata/'  + encodeURI(this.options.state) +
         this.urlEnd();
     }
   });
-  
+
   /**
    * Model for Open States Bill
    */
@@ -1047,71 +1050,71 @@ return __p
           encodeURI(this.get('bill_id')) + this.urlEnd();
       }
     },
-    
+
     initialize: function(attr, options) {
       LT.OSBillModel.__super__.initialize.apply(this, arguments);
-      
+
       this.on('sync', function(model, resp, options) {
         this.parseOSData();
       });
     },
-    
+
     parseOSData: function() {
       // Get some aggregate data from the Open State data
       var swapper;
-      
+
       // Parse some dates
       this.set('created_at', moment(this.get('created_at')));
       this.set('updated_at', moment(this.get('updated_at')));
-      
+
       // Action dates
       swapper = this.get('action_dates');
       _.each(swapper, function(a, i) {
         swapper[i] = (a) ? moment(a) : a;
       });
       this.set('action_dates', swapper);
-      
+
       // Actions
       swapper = this.get('actions');
       _.each(swapper, function(a, i) {
         swapper[i].date = (a.date) ? moment(a.date) : a.date;
       });
       this.set('actions', swapper);
-      
+
       // Votes
       swapper = this.get('votes');
       _.each(swapper, function(a, i) {
         swapper[i].date = (a.date) ? moment(a.date) : a.date;
       });
       this.set('votes', swapper);
-      
+
       // Add custom events to actions
       swapper = this.get('custom_events');
       if (_.isArray(swapper) && swapper.length > 0) {
         this.set('actions', _.union(this.get('actions'), swapper));
       }
-      
+
       // Sort action
       this.set('actions', _.sortBy(this.get('actions'), function(a, i) {
         return (a.date.unix() + i) * -1;
       }));
-      
+
       // Figure out newest
       this.set('newest_action', this.get('actions')[0]);
-      
+
       // All for hook
       if (LT.options.osBillParse && _.isFunction(LT.options.osBillParse)) {
         LT.options.osBillParse(this);
       }
     },
-    
+
     getActionDate: function(type) {
       return (this.get('action_dates')[type]) ? this.get('action_dates')[type] : false;
     },
-    
+
     isSubstituted: function() {
       var sub = false;
-      
+
       if (_.isBoolean(this.get('substitued'))) {
         sub = this.get('substitued');
       }
@@ -1125,65 +1128,65 @@ return __p
         sub = (sub) ? true : false;
         this.set('substitued', sub);
       }
-      
+
       return sub;
     }
   });
-  
+
   /**
    * Model for Open States Legislator
    */
   LT.OSLegislatorModel = LT.OSModel.extend({
     osType: 'legislators'
   });
-  
+
   /**
    * Model for Open States Committee
    */
   LT.OSCommitteeModel = LT.OSModel.extend({
     osType: 'committees'
   });
-  
+
   /**
    * Model Legislature Tracker for bill
    */
   LT.BillModel = Backbone.Model.extend({
-    initialize: function(attr, options) { 
+    initialize: function(attr, options) {
       this.options = options;
     },
-   
+
     loadOSBills: function(callback, error) {
       var thisModel = this;
       var defers = [];
-      
+
       _.each(['bill_primary', 'bill_companion', 'bill_conference'], function(prop) {
         if (thisModel.get('hasBill') && thisModel.get(prop)) {
           defers.push(LT.utils.fetchModel(thisModel.get(prop)));
         }
       });
-      
+
       return $.when.apply($, defers);
     },
-    
+
     loadOSCompanion: function() {
       var thisModel = this;
       var match;
       var defers = [];
-    
-      if (this.get('hasBill') === true && !this.get('bill_companion') && 
+
+      if (this.get('hasBill') === true && !this.get('bill_companion') &&
         _.isObject(this.get('bill_primary')) && _.isArray(this.get('bill_primary').get('companions')) &&
           _.isObject(this.get('bill_primary').get('companions')[0])) {
-        
+
         match = LT.parse.detectCompanionBill(this.get('bill_primary').get('companions')[0].bill_id);
         if (match) {
           this.set('bill_companion', LT.utils.getModel('OSBillModel', 'bill_id', { bill_id : match }));
           defers.push(LT.utils.fetchModel(this.get('bill_companion')));
         }
       }
-      
+
       return $.when.apply($, defers);
     },
-    
+
     loadCategories: function() {
       if (this.get('categories')) {
         this.set('categories', _.map(this.get('categories'), function(c) {
@@ -1194,16 +1197,16 @@ return __p
         }));
       }
     },
-    
+
     lastUpdatedAt: function() {
       var last_updated_at;
       var p = this.get('bill_primary');
       var c = this.get('bill_companion');
       var co = this.get('bill_conference');
-      
+
       if (_.isUndefined(this.get('last_updated_at')) && p.get('updated_at')) {
         last_updated_at = p.get('updated_at');
-        
+
         if (c && c.get('updated_at')) {
           last_updated_at = (c.get('updated_at').unix() >
             last_updated_at.unix()) ?
@@ -1218,22 +1221,22 @@ return __p
       }
       // Check if this bill loaded correctly
       else if (_.isUndefined(this.get('last_updated_at')) && !p.get('updated_at')) {
-        LT.log('Could not fetch primary bill data from OpenStates. Check that the id ' + 
+        LT.log('Could not fetch primary bill data from OpenStates. Check that the id ' +
           this.get('bill_primary').get('bill_id') + ' is formatted properly.');
       }
-      
+
       return this.get('last_updated_at');
     },
-    
+
     newestAction: function() {
       var newest_action;
       var p = this.get('bill_primary');
       var c = this.get('bill_companion');
       var co = this.get('bill_conference');
-      
+
       if (this.get('hasBill') && _.isUndefined(this.get('newest_action')) && p.get('newest_action')) {
         newest_action = p.get('newest_action');
-        
+
         if (c && c.get('newest_action')) {
           newest_action = (c.get('newest_action').date.unix() >
             newest_action.date.unix()) ?
@@ -1246,13 +1249,13 @@ return __p
         }
         this.set('newest_action', newest_action);
       }
-      
+
       return this.get('newest_action');
     },
-    
+
     parseMeta: function() {
-    
-      // We need to get actions and meta data from individual 
+
+      // We need to get actions and meta data from individual
       // bills.  This could get a bit complicated...
       var actions = {
         upper: false,
@@ -1261,13 +1264,13 @@ return __p
         signed: false,
         last: false
       };
-      
+
       // Let's determine types
       var type = {
         companion: (this.get('bill_companion')) ? true : false,
         conference: (this.get('bill_conference')) ? true : false
       };
-      
+
       // Sort custom events
       if (this.get('custom_events')) {
         this.set('custom_events', _.sortBy(this.get('custom_events'), function(e, i) {
@@ -1288,14 +1291,14 @@ return __p
             // Swap primary for companion
           }
         }
-        
+
         // If only primary, get the actions from there, or
         // if substituted, then just get from primary bill
         if (!type.companion || type.substituted) {
           actions.lower = this.get('bill_primary').getActionDate('passed_lower');
           actions.upper = this.get('bill_primary').getActionDate('passed_upper');
         }
-        
+
         // If companion, get the actions from their respective bills
         if (type.companion && !type.substituted) {
           if (this.get('bill_primary').get('chamber') === 'upper') {
@@ -1307,17 +1310,17 @@ return __p
             actions.upper = this.get('bill_companion').getActionDate('passed_upper');
           }
         }
-        
+
         // If conference bill, get date if both chambers have passed
         if (type.conference) {
             var lower = this.get('bill_conference').getActionDate('passed_lower');
             var upper = this.get('bill_conference').getActionDate('passed_upper');
-              
+
             if (lower && upper) {
               actions.conference = (lower.unix() >= upper.unix()) ? lower : upper;
             }
         }
-        
+
         // Determine signed.  If conference, then use that, otherwise
         // use primary
         if (type.conference) {
@@ -1326,7 +1329,7 @@ return __p
         else {
           actions.signed = this.get('bill_primary').getActionDate('signed');
         }
-        
+
         // Determine last updated date
         if (type.conference) {
           actions.last = this.get('bill_conference').getActionDate('last');
@@ -1340,31 +1343,31 @@ return __p
         else  {
           actions.last = this.get('bill_primary').getActionDate('last');
         }
-      
+
         // Description
         if (!this.get('description')) {
           this.set('description', this.get('bill_primary').get('summary'));
         }
       }
-      
+
       this.set('actions', actions);
       this.set('bill_type', type);
-      
+
       return this;
     }
   });
-  
+
   /**
    * Model Legislature Tracker category
    */
   LT.CategoryModel = Backbone.Model.extend({
-  
+
     initialize: function(attr, options) {
       this.options = options;
       this.set('bills', new LT.BillsCollection(null));
       this.getBills();
     },
-    
+
     getBills: function() {
       // Gets reference to bills that are in the category
       var thisModel = this;
@@ -1378,34 +1381,34 @@ return __p
       });
       return this;
     },
-    
+
     loadBills: function(callback, error) {
       // Load up bill data from open states
       var defers = [];
       var thisModel = this;
-      
-      this.get('bills').each(function(bill) {     
+
+      this.get('bills').each(function(bill) {
         defers.push(bill.loadOSBills());
       });
-      
+
       // Queue bills
       $.when.apply($, defers).done(function() {
         var companionDefers = [];
-        
+
         // Queue any companions
-        thisModel.get('bills').each(function(bill) {     
+        thisModel.get('bills').each(function(bill) {
           companionDefers.push(bill.loadOSCompanion());
         });
-        
+
         $.when.apply($, companionDefers).done(function() {
-          thisModel.get('bills').each(function(bill) {  
+          thisModel.get('bills').each(function(bill) {
             bill.parseMeta();
           });
-          
+
           callback();
         }).fail(error);
       }).fail(error);
-      
+
       return this;
     }
   });
@@ -1415,43 +1418,43 @@ return __p
 /**
  * Collections for Legislature Tracker
  */
- 
+
 (function($, w, undefined) {
- 
+
   /**
    * Collection of categories.
    */
   LT.CategoriesCollection = Backbone.Collection.extend({
     model: LT.CategoryModel,
-    
+
     comparator: function(cat) {
       return (cat.get('title').toLowerCase().indexOf('recent') !== -1) ?
         'zzzzz' : cat.get('title');
     }
   });
- 
+
   /**
    * Collection of editorial (meta) bills.
    */
   LT.BillsCollection = Backbone.Collection.extend({
     model: LT.BillModel,
-    
+
     comparator: function(b) {
       var compare = (b.newestAction()) ? b.newestAction().date.unix() * -1 :
         b.get('title');
       return compare;
     }
   });
-  
+
   /**
    * Collection of Open States bills.
    */
   LT.OSBillsCollection = Backbone.Collection.extend({
     model: LT.OSBillModel,
-    
+
     comparator: function(bill) {
       var last_action = bill.get('newest_action');
-      
+
       if (last_action) {
         last_action = last_action.date.unix() * -1;
       }
@@ -1464,7 +1467,7 @@ return __p
 /**
  * Views for the Legislator Tracker app
  */
- 
+
 (function($, w, undefined) {
 
   /**
@@ -1475,7 +1478,7 @@ return __p
       // Add class to ensure our styling does
       // not mess with other stuff
       this.$el.addClass('ls');
-      
+
       // Get templates
       this.templates = this.templates || {};
       LT.utils.getTemplate('template-loading', this.templates, 'loading');
@@ -1485,18 +1488,18 @@ return __p
       LT.utils.getTemplate('template-category', this.templates, 'category');
       LT.utils.getTemplate('template-categories', this.templates, 'categories');
       LT.utils.getTemplate('template-header', this.templates, 'header');
-      
+
       // Bind all
       _.bindAll(this, 'expandBill', 'expandOtherBills');
     },
-    
+
     events: {
       'click .bill-expand': 'expandBill',
       'click .expand-other-bills': 'expandOtherBills'
     },
-  
+
     loading: function() {
-      // The first (and second) load, we don't actually 
+      // The first (and second) load, we don't actually
       // want to force the scroll
       if (_.isNumber(LT.options.scrollOffset)) {
         if (this.initialLoad === true) {
@@ -1509,28 +1512,28 @@ return __p
       this.$el.html(this.templates.loading({}));
       return this;
     },
-    
+
     error: function(e) {
       this.$el.html(this.templates.error({ error: e }));
       return this;
     },
-    
+
     renderCategories: function() {
       this.$el.html(this.templates.categories({
         categories: LT.app.categories.toJSON(),
         options: LT.options
       }));
     },
-    
+
     renderCategory: function(category) {
       var thisView = this;
       var data;
-      
+
       if (!_.isObject(category)) {
         category = LT.app.categories.get(category);
       }
       category.get('bills').sort();
-      
+
       this.$el.html(this.templates.category({
         category: category.toJSON(),
         templates: this.templates,
@@ -1538,13 +1541,13 @@ return __p
       }));
       this.getLegislators().navigationGlue();
     },
-    
+
     renderEBill: function(bill) {
       if (!_.isObject(bill)) {
         bill = this.router.bills.get(bill);
       }
       bill.newestAction();
-      
+
       this.$el.html(this.templates.ebill({
         bill: bill.toJSON(),
         expandable: false,
@@ -1553,7 +1556,7 @@ return __p
       }));
       this.getLegislators().addTooltips().checkOverflows().navigationGlue();
     },
-    
+
     renderOSBill: function(bill) {
       this.$el.html(this.templates.osbill({
         bill: bill.toJSON(),
@@ -1563,45 +1566,45 @@ return __p
       }));
       this.getLegislators().addTooltips().checkOverflows().navigationGlue();
     },
-    
+
     renderHeader: function() {
       return this.templates.header({
         categories: LT.app.categories.toJSON()
       });
     },
-    
+
     expandBill: function(e) {
       e.preventDefault();
       var $this = $(e.target);
       var text = [ 'More detail', 'Less detail' ];
       var current = $this.text();
-      
+
       $this.text((current === text[0]) ? text[1] : text[0]);
       $this.parent().parent().toggleClass('expanded').find('.bill-bottom').slideToggle();
-      
+
       this.checkOverflows();
       return this;
     },
-    
+
     expandOtherBills: function(e) {
       e.preventDefault();
       var $this = $(e.target);
       var text = [ 'Show other bills', 'Hide other bills' ];
       var current = $this.text();
-      
+
       $this.text((current === text[0]) ? text[1] : text[0]);
       $this.parent().find('.has-conference-bill').toggleClass('showing').slideToggle();
-      
+
       this.checkOverflows();
       return this;
     },
-    
+
     getLegislators: function() {
       this.$el.find('.sponsor:not(.found)').each(function() {
         var $this = $(this);
         var data = $this.data();
         data.id = data.legId;
-        
+
         if (data.id) {
           var leg = LT.utils.getModel('OSLegislatorModel', 'id', data);
           $.when(LT.utils.fetchModel(leg)).then(function() {
@@ -1614,7 +1617,7 @@ return __p
       });
       return this;
     },
-    
+
     addTooltips: function() {
       this.$el.find('.bill-progress .bill-progress-section.completed').qtip({
         style: {
@@ -1627,7 +1630,7 @@ return __p
       });
       return this;
     },
-    
+
     checkOverflows: function() {
       this.$el.find('.actions-inner, .co-sponsors-inner').each(function() {
         if ($(this).hasScrollBar()) {
@@ -1636,24 +1639,24 @@ return __p
       });
       return this;
     },
-    
+
     resetScrollView: function() {
       $('html, body').animate({ scrollTop: this.$el.offset().top - LT.options.scrollOffset }, 1000);
       return this;
     },
-    
+
     navigationGlue: function() {
       var containerTop = this.$el.offset().top;
       var $navigation = $('.ls-header');
-    
+
       // The header container should be as high as the
       // the header so that it does not jump when
       // its gets glued
       $('.ls-header-container').height($navigation.outerHeight());
-      
+
       $(w).scroll(function() {
         var $this = $(this);
-      
+
         // Add class for fixed menu
         if (($this.scrollTop() > containerTop) && !$navigation.hasClass('glued')) {
           $navigation.addClass('glued');
@@ -1671,20 +1674,20 @@ return __p
    */
   LT.LegislatorView = Backbone.View.extend({
     model: LT.OSLegislatorModel,
-    
+
     initialize: function(options) {
       // Get templates
       this.templates = this.templates || {};
       LT.utils.getTemplate('template-legislator', this.templates, 'legislator');
     },
-    
+
     render: function() {
       this.$el.addClass('found')
         .html(this.templates.legislator(this.model.toJSON()));
       return this;
     }
   });
-  
+
 })(jQuery, window);
 
 /**
@@ -1703,19 +1706,19 @@ return __p
       'bill-detail/:bill': 'routeOSBill',
       '*defaultR': 'routeDefault'
     },
-  
+
     initialize: function(options) {
       LT.options = _.extend(LT.defaultOptions, options);
       LT.app = this;
-      
+
       // Bind to help with some event callbacks
       _.bindAll(this, 'loadEBills');
-      
+
       // Main view for application
       this.mainView = new LT.MainApplicationView(LT.options);
       this.mainView.router = this;
       this.mainView.loading();
-      
+
       // Get data from spreadsheets
       this.tabletop = Tabletop.init(_.extend(LT.options.tabletopOptions, {
         key: LT.options.eKey,
@@ -1724,11 +1727,11 @@ return __p
         wanted: LT.options.sheetsWanted
       }));
     },
-    
+
     // Function to call when bill data is loaded
     loadEBills: function(data, tabletop) {
       var thisRouter = this;
-      
+
       // Parse out data from sheets
       var parsed = LT.parse.eData(tabletop);
 
@@ -1746,24 +1749,22 @@ return __p
       this.bills.each(function(b) {
         b.loadCategories();
       });
-      
+
       // Load up bill count
       if (LT.options.aggregateURL) {
-        $.jsonp({
-          url: LT.options.aggregateURL,
-          success: this.loadAggregateCounts
-        });
+        $.getJSON(LT.options.aggregateURL)
+          .done(this.loadAggregateCounts);
       }
       else {
         // Start application/routing
         this.start();
       }
     },
-    
+
     // Get aggregate counts
     loadAggregateCounts: function(billCountData) {
       var thisRouter = this;
-      
+
       _.each(billCountData, function(stat) {
         if (stat.stat === 'total-bills') {
           thisRouter.totalBills = parseInt(stat.value, 10);
@@ -1775,27 +1776,27 @@ return __p
           thisRouter.totalBillsSigned = parseInt(stat.value, 10);
         }
       });
-      
+
       // Start application/routing
       this.start();
     },
-    
+
     // Start application (after data has been loaded)
     start: function() {
       // Start handling routing and history
       Backbone.history.start();
     },
-  
+
     // Default route
     routeDefault: function() {
       this.navigate('/categories', { trigger: true, replace: true });
       this.mainView.render();
     },
-  
+
     // Categories view
     routeCategories: function() {
       var thisRouter = this;
-    
+
       // If we are viewing the categories, we want to get
       // some basic data about the bills from Open States
       // but not ALL the data.  We can use the bill search
@@ -1806,51 +1807,51 @@ return __p
         thisRouter.mainView.renderCategories();
       }, this.error);
     },
-  
+
     // Single Category view
     routeCategory: function(category) {
       var thisRouter = this;
-      
+
       category = decodeURI(category);
       category = this.categories.get(category);
-      
+
       // Load up bill data from open states
       this.mainView.loading();
       category.loadBills(function() {
         thisRouter.mainView.renderCategory(category);
       }, thisRouter.error);
     },
-    
+
     // Hack for recent category.  We have to build recent
     // category only after getting the short meta data
     // from open states
     routeRecentCategory: function() {
       var thisRouter = this;
       this.mainView.loading();
-      
+
       this.getOSBasicBills(function() {
         thisRouter.makeRecentCategory();
         var category = thisRouter.categories.get('recent');
-        
+
         category.loadBills(function() {
           thisRouter.mainView.renderCategory(category);
         }, thisRouter.error);
       }, this.error);
-      
+
     },
-    
+
     // eBill route
     routeEBill: function(bill) {
       var thisRouter = this;
       var bill_id = decodeURI(bill);
-      
+
       bill = this.bills.where({ bill: bill_id })[0];
-      
+
       if (!bill) {
         this.navigate('/bill-detail/' + encodeURI(bill_id), { trigger: true, replace: true });
         return;
       }
-      
+
       this.mainView.loading();
       bill.loadOSBills().done(function() {
         bill.loadOSCompanion().done(function() {
@@ -1859,11 +1860,11 @@ return __p
         });
       }).fail(thisRouter.error);
     },
-    
+
     // osBill route
     routeOSBill: function(bill) {
       var thisRouter = this;
-      
+
       bill = decodeURI(bill);
       bill = LT.utils.getModel('OSBillModel', 'bill_id', { bill_id: bill });
 
@@ -1873,7 +1874,7 @@ return __p
       })
       .fail(thisRouter.error);
     },
-    
+
     makeRecentCategory: function() {
       if (!this.madeRecentCategory) {
         var category = {
@@ -1883,7 +1884,7 @@ return __p
             LT.options.recentChangeThreshold + ' days.',
           image: LT.options.recentImage
         };
-        
+
         this.bills.each(function(b) {
           var c = b.get('categories');
           var hasBill = b.get('hasBill') ;
@@ -1893,23 +1894,23 @@ return __p
               b.set('categories', c);
             }
         });
-        
+
         this.categories.add(LT.utils.getModel('CategoryModel', 'id', category));
         this.bills.each(function(b) {
           b.loadCategories();
         });
-        
+
         this.madeRecentCategory = true;
       }
     },
-    
+
     getOSBasicBills: function(callback, error) {
       var thisRouter = this;
       var billIDs = [];
-      
+
       // Check if we have one this already
       if (!this.fetchedCategories) {
-      
+
         // First collect all the bill id's we need
         this.bills.each(function(bill) {
             _.each(['bill_primary', 'bill_companion', 'bill_conference'], function(prop) {
@@ -1918,35 +1919,33 @@ return __p
             }
           });
         });
-  
+
         var url = 'http://openstates.org/api/v1/bills/?state=' + LT.options.state +
           '&search_window=session:' + LT.options.session +
           '&bill_id__in=' + encodeURI(billIDs.join('|')) +
           '&apikey=' + LT.options.OSKey + '&callback=?';
-        
-        $.jsonp({
-          url: url,
-          success: function(data) {
+
+        $.getJSON(url)
+          .done(function(data) {
             thisRouter.fetchedCategories = true;
-          
+
             _.each(data, function(d) {
               d.created_at = moment(d.created_at);
               d.updated_at = moment(d.updated_at);
               LT.utils.getModel('OSBillModel', 'bill_id', d).set(d);
             });
             callback.call(thisRouter);
-          },
-          error: this.error
-        });
+          })
+          .fail(this.error);
       }
       else {
         callback.call(thisRouter);
       }
     },
-    
+
     error: function(e) {
       this.mainView.error(e);
     }
   });
-  
+
 })(jQuery, window);

@@ -52,7 +52,6 @@ module.exports = function(grunt) {
         src: [
           'bower_components/underscore/underscore-min.js',
           'bower_components/jquery/jquery.min.js',
-          'js/lib/jquery.jsonp-2.4.0.min.js',
           'bower_components/qtip2/jquery.qtip.min.js',
           'bower_components/backbone/backbone-min.js',
           'bower_components/tabletop/src/tabletop.js',
