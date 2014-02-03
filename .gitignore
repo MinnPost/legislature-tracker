@@ -3,6 +3,7 @@ components/
 !dist
 dist/data.js
 dist/templates.js
+.ftppass
 
 # Include bower components for gh-pages publishing
 # bower_components/
