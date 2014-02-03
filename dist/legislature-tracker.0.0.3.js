@@ -1487,7 +1487,7 @@ return __p
       LT.utils.getTemplate('template-header', this.templates, 'header');
       
       // Bind all
-      _.bindAll(this);
+      _.bindAll(this, 'expandBill', 'expandOtherBills');
     },
     
     events: {
@@ -1676,9 +1676,6 @@ return __p
       // Get templates
       this.templates = this.templates || {};
       LT.utils.getTemplate('template-legislator', this.templates, 'legislator');
-      
-      // Bind all
-      _.bindAll(this);
     },
     
     render: function() {
@@ -1712,7 +1709,7 @@ return __p
       LT.app = this;
       
       // Bind to help with some event callbacks
-      _.bindAll(this);
+      _.bindAll(this, 'loadEBills');
       
       // Main view for application
       this.mainView = new LT.MainApplicationView(LT.options);
