@@ -18,18 +18,18 @@
           str = str.trim();
         }
       }
-      
+
       return str;
     },
-    
+
     cssClass: function(str) {
       return str.replace(/[^a-z0-9]/g, '-');
     },
-    
+
     numberFormatCommas: function(number) {
       return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
     },
-    
+
     ellipsisText: function(text, wordCount) {
       // The default is to count words and create an ellipsis break
       // there that will be handled by showing and hiding the relevant
@@ -43,7 +43,7 @@
       var templateEllipsis = '<ins class="ellipsis-ellipsis">...</ins>';
       var templateEnd = '<ins class="ellipsis-end">[[[TEXT]]]</ins>';
       var slice, sliceStart, sliceEnd, words;
-      
+
       // Look for break, otherwise use word count
       if (text.indexOf(templateBreak) !== -1) {
         slice = text.indexOf(templateBreak);
@@ -64,10 +64,10 @@
           output += templateEnd.replace('[[[TEXT]]]', sliceEnd.join(' ')) + ' ';
         }
       }
-      
+
       return output;
     },
-    
+
     // A simple URL parser as stolen from
     // https://gist.github.com/jlong/2428561
     parseURL: function(url) {
@@ -76,17 +76,20 @@
       return parser;
     }
   });
-  
+
 
   /**
-   * Override Backbone's ajax function to use $.jsonp
+   * Override Backbone's ajax function to use jsonp
    */
-  if (_.isFunction(Backbone.$.jsonp)) {
-    Backbone.ajax = function() {
-      return Backbone.$.jsonp.apply(Backbone.$, arguments);
-    };
-  }
-  
+  Backbone.ajax = function() {
+    var options = arguments;
+
+    if (options[0].dataTypeForce !== true) {
+      options[0].dataType = 'jsonp';
+    }
+    return Backbone.$.ajax.apply(Backbone.$, options);
+  };
+
   /**
    * Basic jQuery plugin to see if element
    * has a scroll bar.
