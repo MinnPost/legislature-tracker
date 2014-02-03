@@ -1,0 +1,30 @@
+{
+  "name": "legislature-tracker",
+  "version": "0.1.0",
+  "homepage": "https://github.com/MinnPost/legislature-tracker",
+  "authors": [
+    "Alan Palazzolo <apalazzolo@minnpost.com>"
+  ],
+  "description": "An application that pulls in Open States data and combines with editorial expertise to create a live view into a state legislature session.",
+  "main": "dist/legislature-tracker.js",
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "backbone": "~1.1.0",
+    "underscore": "~1.5.2",
+    "jquery": "~1.11",
+    "moment": "~2.5.1",
+    "tabletop": "~1.3.2",
+    "qtip2": "~2.2.0"
+  },
+  "devDependencies": {
+    "bootstrap": "~3.1.0",
+    "markdown": "~0.5.0"
+  }
+}

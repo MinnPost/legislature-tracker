@@ -20,7 +20,7 @@
       LT.app = this;
       
       // Bind to help with some event callbacks
-      _.bindAll(this);
+      _.bindAll(this, 'loadEBills');
       
       // Main view for application
       this.mainView = new LT.MainApplicationView(LT.options);

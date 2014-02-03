@@ -6,36 +6,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1"></meta>
 
   <!-- Include CSS -->
-  <link rel="stylesheet" href="./gh-pages/bootstrap-2.3.1.min.css" type="text/css">
+  <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.min.css" type="text/css">
   <style type="text/css">
-    /* Customize the navbar links to be fill the entire space of the .navbar */
-    .navbar .navbar-inner {
-      padding: 0;
-    }
-    .navbar .nav {
-      margin: 0;
-      display: table;
-      width: 100%;
-    }
-    .navbar .nav li {
-      display: table-cell;
-      width: 1%;
-      float: none;
-    }
-    .navbar .nav li a {
-      font-weight: bold;
-      text-align: center;
-      border-left: 1px solid rgba(255,255,255,.75);
-      border-right: 1px solid rgba(0,0,0,.1);
-    }
-    .navbar .nav li:first-child a {
-      border-left: 0;
-      border-radius: 3px 0 0 3px;
-    }
-    .navbar .nav li:last-child a {
-      border-right: 0;
-      border-radius: 0 3px 3px 0;
-    }
+
   </style>
 </head>
 
@@ -43,29 +16,32 @@
   <a href="https://github.com/MinnPost/legislature-tracker"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_gray_6d6d6d.png" alt="Fork the Legislature Tracker on GitHub"></a>
 
   <div class="container">
-    
-    <div class="masthead">
-        <h4 class="muted">Examples</h4>
-        <div class="navbar">
-          <div class="navbar-inner">
-            <div class="container">
-              <ul class="nav">
-                <li><a href="./examples/ny-dev.html">NY</a></li>
-                <li><a href="./examples/mn-dev.html">MN</a></li>
-                <li><a href="./examples/fl-dev.html">FL</a></li>
-              </ul>
-            </div>
-          </div>
-        </div><!-- /.navbar -->
+
+    <nav class="navbar navbar-default" role="navigation">
+      <div class="container-fluid">
+
+        <div class="navbar-header">
+          <span class="navbar-brand">Examples:</span>
+        </div>
+
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+          <ul class="nav navbar-nav">
+            <li><a href="./examples/ny-dev.html">NY</a></li>
+            <li><a href="./examples/mn-dev.html">MN</a></li>
+            <li><a href="./examples/fl-dev.html">FL</a></li>
+          </ul>
+        </div>
       </div>
-  
+    </nav>
+
+
     <div class="readme-content"><em>Loading content...</em></div>
   </div>
-        
-    
+
+
   <!-- Application libraries and JS -->
   <script type="text/javascript" src="./dist/legislature-tracker.libs.js"></script>
-  <script type="text/javascript" src="./gh-pages/markdown-master-20130501.js"></script>
+  <script type="text/javascript" src="bower_components/markdown/lib/markdown.js"></script>
 
 
   <!-- Run application -->

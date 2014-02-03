@@ -49,7 +49,15 @@ module.exports = function(grunt) {
         dest: 'dist/<%= pkg.name %>.latest.js'
       },
       libs: {
-        src: ['js/lib/underscore.1.4.3.min.js', 'js/lib/jquery.1.8.3.min.js', 'js/lib/jquery.jsonp-2.4.0.min.js', 'js/lib/jquery.qtip.master-20130221.min.js', 'js/lib/backbone.0.9.10.min.js', 'js/lib/tabletop-zzolo.master-20130402.min.js', 'js/lib/moment.2.0.0.min.js'],
+        src: [
+          'bower_components/underscore/underscore-min.js',
+          'bower_components/jquery/jquery.min.js',
+          'js/lib/jquery.jsonp-2.4.0.min.js',
+          'bower_components/qtip2/jquery.qtip.min.js',
+          'bower_components/backbone/backbone-min.js',
+          'bower_components/tabletop/src/tabletop.js',
+          'bower_components/moment/moment.js'
+        ],
         dest: 'dist/<%= pkg.name %>.libs.js',
         options: {
           separator: ';\r\n\r\n'
