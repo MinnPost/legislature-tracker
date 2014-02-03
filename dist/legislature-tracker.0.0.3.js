@@ -455,7 +455,7 @@ else {
 this["LT"] = this["LT"] || {};
 this["LT"]["templates"] = this["LT"]["templates"] || {};
 
-this["LT"]["templates"]["js/app/templates/template-categories.html"] = function(obj) {
+this["LT"]["templates"]["js/templates/template-categories.html"] = function(obj) {
 obj || (obj = {});
 var __t, __p = '', __e = _.escape, __j = Array.prototype.join;
 function print() { __p += __j.call(arguments, '') }
@@ -508,7 +508,7 @@ __p += '\n  </ul>\n</div>';
 return __p
 };
 
-this["LT"]["templates"]["js/app/templates/template-category.html"] = function(obj) {
+this["LT"]["templates"]["js/templates/template-category.html"] = function(obj) {
 obj || (obj = {});
 var __t, __p = '', __e = _.escape, __j = Array.prototype.join;
 function print() { __p += __j.call(arguments, '') }
@@ -563,7 +563,7 @@ __p += '\n    bills in the ' +
 return __p
 };
 
-this["LT"]["templates"]["js/app/templates/template-ebill.html"] = function(obj) {
+this["LT"]["templates"]["js/templates/template-ebill.html"] = function(obj) {
 obj || (obj = {});
 var __t, __p = '', __e = _.escape, __j = Array.prototype.join;
 function print() { __p += __j.call(arguments, '') }
@@ -782,7 +782,7 @@ __p += '\n    </div>\n  </div>\n</div>';
 return __p
 };
 
-this["LT"]["templates"]["js/app/templates/template-error.html"] = function(obj) {
+this["LT"]["templates"]["js/templates/template-error.html"] = function(obj) {
 obj || (obj = {});
 var __t, __p = '', __e = _.escape;
 with (obj) {
@@ -792,7 +792,7 @@ __p += '<div class="error-container">\n  <div class="error"><span>There was an e
 return __p
 };
 
-this["LT"]["templates"]["js/app/templates/template-header.html"] = function(obj) {
+this["LT"]["templates"]["js/templates/template-header.html"] = function(obj) {
 obj || (obj = {});
 var __t, __p = '', __e = _.escape, __j = Array.prototype.join;
 function print() { __p += __j.call(arguments, '') }
@@ -815,7 +815,7 @@ __p += '\n    </span>\n  </div>\n</div>';
 return __p
 };
 
-this["LT"]["templates"]["js/app/templates/template-legislator.html"] = function(obj) {
+this["LT"]["templates"]["js/templates/template-legislator.html"] = function(obj) {
 obj || (obj = {});
 var __t, __p = '', __e = _.escape, __j = Array.prototype.join;
 function print() { __p += __j.call(arguments, '') }
@@ -858,7 +858,7 @@ __p += '\n  </div>\n</div>';
 return __p
 };
 
-this["LT"]["templates"]["js/app/templates/template-loading.html"] = function(obj) {
+this["LT"]["templates"]["js/templates/template-loading.html"] = function(obj) {
 obj || (obj = {});
 var __t, __p = '', __e = _.escape;
 with (obj) {
@@ -868,7 +868,7 @@ __p += '<div class="loading-general-container">\n  <div class="loading-general">
 return __p
 };
 
-this["LT"]["templates"]["js/app/templates/template-osbill.html"] = function(obj) {
+this["LT"]["templates"]["js/templates/template-osbill.html"] = function(obj) {
 obj || (obj = {});
 var __t, __p = '', __e = _.escape, __j = Array.prototype.join;
 function print() { __p += __j.call(arguments, '') }

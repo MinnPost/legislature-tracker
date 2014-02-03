@@ -25,8 +25,9 @@
   // Make some default, default options
   options = $.extend(true, {}, LT.defaultOptions, {
     el: '#legislature-tracker-container',
+    templatePath: '../js/templates/',
     tabletopOptions: {
-      paramterize: 'http://gs-proxy.herokuapp.com/proxy?url='
+      parameterize: 'http://gs-proxy.herokuapp.com/proxy?url='
     }
   });
 
@@ -39,7 +40,6 @@
       OSKey: '49c5c72c157d4b37892ddb52c63d06be',
       eKey: '0AgIwhjKwGPrydGs3b0taR2JTeGkyZ01kbE9rRVVBM2c',
       imagePath: './images/',
-      templatePath: '../js/app/templates/',
       chamberLabel: true,
       wordTranslations: {
         chamber: {
@@ -55,7 +55,6 @@
       session: '2014',
       OSKey: '7b006c11c5dd40ba89efc4e67901a0ce',
       eKey: '0AirWnBDqOSL_dGZ6RVRtVTRuOGxLS05ZMXQwVlMxdGc',
-      templatePath: '../js/app/templates/',
       imagePath: './images/',
       maxBills: 80
     });
@@ -68,7 +67,6 @@
       OSKey: '49c5c72c157d4b37892ddb52c63d06be',
       eKey: '0Arwg_542_duwdG9BVGhWZlBUbVhrbE9SYW9xTGpzX0E',
       imagePath: './images/',
-      templatePath: '../js/app/templates/',
       wordTranslations: {
         chamber: {
           lower: 'Assembly'
@@ -84,7 +82,6 @@
       OSKey: '49c5c72c157d4b37892ddb52c63d06be',
       eKey: '0AjYft7IGrHzNdENILV9DU056SkxNQ2tIaHNGMnRlZUE',
       imagePath: '../css/images/',
-      templatePath: '../js/app/templates/',
       chamberLabel: true,
       osBillParse: function(osBill) {
         osBill.set('sources', _.map(osBill.get('sources'), function(s, i) {
@@ -117,8 +114,7 @@
       OSKey: '49c5c72c157d4b37892ddb52c63d06be',
       eKey: '0AtX8MXQ89fOKdFNaY1Nzc3p6MjJQdll1VEZwSDkzWEE',
       legImageProxy: 'http://i-mage-proxerific.herokuapp.com/resize?size=100x100&url=',
-      imagePath: '../css/images/',
-      templatePath: '../js/app/templates/'
+      imagePath: '../css/images/'
     });
   }
 

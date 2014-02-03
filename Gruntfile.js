@@ -22,7 +22,7 @@ module.exports = function(grunt) {
         '<%= "\\n\\n" %>'
     },
     jshint: {
-      files: ['Gruntfile.js', 'js/app/*.js']
+      files: ['Gruntfile.js', 'js/*.js']
     },
     clean: {
       folder: 'dist/'
@@ -32,7 +32,7 @@ module.exports = function(grunt) {
         namespace: 'LT.templates'
       },
       templates: {
-        src: ['js/app/templates/*.html'],
+        src: ['js/templates/*.html'],
         dest: 'dist/templates.js'
       }
     },
@@ -41,7 +41,15 @@ module.exports = function(grunt) {
         separator: '\r\n\r\n'
       },
       dist: {
-        src: ['js/app/utils.js', 'js/app/core.js', 'dist/templates.js', 'js/app/models.js', 'js/app/collections.js', 'js/app/views.js', 'js/app/app.js'],
+        src: [
+          'js/utils.js',
+          'js/core.js',
+          'dist/templates.js',
+          'js/models.js',
+          'js/collections.js',
+          'js/views.js',
+          'js/app.js'
+        ],
         dest: 'dist/<%= pkg.name %>.<%= pkg.version %>.js'
       },
       dist_latest: {
