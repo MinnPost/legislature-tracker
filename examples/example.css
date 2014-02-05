@@ -2,3 +2,11 @@
 .navbar.navbar-default {
   margin-top: 1.5em;
 }
+
+.navbar.navbar-default .navbar-nav > li > a {
+  color: #2a6496;
+}
+
+.navbar.navbar-default .nav > li > .navbar-text {
+  padding-left: 15px;
+}
