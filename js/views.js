@@ -2,7 +2,23 @@
  * Views for the Legislator Tracker app
  */
 
-(function($, w, undefined) {
+(function(global, factory) {
+  // Common JS (i.e. browserify) environment
+  if (typeof module !== 'undefined' && module.exports && typeof require === 'function') {
+    factory(require('underscore'), require('jquery'), require('backbone'), require('moment'), require('LT'), require('LTModels'), require('LTCollections'));
+  }
+  // AMD?
+  else if (typeof define === 'function' && define.amd) {
+    define('LTModels', ['underscore', 'jquery', 'backbone', 'moment', 'LT', 'LTModels', 'LTCollections'], factory);
+  }
+  // Browser global
+  else if (global._ && global.jQuery && global.Backbone && global.moment && global.LT) {
+    factory(global._, global.jQuery, global.Backbone, global.moment, global.LT);
+  }
+  else {
+    throw new Error('Could not find dependencies for LT Views.' );
+  }
+})(typeof window !== 'undefined' ? window : this, function(_, $, Backbone, moment, LT) {
 
   /**
    * Main View for application.
@@ -175,7 +191,7 @@
       // its gets glued
       $('.ls-header-container').height($navigation.outerHeight());
 
-      $(w).scroll(function() {
+      $(window).scroll(function() {
         var $this = $(this);
 
         // Add class for fixed menu
@@ -209,4 +225,4 @@
     }
   });
 
-})(jQuery, window);
+});

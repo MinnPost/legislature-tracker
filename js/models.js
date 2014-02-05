@@ -2,7 +2,23 @@
  * Models for the Legislature Tracker app.
  */
 
-(function($, w, undefined) {
+(function(global, factory) {
+  // Common JS (i.e. browserify) environment
+  if (typeof module !== 'undefined' && module.exports && typeof require === 'function') {
+    factory(require('underscore'), require('jquery'), require('backbone'), require('moment'), require('LT'));
+  }
+  // AMD?
+  else if (typeof define === 'function' && define.amd) {
+    define('LTModels', ['underscore', 'jquery', 'backbone', 'moment', 'LT'], factory);
+  }
+  // Browser global
+  else if (global._ && global.jQuery && global.Backbone && global.moment && global.LT) {
+    factory(global._, global.jQuery, global.Backbone, global.moment, global.LT);
+  }
+  else {
+    throw new Error('Could not find dependencies for LT Models.' );
+  }
+})(typeof window !== 'undefined' ? window : this, function(_, $, Backbone, moment, LT) {
 
   /**
    * Base Model for Open States items
@@ -418,4 +434,4 @@
     }
   });
 
-})(jQuery, window);
+});

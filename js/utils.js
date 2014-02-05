@@ -2,7 +2,23 @@
  * Utility functions for Legislature Tracker application.
  */
 
-(function($, w, undefined) {
+(function(global, factory) {
+  // Common JS (i.e. browserify) environment
+  if (typeof module !== 'undefined' && module.exports && typeof require === 'function') {
+    factory(require('underscore'), require('jquery'), require('backbone'));
+  }
+  // AMD?
+  else if (typeof define === 'function' && define.amd) {
+    define('LTHelpers', ['underscore', 'jquery', 'backbone'], factory);
+  }
+  // Browser global
+  else if (global._ && global.jQuery && global.Backbone) {
+    factory(global._, global.jQuery, global.Backbone);
+  }
+  else {
+    throw new Error('Could not find dependencies for LT Helpers.' );
+  }
+})(typeof window !== 'undefined' ? window : this, function(_, $, Backbone) {
 
   /**
    * These will just extend underscore since that is the
@@ -98,4 +114,4 @@
     return (this.get(0) && this.get(0).scrollHeight) ?
       (this.get(0).scrollHeight > this.height()) : false;
   };
-})(jQuery, window);
+});

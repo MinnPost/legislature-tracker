@@ -1,28 +1,26 @@
 /**
  * Core file for Legislature tracker.
- *
- * Namespaces LT and allows for no conflict function.
  */
-var LT;
-var originalLT;
-var exports = exports || undefined;
+(function(global, factory) {
+  // Common JS (i.e. browserify) environment
+  if (typeof module !== 'undefined' && module.exports && typeof require === 'function') {
+    factory(require('underscore'), require('jquery'));
+  }
+  // AMD?
+  else if (typeof define === 'function' && define.amd) {
+    define('LT', ['underscore', 'jquery'], factory);
+  }
+  // Browser global
+  else if (global._ && global.jQuery) {
+    global.LT = factory(global._, global.jQuery);
+  }
+  else {
+    throw new Error('Could not find dependencies for LT Core.' );
+  }
+})(typeof window !== 'undefined' ? window : this, function(_, $) {
+  // Object to return
+  var LT = {};
 
-if (!_.isUndefined(exports)) {
-  LT = exports;
-}
-else {
-  originalLT = window.LT;
-  LT = {};
-
-  LT.noConflict = function() {
-    window.LT = originalLT;
-    return this;
-  };
-
-  window.LT = LT;
-}
-
-(function($, w, undefined) {
   // Cache for models, as Backbone will create new model objects
   // with the same id.
   LT.cache = {};
@@ -348,4 +346,5 @@ else {
     osBillParse: false
   };
 
-})(jQuery, window);
+  return LT;
+});
