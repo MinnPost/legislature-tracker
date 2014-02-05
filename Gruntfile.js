@@ -109,6 +109,21 @@ module.exports = function(grunt) {
           }
         ]
       }
+    },
+
+    // HTTP Server
+    connect: {
+      server: {
+        options: {
+          port: 8136
+        }
+      }
+    },
+
+    // Watches files for changes and performs task
+    watch: {
+      files: ['<%= jshint.files %>'],
+      tasks: 'jshint'
     }
   });
 
@@ -119,7 +134,12 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-copy');
   grunt.loadNpmTasks('grunt-contrib-jst');
   grunt.loadNpmTasks('grunt-contrib-clean');
+  grunt.loadNpmTasks('grunt-contrib-connect');
+  grunt.loadNpmTasks('grunt-contrib-watch');
 
-  // Default task.
+  // Default build task.
   grunt.registerTask('default', ['jshint', 'clean', 'jst', 'concat', 'uglify', 'copy']);
+
+  // Development server
+  grunt.registerTask('server', ['connect', 'watch']);
 };

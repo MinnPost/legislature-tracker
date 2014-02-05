@@ -152,6 +152,9 @@ The Legislature tracker tries to take these subtleties into account, but may not
 * Sometimes a companion bill will get substituted, meaning it gets dropped and the primary bill is only used.
 * Some legislatures will not assign a bill right away even though it is known that it is being discussed.  If there is no primary bill provided, a bill will be "stubbed" out in the interface.
 
+## Development
+
+Run localy and view at [localhost:8136](http://localhost:8136) with: `grunt server`
 
 ## Building
 
