@@ -1,6 +1,6 @@
 {
   "name": "legislature-tracker",
-  "version": "0.0.3",
+  "version": "0.1.0",
   "author": "MinnPost <support@minnpost.com>",
   "homepage": "https://github.com/MinnPost/legislature-tracker",
   "description": "An application to keep track of what is going on in a state legislature.  Using editorial expertise and the Sunlight Lab's Open States API, this application aims to create a curated view of what is going on in a state's legislature session.",
@@ -30,7 +30,8 @@
     "grunt-sftp-deploy": "*",
     "grunt-s3": "*",
     "grunt-contrib-connect": "~0.6.0",
-    "grunt-contrib-watch": "~0.5.3"
+    "grunt-contrib-watch": "~0.5.3",
+    "grunt-contrib-cssmin": "~0.7.0"
   },
   "licenses": [
     {

@@ -49,11 +49,7 @@ module.exports = function(grunt) {
           'js/views.js',
           'js/app.js'
         ],
-        dest: 'dist/<%= pkg.name %>.<%= pkg.version %>.js'
-      },
-      dist_latest: {
-        src: ['<%= concat.dist.src %>'],
-        dest: 'dist/<%= pkg.name %>.latest.js'
+        dest: 'dist/<%= pkg.name %>.js'
       },
       libs: {
         src: [
@@ -68,6 +64,12 @@ module.exports = function(grunt) {
         options: {
           separator: ';\r\n\r\n'
         }
+      },
+      css: {
+        src: [
+          'css/style.css'
+        ],
+        dest: 'dist/<%= pkg.name %>.css'
       }
     },
 
@@ -78,26 +80,24 @@ module.exports = function(grunt) {
       },
       dist: {
         src: ['<%= concat.dist.dest %>'],
-        dest: 'dist/<%= pkg.name %>.<%= pkg.version %>.min.js'
-      },
-      dist_latest: {
-        src: ['<%= concat.dist_latest.dest %>'],
-        dest: 'dist/<%= pkg.name %>.latest.min.js'
+        dest: 'dist/<%= pkg.name %>.min.js'
       }
     },
+
+    // Minify CSS for network efficiency
+    cssmin: {
+      options: {
+        banner: '<%= meta.banner %>',
+        report: true
+      },
+      css: {
+        src: ['<%= concat.css.dest %>'],
+        dest: 'dist/<%= pkg.name %>.min.css'
+      }
+    },
+
+    // Copy files
     copy: {
-      dist: {
-        files: {
-          'dist/<%= pkg.name %>.<%= pkg.version %>.css': 'css/style.css',
-          'dist/<%= pkg.name %>.<%= pkg.version %>.ie.css': 'css/style.ie.css'
-        }
-      },
-      dist_latest: {
-        files: {
-          'dist/<%= pkg.name %>.latest.css': 'css/style.css',
-          'dist/<%= pkg.name %>.latest.ie.css': 'css/style.ie.css'
-        }
-      },
       images: {
         files: [
           {
@@ -136,9 +136,10 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-clean');
   grunt.loadNpmTasks('grunt-contrib-connect');
   grunt.loadNpmTasks('grunt-contrib-watch');
+  grunt.loadNpmTasks('grunt-contrib-cssmin');
 
   // Default build task.
-  grunt.registerTask('default', ['jshint', 'clean', 'jst', 'concat', 'uglify', 'copy']);
+  grunt.registerTask('default', ['jshint', 'clean', 'jst', 'concat', 'uglify', 'cssmin', 'copy']);
 
   // Development server
   grunt.registerTask('server', ['connect', 'watch']);
