@@ -144,7 +144,7 @@ module.exports = function(grunt) {
 
     // Watches files for changes and performs task
     watch: {
-      files: ['<%= jshint.files %>', 'styles/*.scss'],
+      files: ['<%= jshint.files %>', 'examples/*.js', 'styles/*.scss'],
       tasks: ['jshint', 'compass']
     }
   });

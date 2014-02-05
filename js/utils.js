@@ -16,7 +16,7 @@
     factory(global._, global.jQuery, global.Backbone);
   }
   else {
-    throw new Error('Could not find dependencies for LT Helpers.' );
+    throw new Error('Could not find dependencies for LT Helpers.');
   }
 })(typeof window !== 'undefined' ? window : this, function(_, $, Backbone) {
 

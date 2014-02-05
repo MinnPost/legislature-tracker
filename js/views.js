@@ -9,14 +9,14 @@
   }
   // AMD?
   else if (typeof define === 'function' && define.amd) {
-    define('LTModels', ['underscore', 'jquery', 'backbone', 'moment', 'LT', 'LTModels', 'LTCollections'], factory);
+    define('LTViews', ['underscore', 'jquery', 'backbone', 'moment', 'LT', 'LTModels', 'LTCollections'], factory);
   }
   // Browser global
   else if (global._ && global.jQuery && global.Backbone && global.moment && global.LT) {
     factory(global._, global.jQuery, global.Backbone, global.moment, global.LT);
   }
   else {
-    throw new Error('Could not find dependencies for LT Views.' );
+    throw new Error('Could not find dependencies for LT Views.');
   }
 })(typeof window !== 'undefined' ? window : this, function(_, $, Backbone, moment, LT) {
 
@@ -71,7 +71,10 @@
     renderCategories: function() {
       this.$el.html(this.templates.categories({
         categories: LT.app.categories.toJSON(),
-        options: LT.options
+        options: LT.options,
+        totalBills: LT.app.totalBills,
+        totalBillsSigned: LT.app.totalBillsSigned,
+        utils: LT.utils
       }));
     },
 

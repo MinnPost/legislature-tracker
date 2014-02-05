@@ -1,19 +1,19 @@
 
 <div class="categories-container">
-  <% if (LT.options.title) { %>
-    <h2><%= LT.options.title %></h2>
+  <% if (options.title) { %>
+    <h2><%= options.title %></h2>
   <% } %>
-  
-  <% if (typeof LT.app.totalBills != 'undefined') { %>
+
+  <% if (typeof totalBills != 'undefined') { %>
     <div class="aggregate-counts">
       <span class="aggregate-stat">
         <span class="aggregate-count-label">Bills introduced:</span>
-        <span class="aggregate-count-value"><%= _.numberFormatCommas(LT.app.totalBills) %></span>
+        <span class="aggregate-count-value"><%= _.numberFormatCommas(totalBills) %></span>
       </span>
-      
+
       <span class="aggregate-stat">
         <span class="aggregate-count-label">Bills signed:</span>
-        <span class="aggregate-count-value"><%= _.numberFormatCommas(LT.app.totalBillsSigned) %></span>
+        <span class="aggregate-count-value"><%= _.numberFormatCommas(totalBillsSigned) %></span>
       </span>
     </div>
   <% } %>
@@ -24,18 +24,18 @@
         <div class="category-inner category-<%= _.cssClass(c.id) %>">
           <% if (c.image) { %>
             <a href="#/category/<%= encodeURI(c.id) %>">
-              <img class="category-image" src="<%= LT.utils.imagePath(c.image) %>" />
+              <img class="category-image" src="<%= utils.imagePath(c.image) %>" />
             </a>
           <% } %>
-           
+
           <h3>
             <a href="#/category/<%= encodeURI(c.id) %>">
               <%= c.title %>
             </a>
           </h3>
-          
+
           <div>
-            Watching 
+            Watching
             <strong><%= c.bills.length %></strong>
             <% if (c.total_bill_count) { %>
               of <%= c.total_bill_count %>

@@ -2,7 +2,23 @@
  * Utility functions for Legislature Tracker application.
  */
 
-(function($, w, undefined) {
+(function(global, factory) {
+  // Common JS (i.e. browserify) environment
+  if (typeof module !== 'undefined' && module.exports && typeof require === 'function') {
+    factory(require('underscore'), require('jquery'), require('backbone'));
+  }
+  // AMD?
+  else if (typeof define === 'function' && define.amd) {
+    define('LTHelpers', ['underscore', 'jquery', 'backbone'], factory);
+  }
+  // Browser global
+  else if (global._ && global.jQuery && global.Backbone) {
+    factory(global._, global.jQuery, global.Backbone);
+  }
+  else {
+    throw new Error('Could not find dependencies for LT Helpers.');
+  }
+})(typeof window !== 'undefined' ? window : this, function(_, $, Backbone) {
 
   /**
    * These will just extend underscore since that is the
@@ -98,33 +114,31 @@
     return (this.get(0) && this.get(0).scrollHeight) ?
       (this.get(0).scrollHeight > this.height()) : false;
   };
-})(jQuery, window);
+});
 
 /**
  * Core file for Legislature tracker.
- *
- * Namespaces LT and allows for no conflict function.
  */
-var LT;
-var originalLT;
-var exports = exports || undefined;
+(function(global, factory) {
+  // Common JS (i.e. browserify) environment
+  if (typeof module !== 'undefined' && module.exports && typeof require === 'function') {
+    factory(require('underscore'), require('jquery'));
+  }
+  // AMD?
+  else if (typeof define === 'function' && define.amd) {
+    define('LT', ['underscore', 'jquery'], factory);
+  }
+  // Browser global
+  else if (global._ && global.jQuery) {
+    global.LT = factory(global._, global.jQuery);
+  }
+  else {
+    throw new Error('Could not find dependencies for LT Core.');
+  }
+})(typeof window !== 'undefined' ? window : this, function(_, $) {
+  // Object to return
+  var LT = {};
 
-if (!_.isUndefined(exports)) {
-  LT = exports;
-}
-else {
-  originalLT = window.LT;
-  LT = {};
-
-  LT.noConflict = function() {
-    window.LT = originalLT;
-    return this;
-  };
-
-  window.LT = LT;
-}
-
-(function($, w, undefined) {
   // Cache for models, as Backbone will create new model objects
   // with the same id.
   LT.cache = {};
@@ -450,7 +464,8 @@ else {
     osBillParse: false
   };
 
-})(jQuery, window);
+  return LT;
+});
 
 this["LT"] = this["LT"] || {};
 this["LT"]["templates"] = this["LT"]["templates"] || {};
@@ -461,17 +476,17 @@ var __t, __p = '', __e = _.escape, __j = Array.prototype.join;
 function print() { __p += __j.call(arguments, '') }
 with (obj) {
 __p += '\n<div class="categories-container">\n  ';
- if (LT.options.title) { ;
+ if (options.title) { ;
 __p += '\n    <h2>' +
-((__t = ( LT.options.title )) == null ? '' : __t) +
+((__t = ( options.title )) == null ? '' : __t) +
 '</h2>\n  ';
  } ;
-__p += '\n  \n  ';
- if (typeof LT.app.totalBills != 'undefined') { ;
+__p += '\n\n  ';
+ if (typeof totalBills != 'undefined') { ;
 __p += '\n    <div class="aggregate-counts">\n      <span class="aggregate-stat">\n        <span class="aggregate-count-label">Bills introduced:</span>\n        <span class="aggregate-count-value">' +
-((__t = ( _.numberFormatCommas(LT.app.totalBills) )) == null ? '' : __t) +
-'</span>\n      </span>\n      \n      <span class="aggregate-stat">\n        <span class="aggregate-count-label">Bills signed:</span>\n        <span class="aggregate-count-value">' +
-((__t = ( _.numberFormatCommas(LT.app.totalBillsSigned) )) == null ? '' : __t) +
+((__t = ( _.numberFormatCommas(totalBills) )) == null ? '' : __t) +
+'</span>\n      </span>\n\n      <span class="aggregate-stat">\n        <span class="aggregate-count-label">Bills signed:</span>\n        <span class="aggregate-count-value">' +
+((__t = ( _.numberFormatCommas(totalBillsSigned) )) == null ? '' : __t) +
 '</span>\n      </span>\n    </div>\n  ';
  } ;
 __p += '\n\n  <ul class="category-list clear-block">\n    ';
@@ -485,14 +500,14 @@ __p += '\n      <li class="category-item category-item-' +
 __p += '\n            <a href="#/category/' +
 ((__t = ( encodeURI(c.id) )) == null ? '' : __t) +
 '">\n              <img class="category-image" src="' +
-((__t = ( LT.utils.imagePath(c.image) )) == null ? '' : __t) +
+((__t = ( utils.imagePath(c.image) )) == null ? '' : __t) +
 '" />\n            </a>\n          ';
  } ;
-__p += '\n           \n          <h3>\n            <a href="#/category/' +
+__p += '\n\n          <h3>\n            <a href="#/category/' +
 ((__t = ( encodeURI(c.id) )) == null ? '' : __t) +
 '">\n              ' +
 ((__t = ( c.title )) == null ? '' : __t) +
-'\n            </a>\n          </h3>\n          \n          <div>\n            Watching \n            <strong>' +
+'\n            </a>\n          </h3>\n\n          <div>\n            Watching\n            <strong>' +
 ((__t = ( c.bills.length )) == null ? '' : __t) +
 '</strong>\n            ';
  if (c.total_bill_count) { ;
@@ -997,7 +1012,23 @@ return __p
  * Models for the Legislature Tracker app.
  */
 
-(function($, w, undefined) {
+(function(global, factory) {
+  // Common JS (i.e. browserify) environment
+  if (typeof module !== 'undefined' && module.exports && typeof require === 'function') {
+    factory(require('underscore'), require('jquery'), require('backbone'), require('moment'), require('LT'));
+  }
+  // AMD?
+  else if (typeof define === 'function' && define.amd) {
+    define('LTModels', ['underscore', 'jquery', 'backbone', 'moment', 'LT'], factory);
+  }
+  // Browser global
+  else if (global._ && global.jQuery && global.Backbone && global.moment && global.LT) {
+    factory(global._, global.jQuery, global.Backbone, global.moment, global.LT);
+  }
+  else {
+    throw new Error('Could not find dependencies for LT Models.');
+  }
+})(typeof window !== 'undefined' ? window : this, function(_, $, Backbone, moment, LT) {
 
   /**
    * Base Model for Open States items
@@ -1413,13 +1444,29 @@ return __p
     }
   });
 
-})(jQuery, window);
+});
 
 /**
  * Collections for Legislature Tracker
  */
 
-(function($, w, undefined) {
+(function(global, factory) {
+  // Common JS (i.e. browserify) environment
+  if (typeof module !== 'undefined' && module.exports && typeof require === 'function') {
+    factory(require('underscore'), require('jquery'), require('backbone'), require('moment'), require('LT'), require('LTModels'));
+  }
+  // AMD?
+  else if (typeof define === 'function' && define.amd) {
+    define('LTCollections', ['underscore', 'jquery', 'backbone', 'moment', 'LT', 'LTModels'], factory);
+  }
+  // Browser global
+  else if (global._ && global.jQuery && global.Backbone && global.moment && global.LT) {
+    factory(global._, global.jQuery, global.Backbone, global.moment, global.LT);
+  }
+  else {
+    throw new Error('Could not find dependencies for LT Collections.');
+  }
+})(typeof window !== 'undefined' ? window : this, function(_, $, Backbone, moment, LT) {
 
   /**
    * Collection of categories.
@@ -1462,13 +1509,29 @@ return __p
     }
   });
 
-})(jQuery, window);
+});
 
 /**
  * Views for the Legislator Tracker app
  */
 
-(function($, w, undefined) {
+(function(global, factory) {
+  // Common JS (i.e. browserify) environment
+  if (typeof module !== 'undefined' && module.exports && typeof require === 'function') {
+    factory(require('underscore'), require('jquery'), require('backbone'), require('moment'), require('LT'), require('LTModels'), require('LTCollections'));
+  }
+  // AMD?
+  else if (typeof define === 'function' && define.amd) {
+    define('LTViews', ['underscore', 'jquery', 'backbone', 'moment', 'LT', 'LTModels', 'LTCollections'], factory);
+  }
+  // Browser global
+  else if (global._ && global.jQuery && global.Backbone && global.moment && global.LT) {
+    factory(global._, global.jQuery, global.Backbone, global.moment, global.LT);
+  }
+  else {
+    throw new Error('Could not find dependencies for LT Views.');
+  }
+})(typeof window !== 'undefined' ? window : this, function(_, $, Backbone, moment, LT) {
 
   /**
    * Main View for application.
@@ -1521,7 +1584,10 @@ return __p
     renderCategories: function() {
       this.$el.html(this.templates.categories({
         categories: LT.app.categories.toJSON(),
-        options: LT.options
+        options: LT.options,
+        totalBills: LT.app.totalBills,
+        totalBillsSigned: LT.app.totalBillsSigned,
+        utils: LT.utils
       }));
     },
 
@@ -1554,7 +1620,7 @@ return __p
         templates: this.templates,
         header: this.renderHeader()
       }));
-      this.getLegislators().addTooltips().checkOverflows().navigationGlue();
+      this.getLegislators().checkOverflows().navigationGlue();
     },
 
     renderOSBill: function(bill) {
@@ -1564,7 +1630,7 @@ return __p
         templates: this.templates,
         header: this.renderHeader()
       }));
-      this.getLegislators().addTooltips().checkOverflows().navigationGlue();
+      this.getLegislators().checkOverflows().navigationGlue();
     },
 
     renderHeader: function() {
@@ -1618,19 +1684,6 @@ return __p
       return this;
     },
 
-    addTooltips: function() {
-      this.$el.find('.bill-progress .bill-progress-section.completed').qtip({
-        style: {
-          classes: 'qtip-shadow qtip-light'
-        },
-        position: {
-          my: 'bottom center',
-          at: 'top center'
-        }
-      });
-      return this;
-    },
-
     checkOverflows: function() {
       this.$el.find('.actions-inner, .co-sponsors-inner').each(function() {
         if ($(this).hasScrollBar()) {
@@ -1654,7 +1707,7 @@ return __p
       // its gets glued
       $('.ls-header-container').height($navigation.outerHeight());
 
-      $(w).scroll(function() {
+      $(window).scroll(function() {
         var $this = $(this);
 
         // Add class for fixed menu
@@ -1688,14 +1741,30 @@ return __p
     }
   });
 
-})(jQuery, window);
+});
 
 /**
  * Main application container for the Legislature Tracker
  *
  * An 'e' prefix is referring to editorialized content.
  */
-(function($, w, undefined) {
+(function(global, factory) {
+  // Common JS (i.e. browserify) environment
+  if (typeof module !== 'undefined' && module.exports && typeof require === 'function') {
+    factory(require('underscore'), require('jquery'), require('backbone'), require('moment'), require('tabletop'), require('LT'), require('LTHelpers'), require('LTViews'));
+  }
+  // AMD?
+  else if (typeof define === 'function' && define.amd) {
+    define('LTApp', ['underscore', 'jquery', 'backbone', 'moment', 'tabletop', 'LT', 'LTHelpers', 'LTViews'], factory);
+  }
+  // Browser global
+  else if (global._ && global.jQuery && global.Backbone && global.moment && global.Tabletop && global.LT) {
+    factory(global._, global.jQuery, global.Backbone, global.moment, global.Tabletop, global.LT);
+  }
+  else {
+    throw new Error('Could not find dependencies for LT App.');
+  }
+})(typeof window !== 'undefined' ? window : this, function(_, $, Backbone, moment, Tabletop, LT) {
 
   LT.Application = Backbone.Router.extend({
     routes: {
@@ -1948,4 +2017,4 @@ return __p
     }
   });
 
-})(jQuery, window);
+});

@@ -6,20 +6,20 @@
 (function(global, factory) {
   // Common JS (i.e. browserify) environment
   if (typeof module !== 'undefined' && module.exports && typeof require === 'function') {
-    factory(require('underscore'), require('jquery'), require('backbone'), require('moment'), require('LT'), require('LTViews'));
+    factory(require('underscore'), require('jquery'), require('backbone'), require('moment'), require('tabletop'), require('LT'), require('LTHelpers'), require('LTViews'));
   }
   // AMD?
   else if (typeof define === 'function' && define.amd) {
-    define('LTApp', ['underscore', 'jquery', 'backbone', 'moment', 'LT', 'LTViews'], factory);
+    define('LTApp', ['underscore', 'jquery', 'backbone', 'moment', 'tabletop', 'LT', 'LTHelpers', 'LTViews'], factory);
   }
   // Browser global
-  else if (global._ && global.jQuery && global.Backbone && global.moment && global.LT) {
-    factory(global._, global.jQuery, global.Backbone, global.moment, global.LT);
+  else if (global._ && global.jQuery && global.Backbone && global.moment && global.Tabletop && global.LT) {
+    factory(global._, global.jQuery, global.Backbone, global.moment, global.Tabletop, global.LT);
   }
   else {
-    throw new Error('Could not find dependencies for LT App.' );
+    throw new Error('Could not find dependencies for LT App.');
   }
-})(typeof window !== 'undefined' ? window : this, function(_, $, Backbone, moment, LT) {
+})(typeof window !== 'undefined' ? window : this, function(_, $, Backbone, moment, Tabletop, LT) {
 
   LT.Application = Backbone.Router.extend({
     routes: {

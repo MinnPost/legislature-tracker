@@ -16,7 +16,7 @@
     factory(global._, global.jQuery, global.Backbone, global.moment, global.LT);
   }
   else {
-    throw new Error('Could not find dependencies for LT Models.' );
+    throw new Error('Could not find dependencies for LT Models.');
   }
 })(typeof window !== 'undefined' ? window : this, function(_, $, Backbone, moment, LT) {
 

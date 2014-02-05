@@ -15,7 +15,7 @@
     global.LT = factory(global._, global.jQuery);
   }
   else {
-    throw new Error('Could not find dependencies for LT Core.' );
+    throw new Error('Could not find dependencies for LT Core.');
   }
 })(typeof window !== 'undefined' ? window : this, function(_, $) {
   // Object to return
