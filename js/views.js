@@ -88,7 +88,7 @@
         templates: this.templates,
         header: this.renderHeader()
       }));
-      this.getLegislators().addTooltips().checkOverflows().navigationGlue();
+      this.getLegislators().checkOverflows().navigationGlue();
     },
 
     renderOSBill: function(bill) {
@@ -98,7 +98,7 @@
         templates: this.templates,
         header: this.renderHeader()
       }));
-      this.getLegislators().addTooltips().checkOverflows().navigationGlue();
+      this.getLegislators().checkOverflows().navigationGlue();
     },
 
     renderHeader: function() {
@@ -147,19 +147,6 @@
               model: leg
             }).render();
           });
-        }
-      });
-      return this;
-    },
-
-    addTooltips: function() {
-      this.$el.find('.bill-progress .bill-progress-section.completed').qtip({
-        style: {
-          classes: 'qtip-shadow qtip-light'
-        },
-        position: {
-          my: 'bottom center',
-          at: 'top center'
         }
       });
       return this;
