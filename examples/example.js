@@ -81,7 +81,7 @@
       session: '2013-2014',
       OSKey: '49c5c72c157d4b37892ddb52c63d06be',
       eKey: '0AjYft7IGrHzNdENILV9DU056SkxNQ2tIaHNGMnRlZUE',
-      imagePath: '../css/images/',
+      imagePath: '../styles/images/',
       chamberLabel: true,
       osBillParse: function(osBill) {
         osBill.set('sources', _.map(osBill.get('sources'), function(s, i) {
@@ -114,7 +114,7 @@
       OSKey: '49c5c72c157d4b37892ddb52c63d06be',
       eKey: '0AtX8MXQ89fOKdFNaY1Nzc3p6MjJQdll1VEZwSDkzWEE',
       legImageProxy: 'http://i-mage-proxerific.herokuapp.com/resize?size=100x100&url=',
-      imagePath: '../css/images/'
+      imagePath: '../styles/images/'
     });
   }
 

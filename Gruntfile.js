@@ -34,6 +34,28 @@ module.exports = function(grunt) {
       }
     },
 
+
+    // Set it up so that it generates to _tmp/styles (we use this
+    // in the hosted version so it should be versioned)
+    compass: {
+      options: {
+        sassDir: 'styles',
+        cssDir: '_tmp/styles',
+        generatedImagesDir: '_tmp/styles/images',
+        fontsDir: 'styles/fonts',
+        imagesDir: 'styles/images',
+        javascriptsDir: 'js',
+        importPath: 'bower_components',
+        httpPath: './',
+        relativeAssets: true,
+        outputStyle: 'expanded'
+      },
+      compile: {
+        options: {
+        }
+      }
+    },
+
     // Combine files
     concat: {
       options: {
@@ -67,7 +89,7 @@ module.exports = function(grunt) {
       },
       css: {
         src: [
-          'css/style.css'
+          '_tmp/styles/style.css'
         ],
         dest: 'dist/<%= pkg.name %>.css'
       }
@@ -101,7 +123,7 @@ module.exports = function(grunt) {
       images: {
         files: [
           {
-            cwd: './css/images/',
+            cwd: './styles/images/',
             expand: true,
             filter: 'isFile',
             src: ['*'],
@@ -122,8 +144,8 @@ module.exports = function(grunt) {
 
     // Watches files for changes and performs task
     watch: {
-      files: ['<%= jshint.files %>'],
-      tasks: 'jshint'
+      files: ['<%= jshint.files %>', 'styles/*.scss'],
+      tasks: ['jshint', 'compass']
     }
   });
 
@@ -137,10 +159,11 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-connect');
   grunt.loadNpmTasks('grunt-contrib-watch');
   grunt.loadNpmTasks('grunt-contrib-cssmin');
+  grunt.loadNpmTasks('grunt-contrib-compass');
 
   // Default build task.
   grunt.registerTask('default', ['jshint', 'clean', 'jst', 'concat', 'uglify', 'cssmin', 'copy']);
 
   // Development server
-  grunt.registerTask('server', ['connect', 'watch']);
+  grunt.registerTask('server', ['compass', 'connect', 'watch']);
 };

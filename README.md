@@ -154,7 +154,38 @@ The Legislature tracker tries to take these subtleties into account, but may not
 
 ## Development
 
-Run localy and view at [localhost:8136](http://localhost:8136) with: `grunt server`
+### Prerequisites
+
+All commands are assumed to be on the [command line](http://en.wikipedia.org/wiki/Command-line_interface), often called the Terminal, unless otherwise noted.  The following will install technologies needed for the other steps and will only needed to be run once on your computer so there is a good chance you already have these technologies on your computer.
+
+1. Install [Git](http://git-scm.com/).
+   * On a Mac, install [Homebrew](http://brew.sh/), then do: `brew install git`
+1. Install [NodeJS](http://nodejs.org/).
+   * On a Mac, do: `brew install node`
+1. Install [Grunt](http://gruntjs.com/): `npm install -g grunt-cli`
+1. Install [Bower](http://bower.io/): `npm install -g bower`
+1. Install [Ruby](http://www.ruby-lang.org/en/downloads/), though it is probably already installed on your system.
+1. Install [Bundler](http://gembundler.com/): `gem install bundler`
+1. Install [Sass](http://sass-lang.com/): `gem install sass`
+   * On a Mac do: `sudo gem install sass`
+1. Install [Compass](http://compass-style.org/): `gem install compass`
+   * On a Mac do: `sudo gem install compass`
+
+### Get code and install packages
+
+Get the code for this project and install the necessary dependency libraries and packages.
+
+1. Check out this code with [Git](http://git-scm.com/): `git clone https://github.com/MinnPost/legislature-tracker.git`
+1. Go into the code directory: `cd legislature-tracker`
+1. Install NodeJS packages: `npm install`
+1. Install Bower components: `bower install`
+
+### Running
+
+1. Run: `grunt server`
+    * This will run a local webserver for development and you can view the application in your web browser at [http://localhost:8136](http://localhost:8851).
+    * Utilize `examples/example.html` for development, while `examples/example-dev.html` is used for the deployed version, and `index-build.html` is used to test the build before deployment.
+    * The server runs `grunt watch` which will watch for linting JS files and compiling SASS.  If you have your own webserver, feel free to use that with just this command.
 
 ## Building
 
@@ -212,4 +243,49 @@ Currently, Tabletop.js extends Array so that indexOf is available.  This has som
 
 ## Attribution
 
-* Some icons provided by [The Noun Project](http://thenounproject.com/).  Congress by Martha Ormiston; Energy by NDSTR; GayMarriage by MaurizioFusillo; Education by Thibault Geffroy; Time by Richard de Vos; Capital by Jonathan Keating; Paper by Tom Schott; Bank by Ilaria Baggio; Group by Alexandra Coscovelnita; Check mark by Spencer Cohen; Back by John Chapman.
+* Some icons provided by [The Noun Project](http://thenounproject.com/):
+    * Congress by Martha Ormiston; Energy by NDSTR
+    * GayMarriage by MaurizioFusillo
+    * Education by Thibault Geffroy
+    * Time by Richard de Vos
+    * Capital by Jonathan Keating
+    * Paper by Tom Schott
+    * Bank by Ilaria Baggio
+    * Group by Alexandra Coscovelnita
+    * Check mark by Spencer Cohen
+    * Back by John Chapman.
+
+## About Us
+
+MinnData, the MinnPost data team, is Alan, Tom, and Kaeti and all the awesome contributors to open source projects we utilize.  See our work at [minnpost.com/data](http://minnpost.com/data).
+
+```
+
+                                                   .--.
+                                                   `.  \
+                                                     \  \
+                                                      .  \
+                                                      :   .
+                                                      |    .
+                                                      |    :
+                                                      |    |
+      ..._  ___                                       |    |
+     `."".`''''""--..___                              |    |
+     ,-\  \             ""-...__         _____________/    |
+     / ` " '                    `""""""""                  .
+     \                                                      L
+     (>                                                      \
+    /                                                         \
+    \_    ___..---.                                            L
+      `--'         '.                                           \
+                     .                                           \_
+                    _/`.                                           `.._
+                 .'     -.                                             `.
+                /     __.-Y     /''''''-...___,...--------.._            |
+               /   _."    |    /                ' .      \   '---..._    |
+              /   /      /    /                _,. '    ,/           |   |
+              \_,'     _.'   /              /''     _,-'            _|   |
+                      '     /               `-----''               /     |
+                      `...-'                                       `...-'
+
+```
