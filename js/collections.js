@@ -12,19 +12,22 @@
     define('LTCollections', ['underscore', 'jquery', 'backbone', 'moment', 'LT', 'LTModels'], factory);
   }
   // Browser global
-  else if (global._ && global.jQuery && global.Backbone && global.moment && global.LT) {
-    factory(global._, global.jQuery, global.Backbone, global.moment, global.LT);
+  else if (global._ && global.jQuery && global.Backbone && global.moment && global.LT && global.LT.Models) {
+    global.LT.Collections = factory(global._, global.jQuery, global.Backbone, global.moment, global.LT, global.LT.Models);
   }
   else {
     throw new Error('Could not find dependencies for LT Collections.');
   }
-})(typeof window !== 'undefined' ? window : this, function(_, $, Backbone, moment, LT) {
+})(typeof window !== 'undefined' ? window : this, function(_, $, Backbone, moment, LT, LTModels) {
+
+  // Object to get collections
+  var collections = {};
 
   /**
    * Collection of categories.
    */
-  LT.CategoriesCollection = Backbone.Collection.extend({
-    model: LT.CategoryModel,
+  collections.CategoriesCollection = Backbone.Collection.extend({
+    model: LTModels.CategoryModel,
 
     comparator: function(cat) {
       return (cat.get('title').toLowerCase().indexOf('recent') !== -1) ?
@@ -35,8 +38,8 @@
   /**
    * Collection of editorial (meta) bills.
    */
-  LT.BillsCollection = Backbone.Collection.extend({
-    model: LT.BillModel,
+  collections.BillsCollection = Backbone.Collection.extend({
+    model: LTModels.BillModel,
 
     comparator: function(b) {
       var compare = (b.newestAction()) ? b.newestAction().date.unix() * -1 :
@@ -48,8 +51,8 @@
   /**
    * Collection of Open States bills.
    */
-  LT.OSBillsCollection = Backbone.Collection.extend({
-    model: LT.OSBillModel,
+  collections.OSBillsCollection = Backbone.Collection.extend({
+    model: LTModels.OSBillModel,
 
     comparator: function(bill) {
       var last_action = bill.get('newest_action');
@@ -60,5 +63,9 @@
       return last_action;
     }
   });
+
+
+  _.extend(LT, collections);
+  return collections;
 
 });

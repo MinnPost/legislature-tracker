@@ -12,19 +12,24 @@
     define('LTViews', ['underscore', 'jquery', 'backbone', 'moment', 'LT', 'LTModels', 'LTCollections'], factory);
   }
   // Browser global
-  else if (global._ && global.jQuery && global.Backbone && global.moment && global.LT) {
-    factory(global._, global.jQuery, global.Backbone, global.moment, global.LT);
+  else if (global._ && global.jQuery && global.Backbone && global.moment && global.LT && global.LT.Models && global.LT.Collections) {
+    global.LT.Views = factory(global._, global.jQuery, global.Backbone, global.moment, global.LT, global.LT.Models, global.LT.Collections);
   }
   else {
     throw new Error('Could not find dependencies for LT Views.');
   }
-})(typeof window !== 'undefined' ? window : this, function(_, $, Backbone, moment, LT) {
+})(typeof window !== 'undefined' ? window : this, function(_, $, Backbone, moment, LT, LTModels, LTCollections) {
+
+  // Object to hold the views
+  var views = {};
 
   /**
    * Main View for application.
    */
-  LT.MainApplicationView = Backbone.View.extend({
+  views.MainApplicationView = Backbone.View.extend({
     initialize: function(options) {
+      this.options = options;
+
       // Add class to ensure our styling does
       // not mess with other stuff
       this.$el.addClass('ls');
@@ -51,7 +56,7 @@
     loading: function() {
       // The first (and second) load, we don't actually
       // want to force the scroll
-      if (_.isNumber(LT.options.scrollOffset)) {
+      if (_.isNumber(this.options.scrollOffset)) {
         if (this.initialLoad === true) {
           this.resetScrollView();
         }
@@ -161,7 +166,7 @@
         if (data.id) {
           var leg = LT.utils.getModel('OSLegislatorModel', 'id', data);
           $.when(LT.utils.fetchModel(leg)).then(function() {
-            var view = new LT.LegislatorView({
+            var view = new views.LegislatorView({
               el: $this,
               model: leg
             }).render();
@@ -212,8 +217,8 @@
   /**
    * Legislator view.
    */
-  LT.LegislatorView = Backbone.View.extend({
-    model: LT.OSLegislatorModel,
+  views.LegislatorView = Backbone.View.extend({
+    model: LTModels.OSLegislatorModel,
 
     initialize: function(options) {
       // Get templates
@@ -228,4 +233,7 @@
     }
   });
 
+
+  _.extend(LT, views);
+  return views;
 });

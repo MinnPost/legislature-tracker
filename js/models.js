@@ -13,23 +13,26 @@
   }
   // Browser global
   else if (global._ && global.jQuery && global.Backbone && global.moment && global.LT) {
-    factory(global._, global.jQuery, global.Backbone, global.moment, global.LT);
+    global.LT.Models = factory(global._, global.jQuery, global.Backbone, global.moment, global.LT);
   }
   else {
     throw new Error('Could not find dependencies for LT Models.');
   }
 })(typeof window !== 'undefined' ? window : this, function(_, $, Backbone, moment, LT) {
 
+  // Object for models
+  var models = {};
+
   /**
    * Base Model for Open States items
    */
-  LT.OSModel = Backbone.Model.extend({
+  models.OSModel = Backbone.Model.extend({
     urlBase: function() {
       return 'http://openstates.org/api/v1/';
     },
 
     urlEnd: function() {
-      return '/?apikey=' + encodeURI(LT.options.OSKey) + '&callback=?';
+      return '/?apikey=' + encodeURI(this.options.OSKey) + '&callback=?';
     },
 
     url: function() {
@@ -38,6 +41,8 @@
     },
 
     initialize: function(attr, options) {
+      // Options should come in with at least the options
+      // from the app itself
       this.options = options;
 
       this.on('sync', function(model, resp) {
@@ -50,7 +55,7 @@
   /**
    * Model for Open States State
    */
-  LT.OSStateModel = LT.OSModel.extend({
+  models.OSStateModel = models.OSModel.extend({
     url: function() {
       return this.urlBase() + 'metadata/'  + encodeURI(this.options.state) +
         this.urlEnd();
@@ -60,7 +65,7 @@
   /**
    * Model for Open States Bill
    */
-  LT.OSBillModel = LT.OSModel.extend({
+  models.OSBillModel = models.OSModel.extend({
     url: function() {
       if (!_.isUndefined(this.id)) {
         return this.urlBase() + 'bills/'  + this.id + this.urlEnd();
@@ -124,8 +129,8 @@
       this.set('newest_action', this.get('actions')[0]);
 
       // All for hook
-      if (LT.options.osBillParse && _.isFunction(LT.options.osBillParse)) {
-        LT.options.osBillParse(this);
+      if (this.options.osBillParse && _.isFunction(this.options.osBillParse)) {
+        this.options.osBillParse(this);
       }
     },
 
@@ -135,16 +140,17 @@
 
     isSubstituted: function() {
       var sub = false;
+      var thisModel = this;
 
       if (_.isBoolean(this.get('substitued'))) {
         sub = this.get('substitued');
       }
-      else if (LT.options.substituteMatch === false) {
+      else if (this.options.substituteMatch === false) {
         sub = false;
       }
       else {
         sub = _.find(this.get('actions'), function(a) {
-          return a.action.match(LT.options.substituteMatch);
+          return a.action.match(thisModel.options.substituteMatch);
         });
         sub = (sub) ? true : false;
         this.set('substitued', sub);
@@ -157,21 +163,21 @@
   /**
    * Model for Open States Legislator
    */
-  LT.OSLegislatorModel = LT.OSModel.extend({
+  models.OSLegislatorModel = models.OSModel.extend({
     osType: 'legislators'
   });
 
   /**
    * Model for Open States Committee
    */
-  LT.OSCommitteeModel = LT.OSModel.extend({
+  models.OSCommitteeModel = models.OSModel.extend({
     osType: 'committees'
   });
 
   /**
    * Model Legislature Tracker for bill
    */
-  LT.BillModel = Backbone.Model.extend({
+  models.BillModel = Backbone.Model.extend({
     initialize: function(attr, options) {
       this.options = options;
     },
@@ -381,7 +387,7 @@
   /**
    * Model Legislature Tracker category
    */
-  LT.CategoryModel = Backbone.Model.extend({
+  models.CategoryModel = Backbone.Model.extend({
 
     initialize: function(attr, options) {
       this.options = options;
@@ -434,4 +440,6 @@
     }
   });
 
+  _.extend(LT, models);
+  return models;
 });
