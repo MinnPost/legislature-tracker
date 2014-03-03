@@ -15,7 +15,7 @@ module.exports = function(grunt) {
 
     // JS code quality
     jshint: {
-      files: ['Gruntfile.js', 'js/*.js']
+      files: ['Gruntfile.js', 'js/**.js', 'examples/**.js']
     },
 
     // Cleanup dist filder
@@ -63,13 +63,17 @@ module.exports = function(grunt) {
       },
       dist: {
         src: [
-          'js/utils.js',
-          'js/core.js',
+          'js/build/intro.js',
           'dist/templates.js',
+          'js/extensions.js',
+          'js/utilities.js',
+          'js/parsers.js',
           'js/models.js',
           'js/collections.js',
           'js/views.js',
-          'js/app.js'
+          'js/routers.js',
+          'js/app.js',
+          'js/build/outro.js'
         ],
         dest: 'dist/<%= pkg.name %>.js'
       },
@@ -77,10 +81,10 @@ module.exports = function(grunt) {
         src: [
           'bower_components/underscore/underscore-min.js',
           'bower_components/jquery/jquery.min.js',
-          'bower_components/qtip2/jquery.qtip.min.js',
           'bower_components/backbone/backbone-min.js',
           'bower_components/tabletop/src/tabletop.js',
-          'bower_components/moment/moment.js'
+          'bower_components/moment/moment.js',
+          'bower_components/ractive/build/Ractive-legacy.min.js'
         ],
         dest: 'dist/<%= pkg.name %>.libs.js',
         options: {
@@ -145,7 +149,7 @@ module.exports = function(grunt) {
     // Watches files for changes and performs task
     watch: {
       files: ['<%= jshint.files %>', 'examples/*.js', 'styles/*.scss'],
-      tasks: ['jshint', 'compass']
+      tasks: ['default']
     }
   });
 
@@ -162,8 +166,8 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-compass');
 
   // Default build task.
-  grunt.registerTask('default', ['jshint', 'clean', 'jst', 'concat', 'uglify', 'cssmin', 'copy']);
+  grunt.registerTask('default', ['compass', 'jshint', 'clean', 'jst', 'concat', 'uglify', 'cssmin', 'copy']);
 
   // Development server
-  grunt.registerTask('server', ['compass', 'connect', 'watch']);
+  grunt.registerTask('server', ['default', 'connect', 'watch']);
 };

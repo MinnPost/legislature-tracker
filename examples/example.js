@@ -32,7 +32,7 @@
   });
 
   // Show example based on query string example=BLAH
-  if (queryParts['example'] === 'NY') {
+  if (queryParts.example === 'NY') {
     title = '2013 NY Legislature Tracker';
     options = $.extend(true, {}, options, {
       state: 'NY',
@@ -48,7 +48,7 @@
       }
     });
   }
-  else if (queryParts['example'] === 'MI') {
+  else if (queryParts.example === 'MI') {
     title = '2014 MI Legislature Tracker';
     options = $.extend(true, {}, options, {
       state: 'MO',
@@ -59,7 +59,7 @@
       maxBills: 80
     });
   }
-  else if (queryParts['example'] === 'FL') {
+  else if (queryParts.example === 'FL') {
     title = '2013 FL Legislature Tracker';
     options = $.extend(true, {}, options, {
       state: 'FL',
@@ -74,7 +74,7 @@
       }
     });
   }
-  else if (queryParts['example'] === 'EDGE') {
+  else if (queryParts.example === 'EDGE') {
     title = 'Some edge cases and option examples';
     options = $.extend(true, {}, options, {
       state: 'NY',
@@ -119,7 +119,7 @@
   }
 
   // Make application
-  app = new LT.Application(options);
+  app = new LT(options);
 
   // Chang page title
   $('.page-title').html(title);

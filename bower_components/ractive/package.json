@@ -1,0 +1,99 @@
+{
+  "name": "ractive",
+  "description": "Next-generation DOM manipulation",
+  "version": "0.3.9",
+  "homepage": "http://ractivejs.org",
+  "main": "build/Ractive.js",
+  "keywords": [
+    "template",
+    "templating",
+    "data binding",
+    "binding",
+    "declarative",
+    "view model"
+  ],
+  "author": {
+    "name": "Rich Harris"
+  },
+  "licenses": [
+    {
+      "type": "MIT"
+    }
+  ],
+  "jam": {
+    "main": "Ractive.js",
+    "include": [
+      "Ractive.js",
+      "build/Ractive.js",
+      "build/Ractive.runtime.js",
+      "build/Ractive.min.js",
+      "build/Ractive.runtime.min.js",
+      "build/Ractive-legacy.js",
+      "build/Ractive-legacy.runtime.js",
+      "build/Ractive-legacy.min.js",
+      "build/Ractive-legacy.runtime.min.js",
+      "README.md"
+    ]
+  },
+  "categories": [
+    "DOM",
+    "Templating"
+  ],
+  "bugs": {
+    "url": "https://github.com/RactiveJS/Ractive/issues"
+  },
+  "contributors": [
+    {
+      "name": "Max Ogden",
+      "web": "https://github.com/maxogden"
+    },
+    {
+      "name": "Ryan Ramage",
+      "web": "https://github.com/ryanramage"
+    },
+    {
+      "name": "Ayman Mackouly",
+      "web": "https://github.com/1N50MN14"
+    }
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/RactiveJS/Ractive.git"
+  },
+  "github": "https://github.com/RactiveJS/Ractive",
+  "devDependencies": {
+    "grunt": "~0.4.1",
+    "grunt-contrib-jshint": "~0.8.0",
+    "grunt-contrib-clean": "~0.5.0",
+    "grunt-contrib-qunit": "~0.3.0",
+    "grunt-contrib-nodeunit": "~0.2.2",
+    "grunt-contrib-concat": "~0.3.0",
+    "grunt-contrib-uglify": "~0.2.7",
+    "grunt-contrib-copy": "~0.5.0",
+    "grunt-contrib-watch": "~0.5.3",
+    "grunt-contrib-requirejs": "~0.4.1",
+    "amdclean": "~0.3.2",
+    "cheerio": "~0.12.4"
+  },
+  "testling": {
+    "html": "test/testling.html",
+    "browsers": [
+      "ie/8..latest",
+      "chrome/10.0",
+      "chrome/15.0",
+      "chrome/23..canary",
+      "firefox/3.6",
+      "firefox/7.0",
+      "firefox/12.0",
+      "firefox/18.0..nightly",
+      "opera/10..next",
+      "safari/4..latest",
+      "iphone/6.0",
+      "ipad/6.0",
+      "android-browser/4.2"
+    ]
+  },
+  "scripts": {
+    "test": "grunt test"
+  }
+}
