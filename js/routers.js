@@ -30,8 +30,7 @@ LT.MainRouter = Backbone.Router.extend({
       options: this.options,
       partials: {
         loading: this.app.templates.loading
-      },
-      adaptors: ['Backbone']
+      }
     });
 
     // Make reference to content to change
@@ -57,6 +56,9 @@ LT.MainRouter = Backbone.Router.extend({
     // to do this.
     this.app.fetchBasicBillData();
 
+    // Turn off the top menu
+    this.app.views.application.set('menuOff', true);
+
     // Create categories view
     this.app.views.categories = new LT.CategoriesView({
       el: this.$content,
@@ -69,8 +71,7 @@ LT.MainRouter = Backbone.Router.extend({
       options: this.options,
       partials: {
         loading: this.app.templates.loading
-      },
-      adaptors: ['Backbone']
+      }
     });
   },
 
@@ -81,6 +82,9 @@ LT.MainRouter = Backbone.Router.extend({
 
     // Get category
     category = this.app.categories.get(categoryID);
+
+    // Turn on the top menu
+    this.app.views.application.set('menuOff', false);
 
     // Check for valid bill
     if (!category) {
@@ -136,6 +140,9 @@ LT.MainRouter = Backbone.Router.extend({
     var thisRouter = this;
     var billID = decodeURI(bill);
     bill = this.app.bills.where({ bill: billID })[0];
+
+    // Turn on the top menu
+    this.app.views.application.set('menuOff', false);
 
     // Check for valid bill
     if (!bill) {
