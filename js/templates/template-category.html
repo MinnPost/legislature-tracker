@@ -1,45 +1,43 @@
 
-<%= header %>
+{{^category}}
+  {{>loading}}
+{{/category}}
 
 <div class="category-container">
   <h2>
-    <% if (category.image) { %>
-      <img class="category-image" src="<%= LT.utils.imagePath(category.image) %>" />
-    <% } %>
-    
-    <%= category.title %>
+    {{#category.image}}
+      <img class="category-image" src="{{ imagePath(category.image) }}" />
+    {{/category.image}}
+
+    {{ category.title }}
   </h2>
-  
-  <p><%= category.description %></p>
-  
-  <% if (_.isArray(category.links) && category.links.length > 0) { %>
+
+  <p>{{ category.description }}</p>
+
+  {{#(category.links && category.links.length && category.links.length > 0)}}
     <div class="e-links">
       <h4>In the news</h4>
-      
+
       <ul class="e-links-list">
-        <% _.each(category.links, function(l) { %>
-          <li><a href="<%= l.url %>"><%= l.title %></a></li>
-        <% }) %>
+        {{#category.links}}
+          <li><a href="{{ url }}">{{ title }}</a></li>
+        {{/category.links}}
       </ul>
     </div>
-  <% } %>
-  
+  {{/()}}
+
   <div class="clear-block bills-list">
-    <% category.bills.each(function(b) { %>
-      <%= templates.ebill({
-        bill: b.toJSON(),
-        expandable: true,
-        templates: templates
-      }) %>
-    <% }); %>
+    {{#category.bills:bill}}
+      <ebill bill="{{ this }}" compact="true" imagePath="{{ imagePath }}" options="{{ options }}">
+    {{/category.bills}}
   </div>
-  
+
   <div class="clear-block total-bill">
-    Watching 
-    <strong><%= category.bills.length %></strong>
-    <% if (typeof category.total_bill_count != 'undefined') { %>
-      of <%= category.total_bill_count %>
-    <% } %>
-    bills in the <%= category.title %> category.
+    Watching
+    <strong>{{ category.bills.length }}</strong>
+    {{#(typeof category.total_bill_count != 'undefined')}}
+      of {{ category.total_bill_count }}
+    {{/()}}
+    bills in the {{ category.title }} category.
   </div>
 </div>

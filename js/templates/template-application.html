@@ -1,0 +1,30 @@
+<div class="ls">
+  <div class="ls-header-container">
+    <div class="ls-header">
+
+      <a class="all-categories-link" href="#/">
+        <img src="{{ options.imagePath }}back-100-85.png" />
+        All Categories
+      </a>
+
+      <span class="categories-nav">
+        &nbsp;&nbsp;|&nbsp;&nbsp;
+
+        {{#categories}}
+          <a class="" href="#/category/{{ id }}" title="{{ title }}">
+            {{ (short_title) ? short_title : title.split(' ')[0] }}
+          </a>
+          &nbsp;&nbsp;
+        {{/categories}}
+      </span>
+    </div>
+  </div>
+
+  {{#options.title}}
+    <h2>{{ options.title }}</h2>
+  {{/options.title}}
+
+  <div class="ls-content-container">
+    {{>loading}}
+  </div>
+</div>

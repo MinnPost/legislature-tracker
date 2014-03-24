@@ -1,96 +1,87 @@
-<% if (typeof detailed != 'undefined' && detailed)  { %>
-  <%= header %>
-<% } %>
 
 <div class="osbill">
   <h4>
-    <% if (typeof title != 'undefined') { %>
-      <%= title %> (<%= bill.bill_id %>)
-    <% } else { %>
-      <%= bill.bill_id %>
-    <% } %>
-    <a class="permalink" title="Permanent link to bill" href="#/bill-detail/<%= encodeURI(bill.bill_id) %>"></a>
-  </h4>
-  
-  <% if (typeof detailed != 'undefined' && detailed) { %>
-    <p class="description">
-      <%= bill.title %>
-    </p>
-  <% } %>
+    {{#(!!bill.title)}}
+      {{ bill.title }} ({{ bill.bill_id }})
+    {{/()}}
 
+    {{^(!!bill.title)}}
+      {{ bill.bill_id }}
+    {{/()}}
+  </h4>
   <div class="sponsors primary-sponsors">
     <h5>Primary sponsors</h5>
-    
+
     <div class="clear-block">
-      <% _.each(bill.sponsors, function(s) { %>
-        <% if (s.type === 'primary') { %>
-          <div class="sponsor" data-leg-id="<%= s.leg_id %>" data-sponsor-type="<%= s.type %>">
-            <%= s.name %> (<%= s.type %>)
+      {{#bill.sponsors}}
+        {{#(type === 'primary')}}
+          <div class="sponsor" data-leg-id="{{ leg_id }}" data-sponsor-type="{{ type }}">
+            {{ name }} ({{ type }})
           </div>
-        <% } %>
-      <% }) %>
-    </div>
-  </div>
-  
-  <div class="actions">
-    <h5><span class="latest-action-label">Latest </span>Actions</h5>
-    
-    <div class="actions-inner">
-      <% _.each(bill.actions, function(a) { %>
-        <% if (a.date) { %>
-          <div>
-            <%= a.date.format('MMM DD, YYYY') %>:  
-            <%= a.action %>
-            (<%= LT.utils.translate('chamber', a.actor) %>)
-          </div>
-        <% } %> 
-      <% }) %>
+        {{/()}}
+      {{/bill.sponsors}}
     </div>
   </div>
 
-  <% if (bill.sponsors.length > 1) { %>
+  <div class="actions">
+    <h5><span class="latest-action-label">Latest</span> Actions</h5>
+
+    <div class="actions-inner">
+      {{#bill.actions}}
+        {{#(!!date)}}
+          <div>
+            {{ date.format('MMM DD, YYYY') }}:
+            {{ action }}
+            ({{ translate('chamber', actor) }})
+          </div>
+        {{/())}}
+      {{/bill.actions}}
+    </div>
+  </div>
+
+  {{#(bill.sponsors && bill.sponsors.length && bill.sponsors.length)}}
     <div class="sponsors co-sponsors clear-block">
       <h5>Co-Sponsors</h5>
-      
+
       <div class="co-sponsors-inner clear-block">
-        <% _.each(bill.sponsors, function(s) { %>
-          <% if (s.type !== 'primary') { %>
-            <div class="sponsor" data-leg-id="<%= s.leg_id %>" data-sponsor-type="<%= s.type %>">
-              <%= s.name %> (<%= s.type %>)
+        {{#bill.sponsors}}
+          {{#(type !== 'primary')}}
+            <div class="sponsor" data-leg-id="{{ leg_id }}" data-sponsor-type="{{ type }}">
+              {{ name }} ({{ type }})
             </div>
-          <% } %>
-        <% }) %>
+          {{/()}}
+        {{/bill.sponsors}}
       </div>
     </div>
-  <% } %>
+  {{/()}}
 
-  <% if (_.isArray(bill.votes) && bill.votes.length > 0) { %>
+  {{#(bill.votes && bill.votes.length && bill.votes.length > 0)}}
     <div class="votes">
       <h5>Votes</h5>
-      
+
       <div class="votes-inner clear-block">
-        <% _.each(bill.votes, function(v) { %>
-          <%= v.date.format('MMM DD, YYYY') %>:
-          <%= v.motion %> <%= (v.passed) ? 'passed' : 'failed' %>:
-          <%= v.yes_count %> Y - 
-          <%= v.no_count %> N <br />
-        <% }) %>
+        {{#bill.votes}}
+          {{ date.format('MMM DD, YYYY') }}
+          {{ motion }} {{ (passed) ? 'passed' : 'failed' }}
+          {{ yes_count }} Y -
+          {{ no_count }} N <br />
+        {{/bill.votes}}
       </div>
     </div>
-  <% } %>
-  
+  {{/()}}
+
   <div class="sources">
     <h5>Sources</h5>
-    
-    <% var sourceCount = 0; %>
-    <% _.each(bill.sources, function(s) {  sourceCount++ ; %>
-      <a href="<%= s.url %>" target="_blank">
-        <% if (s.text) { %>
-          <%= s.text %>
-        <% } else { %>
-          Source at <%= _.parseURL(s.url).hostname %> [<%= sourceCount %>]
-        <% } %>
+
+    {{#bill.sources}}
+      <a href="{{ url }}" target="_blank">
+        {{#(!!text)}}
+          {{ text }}
+        {{/()}}
+        {{#(!text)}}
+          {{ url }}
+        {{/()}}
       </a> <br />
-    <% }) %>
+    {{/bill.sources}}
   </div>
 </div>

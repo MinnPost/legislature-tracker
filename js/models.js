@@ -2,19 +2,31 @@
  * Models for the Legislature Tracker app.
  */
 
-// Object for models
-var models = {};
 
 /**
  * Base Model for Open States items
  */
-models.OSModel = Backbone.Model.extend({
+LT.BaseModel = Backbone.Model.extend({
+  initialize: function(attr, options) {
+    this.options = options;
+    this.app = this.options.app;
+
+    this.on('sync', function(model, resp) {
+      model.set('fetched', true);
+    });
+  }
+});
+
+/**
+ * Base Model for Open States items
+ */
+LT.OSModel = LT.BaseModel.extend({
   urlBase: function() {
     return 'http://openstates.org/api/v1/';
   },
 
   urlEnd: function() {
-    return '/?apikey=' + encodeURI(this.options.OSKey) + '&callback=?';
+    return '/?apikey=' + encodeURI(this.options.app.options.OSKey) + '&callback=?';
   },
 
   url: function() {
@@ -23,21 +35,14 @@ models.OSModel = Backbone.Model.extend({
   },
 
   initialize: function(attr, options) {
-    // Options should come in with at least the options
-    // from the app itself
-    this.options = options;
-
-    this.on('sync', function(model, resp) {
-      // Mark as fetched so we can use some caching
-      model.set('fetched', true);
-    });
+    LT.OSModel.__super__.initialize.apply(this, arguments);
   }
 });
 
 /**
  * Model for Open States State
  */
-models.OSStateModel = models.OSModel.extend({
+LT.OSStateModel = LT.OSModel.extend({
   url: function() {
     return this.urlBase() + 'metadata/'  + encodeURI(this.options.state) +
       this.urlEnd();
@@ -47,73 +52,69 @@ models.OSStateModel = models.OSModel.extend({
 /**
  * Model for Open States Bill
  */
-models.OSBillModel = models.OSModel.extend({
+LT.OSBillModel = LT.OSModel.extend({
   url: function() {
+    // Determine API call if there is an ID or if bill_id
     if (!_.isUndefined(this.id)) {
       return this.urlBase() + 'bills/'  + this.id + this.urlEnd();
     }
-    else {
-      return this.urlBase() + 'bills/'  + encodeURI(this.options.state) + '/' +
-        encodeURI(this.options.session) + '/' +
+    else if (!_.isUndefined(this.get('bill_id')) && this.get('bill_id') !== '') {
+      return this.urlBase() + 'bills/'  + encodeURI(this.options.app.options.state) + '/' +
+        encodeURI(this.options.app.options.session) + '/' +
         encodeURI(this.get('bill_id')) + this.urlEnd();
     }
   },
 
   initialize: function(attr, options) {
     LT.OSBillModel.__super__.initialize.apply(this, arguments);
-
-    this.on('sync', function(model, resp, options) {
-      this.parseOSData();
-    });
   },
 
-  parseOSData: function() {
+  parse: function(data, options) {
     // Get some aggregate data from the Open State data
-    var swapper;
 
     // Parse some dates
-    this.set('created_at', moment(this.get('created_at')));
-    this.set('updated_at', moment(this.get('updated_at')));
+    data.created_at = moment(data.created_at);
+    data.updated_at = moment(data.updated_at);
 
-    // Action dates
-    swapper = this.get('action_dates');
-    _.each(swapper, function(a, i) {
-      swapper[i] = (a) ? moment(a) : a;
+    // Action dates.  Filter then make into a moment()
+    data.action_dates = _.filterObject(data.action_dates, function(a, ai) {
+      return a;
     });
-    this.set('action_dates', swapper);
+    data.action_dates = _.mapObject(data.action_dates, function(a, ai) {
+      return moment(a);
+    });
 
-    // Actions
-    swapper = this.get('actions');
-    _.each(swapper, function(a, i) {
-      swapper[i].date = (a.date) ? moment(a.date) : a.date;
+    // Actions.  Make dates into moment()s
+    data.actions = _.mapObject(data.actions, function(a, ai) {
+      a.date = moment(a.date);
+      return a;
     });
-    this.set('actions', swapper);
 
-    // Votes
-    swapper = this.get('votes');
-    _.each(swapper, function(a, i) {
-      swapper[i].date = (a.date) ? moment(a.date) : a.date;
+    // Votes.  Make dates into moment()s
+    data.votes = _.mapObject(data.votes, function(v, vi) {
+      v.date = moment(v.date);
+      return v;
     });
-    this.set('votes', swapper);
 
     // Add custom events to actions
-    swapper = this.get('custom_events');
-    if (_.isArray(swapper) && swapper.length > 0) {
-      this.set('actions', _.union(this.get('actions'), swapper));
+    if (this.get('custom_events')) {
+      data.actions = _.union(data.actions, this.get('custom_events'));
     }
 
     // Sort action
-    this.set('actions', _.sortBy(this.get('actions'), function(a, i) {
-      return (a.date.unix() + i) * -1;
-    }));
+    data.actions = _.sortBy(data.actions, function(a, ai) {
+      return (a.date.unix() + ai) * -1;
+    });
 
     // Figure out newest
-    this.set('newest_action', this.get('actions')[0]);
+    data.newest_action = data.actions[0];
 
-    // All for hook
-    if (this.options.osBillParse && _.isFunction(this.options.osBillParse)) {
-      this.options.osBillParse(this);
+    // Add a hook for any custom bill parsing
+    if (this.options.app.options.osBillParse && _.isFunction(this.options.app.options.osBillParse)) {
+      data = this.options.osBillParse(data, this);
     }
+
+    return data;
   },
 
   getActionDate: function(type) {
@@ -145,36 +146,82 @@ models.OSBillModel = models.OSModel.extend({
 /**
  * Model for Open States Legislator
  */
-models.OSLegislatorModel = models.OSModel.extend({
+LT.OSLegislatorModel = LT.OSModel.extend({
   osType: 'legislators'
 });
 
 /**
  * Model for Open States Committee
  */
-models.OSCommitteeModel = models.OSModel.extend({
+LT.OSCommitteeModel = LT.OSModel.extend({
   osType: 'committees'
 });
 
 /**
- * Model Legislature Tracker for bill
+ * eBill model.  This model holds the editorial data
+ * and references to OS bill.
  */
-models.BillModel = Backbone.Model.extend({
-  initialize: function(attr, options) {
-    this.options = options;
+LT.BillModel = LT.BaseModel.extend({
+
+  subbills: ['bill_primary', 'bill_companion', 'bill_conference'],
+
+  initialize: function() {
+    LT.BillModel.__super__.initialize.apply(this, arguments);
+
+    // Create models for sub-bills
+    this.loadOSBills();
   },
 
-  loadOSBills: function(callback, error) {
+  // Create sub-bills
+  loadOSBills: function() {
+    var thisModel = this;
+    _.each(this.subbills, function(b, bi) {
+      if (thisModel.get(b)) {
+        thisModel.set(b, thisModel.app.getModel('OSBillModel', 'bill_id', {
+          bill_id: thisModel.get(b)
+        }));
+      }
+    });
+  },
+
+  // Gets bills in an array
+  getOSBills: function() {
+    var thisModel = this;
+    return _.filterEmpty(_.map(this.subbills, function(b, bi) {
+      return thisModel.get(b);
+    }));
+  },
+
+  // Gets OS bills ids in a an array
+  getOSBillIDs: function() {
+    var bills = this.getOSBills();
+
+    return _.filterEmpty(_.map(bills, function(b, bi) {
+      return _.isObject(b) ? b.get('bill_id') : b;
+    }));
+  },
+
+  // Get data from individual OS bills.
+  fetchOSBills: function() {
     var thisModel = this;
     var defers = [];
+    this.getCategories();
 
-    _.each(['bill_primary', 'bill_companion', 'bill_conference'], function(prop) {
-      if (thisModel.get('hasBill') && thisModel.get(prop)) {
-        defers.push(LT.utils.fetchModel(thisModel.get(prop)));
+    _.each(this.subbills, function(p, pi) {
+      if (thisModel.get('hasBill') && thisModel.get(p)) {
+        defers.push(thisModel.options.app.fetchModel(thisModel.get(p)));
       }
     });
 
-    return $.when.apply($, defers);
+    // When done, make some meta data
+    return $.when.apply($, defers).done(function() {
+      thisModel.loadOSCompanion().done(function() {
+        thisModel.parseMeta();
+        thisModel.lastUpdatedAt();
+        thisModel.newestAction();
+        thisModel.trigger('fetched:osbills');
+      });
+    });
   },
 
   loadOSCompanion: function() {
@@ -188,19 +235,21 @@ models.BillModel = Backbone.Model.extend({
 
       match = LT.parse.detectCompanionBill(this.get('bill_primary').get('companions')[0].bill_id);
       if (match) {
-        this.set('bill_companion', LT.utils.getModel('OSBillModel', 'bill_id', { bill_id : match }));
-        defers.push(LT.utils.fetchModel(this.get('bill_companion')));
+        this.set('bill_companion', thisModel.options.app.getModel('OSBillModel', 'bill_id', { bill_id : match }));
+        defers.push(thisModel.options.app.fetchModel(this.get('bill_companion')));
       }
     }
 
     return $.when.apply($, defers);
   },
 
-  loadCategories: function() {
+  getCategories: function() {
+    var thisModel = this;
+
     if (this.get('categories')) {
       this.set('categories', _.map(this.get('categories'), function(c) {
         if (!_.isObject(c)) {
-          c = LT.utils.getModel('CategoryModel', 'id', { id: c });
+          c = thisModel.options.app.getModel('CategoryModel', 'id', { id: c });
         }
         return c;
       }));
@@ -369,58 +418,25 @@ models.BillModel = Backbone.Model.extend({
 /**
  * Model Legislature Tracker category
  */
-models.CategoryModel = Backbone.Model.extend({
+LT.CategoryModel = LT.BaseModel.extend({
 
   initialize: function(attr, options) {
-    this.options = options;
+    LT.CategoryModel.__super__.initialize.apply(this, arguments);
+
+    // Keep a reference to bills in this category
     this.set('bills', new LT.BillsCollection(null));
-    this.getBills();
   },
 
-  getBills: function() {
+  getBills: function(bills) {
     // Gets reference to bills that are in the category
     var thisModel = this;
-    var allBills = LT.app.bills;
     var cat = this.get('id');
 
-    allBills.each(function(b) {
+    bills.each(function(b, bi) {
       if (_.indexOf(b.get('categories'), cat) !== -1) {
-        thisModel.get('bills').push(LT.utils.getModel('BillModel', 'bill', b.attributes));
+        thisModel.get('bills').push(thisModel.app.getModel('BillModel', 'bill', b.attributes));
       }
     });
     return this;
-  },
-
-  loadBills: function(callback, error) {
-    // Load up bill data from open states
-    var defers = [];
-    var thisModel = this;
-
-    this.get('bills').each(function(bill) {
-      defers.push(bill.loadOSBills());
-    });
-
-    // Queue bills
-    $.when.apply($, defers).done(function() {
-      var companionDefers = [];
-
-      // Queue any companions
-      thisModel.get('bills').each(function(bill) {
-        companionDefers.push(bill.loadOSCompanion());
-      });
-
-      $.when.apply($, companionDefers).done(function() {
-        thisModel.get('bills').each(function(bill) {
-          bill.parseMeta();
-        });
-
-        callback();
-      }).fail(error);
-    }).fail(error);
-
-    return this;
   }
 });
-
-// Attach models to LT object
-_.extend(LT, models);

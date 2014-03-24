@@ -1,0 +1,23 @@
+{
+  "name": "ractive-events-tap",
+  "version": "0.1.0",
+  "author": "Rich Harris",
+  "main": "Ractive-events-tap.js",
+  "ignore": [
+    "**/.*",
+    "src",
+    "test",
+    "Gruntfile.js"
+  ],
+  "homepage": "https://github.com/RactiveJS/Ractive-events-tap",
+  "_release": "0.1.0",
+  "_resolution": {
+    "type": "version",
+    "tag": "v0.1.0",
+    "commit": "5cbea4c5f80c2fc9d8b8248aadf2eba153a5da5a"
+  },
+  "_source": "git://github.com/RactiveJS/Ractive-events-tap.git",
+  "_target": "~0.1.0",
+  "_originalSource": "Ractive-events-tap",
+  "_direct": true
+}

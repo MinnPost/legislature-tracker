@@ -7,6 +7,32 @@
  * utility library already being used.
  */
 _.mixin({
+
+  filterEmpty: function(collection) {
+    return _.filter(collection, function(c) {
+      return c;
+    });
+  },
+
+  // _.filter for objects, keeps key/value associations
+  // but only includes the properties that pass test().
+  filterObject: function (input, test, context) {
+    return _.reduce(input, function (obj, v, k) {
+      if (test.call(context, v, k, input)) {
+        obj[k] = v;
+      }
+      return obj;
+    }, {}, context);
+  },
+
+  // _.map for objects, keeps key/value associations
+  mapObject: function (input, mapper, context) {
+    return _.reduce(input, function (obj, v, k) {
+      obj[k] = mapper.call(context, v, k, input);
+      return obj;
+    }, {}, context);
+  },
+
   trim: function(str) {
     if (_.isString(str)) {
       if (!String.prototype.trim) {

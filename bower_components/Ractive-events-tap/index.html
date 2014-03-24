@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang='en-GB'>
+<head>
+	<meta charset='utf-8'>
+	<title>Ractive.js tap event plugin</title>
+
+	<!-- CSS -->
+	<link href='http://fonts.googleapis.com/css?family=Voltaire' rel='stylesheet' type='text/css'>
+	<link rel='stylesheet' href='demo/main.css'>
+
+	<style type='text/css'>
+		.target {
+			position: relative;
+			width: 49%;
+			height: 100px;
+			float: left;
+			background-color: #eee;
+			cursor: pointer;
+			margin: 0 0 2em 0;
+			-webkit-user-select: none;
+			-moz-user-select: none;
+			-ms-user-select: none;
+			-o-user-select: none;
+			user-select: none;
+		}
+
+		.target.left {
+			margin-right: 1%;
+		}
+
+		.target.right {
+			margin-left: 1%;
+		}
+
+		.target p {
+			position: absolute;
+			bottom: 1em;
+			left: 1em;
+			margin: 0;
+		}
+
+		#demo button {
+			display: block;
+			float: left;
+			width: 32%;
+			margin: 0 2% 0 0;
+			padding: 1em;
+			-webkit-box-sizing: border-box;
+			-moz-box-sizing: border-box;
+			box-sizing: border-box;
+		}
+
+		#demo button:last-child {
+			margin: 0;
+		}
+	</style>
+</head>
+
+<body>
+
+	<!-- if the project is on GitHub, add a fork me button! -->
+	<a class='forkme' href='https://github.com/RactiveJS/Ractive-events-tap'>Fork me on GitHub</a>
+
+	<header>
+		<h1>Ractive.js tap event plugin</h1>
+		<p class='strap'>
+			<span class='download'>download: <a href='https://raw.github.com/RactiveJS/Ractive-events-tap/master/Ractive-events-tap.js'>Ractive-events-tap.js</a></span>
+			<span class='more-plugins'>more plugins at <a href='http://ractivejs.org/plugins'>ractivejs.org/plugins</a></span>
+		</p>
+	</header>
+
+	<main>
+		<p>On mobile devices, using <code>on-click</code> isn't good enough. Tapping the touchscreen will fire a simulated click event, but only after a 300 millisecond delay, which makes your app feel sluggish. It also causes the tapped area to highlight, which in most cases looks a bit messy.</p>
+
+		<p>Instead, use <code>on-tap</code>. When you tap an area, the simulated click event will be prevented, and the user's action is responded to instantly. The <code>on-tap</code> event also differs from <code>on-click</code> in that the click event will (frankly rather bizarrely) fire even if you hold the mouse down over a single element for several seconds and waggle it about.</p>
+
+		<p><a href='https://dvcs.w3.org/hg/pointerevents/raw-file/tip/pointerEvents.html'>Pointer events</a> are also supported, as is pressing the spacebar when the relevant element is focused (which triggers a click event, and is good for accessibility).</p>
+
+		<div id='demo' class='clearfix'></div>
+
+		<pre id='demo-template-view' class='prettyprint lang-html'></pre>
+		<pre id='demo-code-view' class='prettyprint lang-js'></pre>
+	</main>
+
+	<!-- add additional info such as your homepage here, if you want -->
+	<footer>
+		<p>Copyright &copy; 2013 Rich Harris. Licensed MIT</p>
+	</footer>
+
+	<!-- Demo template -->
+	<script id='demo-template' type='text/ractive'>
+		<h2>Try tapping both targets on a touchscreen to see the difference</h2>
+		<div class='target left' on-tap='increment:tapcounter'>
+			<p>Tapped {{tapcounter}} {{ tapcounter === 1 ? 'time' : 'times' }}</p>
+		</div>
+
+		<div class='target right' on-click='increment:clickcounter'>
+			<p>Clicked {{clickcounter}} {{ clickcounter === 1 ? 'time' : 'times' }}</p>
+		</div>
+
+		<h2>While a button is focused, hit the spacebar (tab/shift+tab to cycle)</h2>
+		{{# buttoncounters:i }}
+			<button on-tap='increment:buttoncounters[{{i}}]'>Tap me ({{this}})</button>
+		{{/ buttoncounters }}
+	</script>
+
+	<!-- Dependencies -->
+	<script src='lib/Ractive-legacy.js'></script>
+	<script src='Ractive-events-tap.js'></script>
+
+	<!-- Demo code -->
+	<script id='demo-code'>
+		ractive = new Ractive({
+			el: 'demo',
+			template: '#demo-template',
+			data: {
+				tapcounter: 0,
+				clickcounter: 0,
+				buttoncounters: [ 0, 0, 0 ]
+			}
+		});
+
+		ractive.on( 'increment', function ( event, counter ) {
+			this.add( counter, 1 );
+		});
+	</script>
+
+	<!-- Insert code into the page -->
+	<script src='demo/prettify.js'></script>
+	<script src='demo/demo.js'></script>
+</body>
+</html>

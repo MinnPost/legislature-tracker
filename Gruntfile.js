@@ -24,13 +24,16 @@ module.exports = function(grunt) {
     },
 
     // Embed in template files
-    jst: {
+    template_inline: {
       options: {
-        namespace: 'LT.templates'
+        namespace: 'LTTemplates',
+        processName: function(filename) {
+          return filename.split('/').pop().split('.')[0];
+        }
       },
       templates: {
         src: ['js/templates/*.html'],
-        dest: 'dist/templates.js'
+        dest: '_tmp/templates.js'
       }
     },
 
@@ -64,9 +67,8 @@ module.exports = function(grunt) {
       dist: {
         src: [
           'js/build/intro.js',
-          'dist/templates.js',
+          '_tmp/templates.js',
           'js/extensions.js',
-          'js/utilities.js',
           'js/parsers.js',
           'js/models.js',
           'js/collections.js',
@@ -81,10 +83,12 @@ module.exports = function(grunt) {
         src: [
           'bower_components/underscore/underscore-min.js',
           'bower_components/jquery/jquery.min.js',
-          'bower_components/backbone/backbone-min.js',
+          'bower_components/backbone/backbone.js',
           'bower_components/tabletop/src/tabletop.js',
           'bower_components/moment/moment.js',
-          'bower_components/ractive/build/Ractive-legacy.min.js'
+          'bower_components/ractive/build/Ractive-legacy.min.js',
+          'bower_components/ractive-backbone/Ractive-Backbone.min.js',
+          'bower_components/Ractive-events-tap/Ractive-events-tap.min.js'
         ],
         dest: 'dist/<%= pkg.name %>.libs.js',
         options: {
@@ -148,7 +152,7 @@ module.exports = function(grunt) {
 
     // Watches files for changes and performs task
     watch: {
-      files: ['<%= jshint.files %>', 'examples/*.js', 'styles/*.scss'],
+      files: ['<%= jshint.files %>', '<%= template_inline.templates.src %>', 'examples/*.js', 'styles/*.scss'],
       tasks: ['default']
     }
   });
@@ -158,7 +162,7 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-jshint');
   grunt.loadNpmTasks('grunt-contrib-uglify');
   grunt.loadNpmTasks('grunt-contrib-copy');
-  grunt.loadNpmTasks('grunt-contrib-jst');
+  grunt.loadNpmTasks('grunt-template-inline');
   grunt.loadNpmTasks('grunt-contrib-clean');
   grunt.loadNpmTasks('grunt-contrib-connect');
   grunt.loadNpmTasks('grunt-contrib-watch');
@@ -166,7 +170,7 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-compass');
 
   // Default build task.
-  grunt.registerTask('default', ['compass', 'jshint', 'clean', 'jst', 'concat', 'uglify', 'cssmin', 'copy']);
+  grunt.registerTask('default', ['compass', 'jshint', 'clean', 'template_inline', 'concat', 'uglify', 'cssmin', 'copy']);
 
   // Development server
   grunt.registerTask('server', ['default', 'connect', 'watch']);

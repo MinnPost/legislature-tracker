@@ -24,15 +24,12 @@
     "grunt-contrib-jshint": "*",
     "grunt-contrib-uglify": "*",
     "grunt-contrib-copy": "*",
-    "grunt-contrib-jst": "*",
     "grunt-contrib-clean": "*",
-    "grunt-ftp-deploy": "*",
-    "grunt-sftp-deploy": "*",
-    "grunt-s3": "*",
     "grunt-contrib-connect": "~0.6.0",
     "grunt-contrib-watch": "~0.5.3",
     "grunt-contrib-cssmin": "~0.7.0",
-    "grunt-contrib-compass": "~0.7.1"
+    "grunt-contrib-compass": "~0.7.1",
+    "grunt-template-inline": "~0.1.0"
   },
   "licenses": [
     {

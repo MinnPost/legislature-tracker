@@ -2,13 +2,10 @@
  * Collections for LT
  */
 
-// Object to get collections
-var collections = {};
-
 /**
  * Collection of categories.
  */
-collections.CategoriesCollection = Backbone.Collection.extend({
+LT.CategoriesCollection = Backbone.Collection.extend({
   model: LT.CategoryModel,
 
   comparator: function(cat) {
@@ -20,7 +17,7 @@ collections.CategoriesCollection = Backbone.Collection.extend({
 /**
  * Collection of editorial (meta) bills.
  */
-collections.BillsCollection = Backbone.Collection.extend({
+LT.BillsCollection = Backbone.Collection.extend({
   model: LT.BillModel,
 
   comparator: function(b) {
@@ -33,7 +30,7 @@ collections.BillsCollection = Backbone.Collection.extend({
 /**
  * Collection of Open States bills.
  */
-collections.OSBillsCollection = Backbone.Collection.extend({
+LT.OSBillsCollection = Backbone.Collection.extend({
   model: LT.OSBillModel,
 
   comparator: function(bill) {
@@ -46,5 +43,3 @@ collections.OSBillsCollection = Backbone.Collection.extend({
   }
 });
 
-// Attach collections to LT object
-_.extend(LT, collections);

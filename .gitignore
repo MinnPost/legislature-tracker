@@ -12,6 +12,7 @@ dist/templates.js
 # General git ignores
 .sass-cache
 .tmp
+_tmp
 .DS_Store
 *.psd
 *.[oa]

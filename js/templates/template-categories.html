@@ -1,49 +1,30 @@
 
+{{^categories}}
+  {{>loading}}
+{{/categories}}
+
 <div class="categories-container">
-  <% if (options.title) { %>
-    <h2><%= options.title %></h2>
-  <% } %>
-
-  <% if (typeof totalBills != 'undefined') { %>
-    <div class="aggregate-counts">
-      <span class="aggregate-stat">
-        <span class="aggregate-count-label">Bills introduced:</span>
-        <span class="aggregate-count-value"><%= _.numberFormatCommas(totalBills) %></span>
-      </span>
-
-      <span class="aggregate-stat">
-        <span class="aggregate-count-label">Bills signed:</span>
-        <span class="aggregate-count-value"><%= _.numberFormatCommas(totalBillsSigned) %></span>
-      </span>
-    </div>
-  <% } %>
-
   <ul class="category-list clear-block">
-    <% _.each(categories, function(c, i) { %>
-      <li class="category-item category-item-<%= i %>">
-        <div class="category-inner category-<%= _.cssClass(c.id) %>">
-          <% if (c.image) { %>
-            <a href="#/category/<%= encodeURI(c.id) %>">
-              <img class="category-image" src="<%= utils.imagePath(c.image) %>" />
+    {{#categories:i}}
+      <li class="category-item category-item-{{ i }}">
+        <div class="category-inner category-{{ _.cssClass(id) }}">
+          {{#image}}
+            <a href="#/category/{{ encodeURI(id) }}">
+              <img class="category-image" src="{{ imagePath(image) }}" />
             </a>
-          <% } %>
+          {{/image}}
 
           <h3>
-            <a href="#/category/<%= encodeURI(c.id) %>">
-              <%= c.title %>
+            <a href="#/category/{{ encodeURI(id) }}">
+              {{ title }}
             </a>
           </h3>
 
           <div>
-            Watching
-            <strong><%= c.bills.length %></strong>
-            <% if (c.total_bill_count) { %>
-              of <%= c.total_bill_count %>
-            <% } %>
-            bills.
+            Watching <strong>{{ bills.length }}</strong> bills.
           </div>
         </div>
       </li>
-    <% }) %>
+    {{/categories}}
   </ul>
 </div>

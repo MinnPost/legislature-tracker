@@ -350,8 +350,6 @@ $font-sans-serif: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue
   }
   .primary-bill.with-companion,
   .companion-bill {
-    width: 50%;
-    float: left;
   }
 
   .actions-inner {
@@ -373,6 +371,10 @@ $font-sans-serif: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue
   }
 
   .overflowed {
+    overflow-y: scroll;
+  }
+
+  .actions-inner {
     overflow-y: scroll;
   }
 
@@ -622,4 +624,3 @@ $font-sans-serif: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue
   }
 
 }
-

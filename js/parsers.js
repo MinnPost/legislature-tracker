@@ -1,22 +1,29 @@
 /**
- * Parsing out data from spreadsheet.
- *
- * Collection of functions for parsing
+ * Basic parsing out from the spreadsheet data.
  */
-LT.parse = LT.parse || {};
-LT.parse.eData = function(tabletop) {
-  var parsed = {};
+LT.parsers = LT.parsers || {};
 
-  parsed.categories = LT.parse.eCategories(tabletop.sheets('Categories').all());
+// Wrapper around console.log
+LT.log = function(message) {
+  if (_.isObject(console) && _.isFunction(console.log)) {
+    console.log(message);
+  }
+};
+
+// Main parser
+LT.parsers.eData = function(tabletop, options) {
+  var parsed = {};
   var eBills = tabletop.sheets('Bills').all();
 
   // Handle max bills
-  if (eBills.length > LT.options.maxBills) {
+  if (eBills.length > options.maxBills) {
     LT.log('The number of bills in your spreadsheet exceeds maxBills. Set the maxBills option to display them, but be aware that this may significantly slow down the Legislature Tracker.');
   }
 
-  parsed.bills = LT.parse.eBills(eBills.slice(0, LT.options.maxBills));
-  parsed.events = LT.parse.eEvents(tabletop.sheets('Events').all());
+  // Parse bills, categories, and events
+  parsed.categories = LT.parsers.eCategories(tabletop.sheets('Categories').all(), options);
+  parsed.bills = LT.parsers.eBills(eBills.slice(0, options.maxBills), options);
+  parsed.events = LT.parsers.eEvents(tabletop.sheets('Events').all(), options);
 
   // Add events into bills
   _.each(_.groupBy(parsed.events, 'bill_id'), function(e, b) {
@@ -30,41 +37,36 @@ LT.parse.eData = function(tabletop) {
   return parsed;
 };
 
-LT.parse.validateBillNumber = function(bill_num){
-  return LT.options.billNumberFormat.test(bill_num);
+// Validate a bill number
+LT.parsers.validateBillNumber = function(billN, options) {
+  return options.billNumberFormat.test(billN);
 };
 
-LT.parse.eBills = function(bills) {
+// Parse eBill data
+LT.parsers.eBills = function(bills, options) {
   return _.map(bills, function(row) {
-    LT.parse.translateFields(LT.options.fieldTranslations.eBills, row);
-    row.links = LT.parse.eLinks(row.links);
+    LT.parsers.translateFields(options.fieldTranslations.eBills, row);
+    row.links = LT.parsers.eLinks(row.links);
 
     // Break up categories into an array
     row.categories = (row.categories) ? row.categories.split(',') : [];
     row.categories = _.map(row.categories, _.trim);
 
-    // Create open states bill objects and check that they are in the correct
-    // format, otherwise we will get a bad response from the API
-    // call which will cause a bunch of failures.
-    row.bill_primary = undefined;
-    if (row.bill && LT.parse.validateBillNumber(row.bill)) {
-      row.bill_primary = LT.utils.getModel('OSBillModel', 'bill_id', { bill_id: _.trim(row.bill) });
-    }
-    else if (row.bill && !LT.parse.validateBillNumber(row.bill)) {
+    // Ensure bill id is in right form, otherwise we will get a
+    // bad response from the API call which will cause a
+    // bunch of failures.
+    row.bill_primary = _.trim(row.bill);
+    if (row.bill && !LT.parsers.validateBillNumber(row.bill, options)) {
       LT.log('Invalid primary bill number "' + row.bill + '" for row ' + row.rowNumber + ', see documentation.');
     }
 
-    if (row.bill_companion && LT.parse.validateBillNumber(row.bill_companion)) {
-      row.bill_companion = LT.utils.getModel('OSBillModel', 'bill_id', { bill_id: _.trim(row.bill_companion) });
-    }
-    else if (row.bill_companion && !LT.parse.validateBillNumber(row.bill_companion)) {
+    row.bill_companion = _.trim(row.bill_companion);
+    if (row.bill_companion && !LT.parsers.validateBillNumber(row.bill_companion, options)) {
       LT.log('Invalid companion bill number "' + row.bill_companion + '" for row ' + row.rowNumber + ', see documentation.');
     }
 
-    if (row.bill_conference && LT.parse.validateBillNumber(row.bill_conference)) {
-      row.bill_conference = LT.utils.getModel('OSBillModel', 'bill_id', { bill_id: _.trim(row.bill_conference) });
-    }
-    else if (row.bill_conference && !LT.parse.validateBillNumber(row.bill_conference)) {
+    row.bill_conference = _.trim(row.bill_conference);
+    if (row.bill_conference && !LT.parsers.validateBillNumber(row.bill_conference, options)) {
       LT.log('Invalid conference bill number "' + row.bill_conference + '" for row ' + row.rowNumber + ', see documentation.');
     }
 
@@ -72,7 +74,7 @@ LT.parse.eBills = function(bills) {
     // no bill provided as some legislatures don't produce
     // bill IDs until late in the process
     row.hasBill = true;
-    if (!row.bill || row.bill_primary === undefined) {
+    if (!row.bill || !row.bill_primary) {
       row.hasBill = false;
 
       // We still want to make a bill ID for linking purposes
@@ -83,28 +85,28 @@ LT.parse.eBills = function(bills) {
   });
 };
 
-LT.parse.eCategories = function(categories) {
+LT.parsers.eCategories = function(categories, options) {
   return _.map(categories, function(row) {
-    LT.parse.translateFields(LT.options.fieldTranslations.eCategories, row);
-    row.links = LT.parse.eLinks(row.links);
+    LT.parsers.translateFields(options.fieldTranslations.eCategories, row);
+    row.links = LT.parsers.eLinks(row.links);
     return row;
   });
 };
 
-LT.parse.eEvents = function(events) {
+LT.parsers.eEvents = function(events, options) {
   return _.map(events, function(row) {
-    LT.parse.translateFields(LT.options.fieldTranslations.eEvents, row);
-    row.links = LT.parse.eLinks(row.links);
+    LT.parsers.translateFields(options.fieldTranslations.eEvents, row);
+    row.links = LT.parsers.eLinks(row.links);
     row.date = moment(row.date);
 
     // Add some things to fit format of Open States actions
-    row.type = [ 'custom' ];
+    row.type = ['custom'];
     return row;
   });
 };
 
 // "Title to link|http://minnpost.com", "Another link|http://minnpost.com"
-LT.parse.eLinks = function(link) {
+LT.parsers.eLinks = function(link) {
   var links = [];
   link = _.trim(link);
 
@@ -129,7 +131,7 @@ LT.parse.eLinks = function(link) {
 };
 
 // "Environmental", "Energy"
-LT.parse.csvCategories = function(category) {
+LT.parsers.csvCategories = function(category) {
   category = _.trim(category);
   if (category.length === 0) {
     return [];
@@ -146,24 +148,26 @@ LT.parse.csvCategories = function(category) {
 
 // Looks at text and tries to find a bill, used for
 // getting the companion bill automatically
-LT.parse.detectCompanionBill = function(companionText) {
+LT.parsers.detectCompanionBill = function(companionText, options) {
   var parsed, bill;
 
   // Handle function or handle regex
-  if (_.isFunction(LT.options.detectCompanionBill)) {
-    parsed = LT.options.detectCompanionBill(companionText);
-    bill = LT.parse.validateBillNumber(parsed) ? parsed : undefined;
+  if (_.isFunction(options.detectCompanionBill)) {
+    parsed = options.detectCompanionBill(companionText);
+    bill = LT.parsers.validateBillNumber(parsed, options) ?
+      parsed : undefined;
   }
-  else if (_.isRegExp(LT.options.detectCompanionBill)) {
-    parsed = LT.options.detectCompanionBill.exec(companionText);
-    bill = (parsed && LT.parse.validateBillNumber(parsed[1])) ? parsed[1] : undefined;
+  else if (_.isRegExp(options.detectCompanionBill)) {
+    parsed = options.detectCompanionBill.exec(companionText);
+    bill = (parsed && LT.parsers.validateBillNumber(parsed[1], options)) ?
+      parsed[1] : undefined;
   }
 
   return _.trim(bill);
 };
 
 // Handle changing field names
-LT.parse.translateFields = function(translation, row) {
+LT.parsers.translateFields = function(translation, row) {
   _.each(translation, function(input, output) {
     row[output] = row[input];
 

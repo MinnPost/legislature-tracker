@@ -1,123 +1,128 @@
-<% if (!expandable) { %>
-  <%= header %>
-<% } %>
-<div class="bill ebill <% if (expandable) { %>is-expandable<% } %> <% if (!bill.hasBill) { %>no-bill<% } %>">
+
+
+<div class="bill ebill {{^bill.hasBill}}no-bill{{/bill.hasBill}}">
   <div class="bill-top">
     <div class="bill-status">
-      <img class="lower <% if (bill.newest_action && Math.abs(parseInt(bill.newest_action.date.diff(moment(), 'days'))) < LT.options.recentChangeThreshold) { %>passed<% } %>" src="<%= LT.options.imagePath %>RecentChanges.png" title="<% if (bill.newest_action && Math.abs(parseInt(bill.newest_action.date.diff(moment(), 'days'))) < LT.options.recentChangeThreshold) { %>Recently changed<% } else { %>Not recently changed<% } %>" />
-      
-      <img class="lower <% if (bill.actions && bill.actions.lower) { %>passed<% } %>" src="<%= LT.options.imagePath %>PassedHouse.png" title="<% if (bill.actions && bill.actions.lower) { %>Passed <%= LT.utils.translate('chamber', 'lower') %><% } else { %>Not passed <%= LT.utils.translate('chamber', 'lower') %><% } %>" />
-      
-      <img class="upper <% if (bill.actions && bill.actions.upper) { %>passed<% } %>" src="<%= LT.options.imagePath %>PassedSenate.png" title="<% if (bill.actions && bill.actions.upper) { %>Passed <%= LT.utils.translate('chamber', 'upper') %><% } else { %>Not passed <%= LT.utils.translate('chamber', 'upper') %><% } %>" />
-      
-      <% if (LT.options.conferenceBill) { %>
-        <img class="conference <% if (bill.bill_type && bill.bill_type.conference) { %>passed<% } %>" src="<%= LT.options.imagePath %>InConferenceCommittee.png" title="<% if (bill.bill_type && bill.bill_type.conference) { %>Conference bill created<% } else { %>Coinference bill not created<% } %>" />
-      <% } %>
-      
-      <img class="signed <% if (bill.actions && bill.actions.signed) { %>passed<% } %>" src="<%= LT.options.imagePath %>SignedIntoLaw.png" title="<% if (bill.actions && bill.actions.signed) { %>Signed into law by the Governor<% } else { %>Not signed into law<% } %>" />
+      <img
+        class="lower {{#(bill.newest_action && Math.abs(parseInt(bill.newest_action.date.diff(moment(), 'days'))) < options.recentChangeThreshold)}}passed{{/()}}"
+        src="{{ imagePath('RecentChanges.png') }}"
+        title="{{#(bill.newest_action && Math.abs(parseInt(bill.newest_action.date.diff(moment(), 'days'))) < options.recentChangeThreshold)}}Recently changed{{/()}}
+        {{^(bill.newest_action && Math.abs(parseInt(bill.newest_action.date.diff(moment(), 'days'))) < options.recentChangeThreshold)}}Not changed recently{{/()}}"
+       />
+
+      <img
+        class="lower {{#(bill.actions && bill.actions.lower)}}passed{{/()}}"
+        src="{{ imagePath('PassedHouse.png') }}"
+        title="{{#(bill.actions && bill.actions.lower)}}Passed{{/()}}
+          {{^(bill.actions && bill.actions.lower)}}Not passed{{/()}} {{ translate('chamber', 'lower') }}"
+       />
+
+      <img
+        class="upper {{#(bill.actions && bill.actions.upper)}}passed{{/()}}"
+        src="{{ imagePath('PassedSenate.png') }}"
+        title="{{#(bill.actions && bill.actions.upper)}}Passed{{/()}}
+          {{^(bill.actions && bill.actions.upper)}}Not passed{{/()}} {{ translate('chamber', 'upper') }}"
+       />
+
+      {{#options.conferenceBill}}
+        <img
+          class="conference {{#(bill.bill_type && bill.bill_type.conference)}}passed{{/()}}"
+          src="{{ imagePath('InConferenceCommittee.png') }}"
+          title="{{#(bill.bill_type && bill.bill_type.conference)}}Conference bill created{{/()}}
+            {{^(bill.bill_type && bill.bill_type.conference)}}Coinference bill not created{{/()}}"
+         />
+      {{/options.conferenceBill}}
+
+     <img
+       class="signed {{#(bill.actions && bill.actions.signed)}}passed{{/()}}"
+       src="{{ imagePath('SignedIntoLaw.png') }}"
+       title="{{#(bill.actions && bill.actions.signed)}}Signed into law by the Governor{{/()}}
+         {{^(bill.actions && bill.actions.upper)}}Not signed into law{{/()}}"
+      />
     </div>
-    
-    <% if (expandable) { %><h3><% } else { %><h2><% } %>
-      <%= bill.title %>
-      <a class="permalink" title="Permanent link to bill" href="#/bill/<%= encodeURI(bill.bill) %>"></a>
-    <% if (expandable) { %></h3><% } else { %></h2><% } %>
-    
-    <% if (!bill.hasBill){ %>
+
+    <h3>
+      {{ bill.title }}
+      <a class="permalink" title="Permanent link to bill" href="#/bill/{{ encodeURI(bill.bill) }}"></a>
+    </h3>
+
+    {{^bill.hasBill}}
       <div class="latest-action">
         <em>This bill has not been tracked by the legislature yet.</em>
       </div>
-    <% } %>
-    
-     <% if (bill.newest_action) { %>
-      <div class="latest-action">
-        Last action <%= bill.newest_action.date.fromNow() %>.
-      </div>
-    <% } %>
-    
+    {{/bill.hasBill}}
+
+    {{#bill.newest_action}}
+      <div class="latest-action">Last action {{ date.fromNow() }}.</div>
+    {{/bill.newest_action}}
+
     <div class="description">
-      <% if (bill.description.indexOf('<p') < 3) { %>
-        <%= _.ellipsisText(bill.description, 60) %>
-      <% } else { %>
-        <p><%= _.ellipsisText(bill.description, 60) %></p>
-      <% } %>
+      {{ bill.description }}
     </div>
-    
+
     <div class="e-bill-categories">
       <strong>Categories:</strong>
-      <% _.each(bill.categories, function(c, i) { %>
-        <a href="#/category/<%= c.get('id') %>">
-          <% if (c.get('image')) { %><img class="category-image" src="<%= LT.utils.imagePath(c.get('image')) %>" /><% } %>
-          <%= c.get('title') %></a><% if (i < bill.categories.length - 1) { %>,<% } %>
-      <% }) %>
+      {{#bill.categories:i}}
+        <a href="#/category/{{ id }}">
+          {{#image}}
+            <img class="category-image" src="{{ imagePath(image) }}" />
+          {{/image}}
+          {{ title }}
+        </a>{{#(i < bill.categories.length - 1)}},{{/()}}
+      {{/bill.categories}}
     </div>
-    
-    <% if (expandable && !(!bill.hasBill && bill.description.split(' ').length < 60 && !(_.isArray(bill.links) && bill.links.length > 0))) { %>
-      <a href="#" class="bill-expand">More detail</a>
-      <a href="#/bill/<%= encodeURI(bill.bill) %>" class="bill-details-link">More detail</a>
-    <% } %>
   </div>
-  
+
+
   <div class="bill-bottom">
-    <% if (_.isArray(bill.links) && bill.links.length > 0) { %>
+    {{#(bill.links && bill.links.length && bill.links.length > 0)}}
       <div class="e-links">
         <h4>In the news</h4>
         <ul class="e-links-list">
-          <% _.each(bill.links, function(l) { %>
-            <li><a href="<%= l.url %>"><%= l.title %></a></li>
-          <% }) %>
+          {{#bill.links}}
+            <li><a href="{{ url }}">{{ title }}</a></li>
+          {{/bill.links}}
         </ul>
       </div>
-    <% } %>
-    
-    <% if (_.isArray(bill.custom_events) && bill.custom_events.length > 0) { %>
+    {{/()}}
+
+    {{#(bill.custom_events && bill.custom_events.length && bill.custom_events.length > 0)}}
       <div class="custom-events">
         <h4>Events</h4>
         <ul class="custom-events-inner">
-          <% _.each(bill.custom_events, function(e) { %>
-            <li><strong><%= e.bill_id %> <%= e.action %></strong> on  <%= e.date.format('MMM DD, YYYY') %>: <%= e.description %></li>
-          <% }) %>
+          {{#bill.custom_events}}
+            <li><strong>{{ bill_id }} {{ action }}</strong> on  {{ date.format('MMM DD, YYYY') }}: {{ e.description }}</li>
+          {{/bill.custom_events}}
         </ul>
       </div>
-    <% } %>
+    {{/()}}
 
-    <% if (_.isObject(bill.bill_conference)) { %>
+    {{#bill.bill_conference}}
       <div class="conference-bill">
         <div class="conference-bill-inner clear-block">
-          <%= templates.osbill({
-            title: 'Conference Bill',
-            bill: bill.bill_conference.toJSON(),
-            templates: templates
-          }) %>
+          <h3>Conference Bill</h3>
+          <osbill bill="{{ this }}" type="conference" imagePath="{{ imagePath }}" translate="{{ translate }}" options="{{ options }}">
         </div>
       </div>
-      
-      <a class="expand-other-bills" href="#">Show other bills</a>
-    <% } %>
-    
-    <div class="clear-block <% if (_.isObject(bill.bill_conference)) { %>has-conference-bill<% } %>">
-      <% if (_.isObject(bill.bill_primary)) { %>
-        <div class="primary-bill <% if (_.isObject(bill.bill_companion)) { %>with-companion<% } %>">
-          <div class="primary-bill-inner clear-block">
-            <%= templates.osbill({
-              title: (LT.options.chamberLabel) ? LT.utils.translate('chamber', bill.bill_primary.get('chamber')) + ' Bill' : 'Primary Bill',
-              bill: bill.bill_primary.toJSON(),
-              templates: templates
-            }) %>
-          </div>
+    {{/bill.bill_conference}}
+
+    {{#bill.bill_primary}}
+      <div class="primary-bill">
+        <div class="primary-bill-inner clear-block">
+          <h3>{{ (options.chamberLabel) ? translate('chamber', chamber) + ' Bill' : 'Primary Bill' }}</h3>
+          <osbill bill="{{ this }}" type="primary" imagePath="{{ imagePath }}" translate="{{ translate }}" options="{{ options }}">
         </div>
-      <% } %>
-      
-      <% if (_.isObject(bill.bill_companion)) { %>
-        <div class="companion-bill">
-          <div class="companion-bill-inner clear-block">
-            <%= templates.osbill({
-              title: (LT.options.chamberLabel) ? LT.utils.translate('chamber', bill.bill_companion.get('chamber')) + ' Bill' : 'Companion Bill',
-              bill: bill.bill_companion.toJSON(),
-              templates: templates
-            }) %>
-          </div>
+      </div>
+    {{/bill.bill_primary}}
+
+    {{#bill.bill_companion}}
+      <div class="companion-bill">
+        <div class="companion-bill-inner clear-block">
+          <h3>{{ (options.chamberLabel) ? translate('chamber', chamber) + ' Bill' : 'Companion Bill' }}</h3>
+          <osbill bill="{{ this }}" type="companion" imagePath="{{ imagePath }}" translate="{{ translate }}" options="{{ options }}">
         </div>
-      <% } %>
-    </div>
+      </div>
+    {{/bill.bill_companion}}
+
   </div>
 </div>
