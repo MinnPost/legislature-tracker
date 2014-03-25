@@ -50,6 +50,29 @@ LT.OSStateModel = LT.OSModel.extend({
 });
 
 /**
+ * Model for Open States Legislator
+ */
+LT.OSLegislatorModel = LT.OSModel.extend({
+  osType: 'legislators',
+
+  initialize: function(attr, options) {
+    LT.OSBillModel.__super__.initialize.apply(this, arguments);
+
+    // When we first get a leg_id, the we should fetch the data
+    if (this.get('leg_id')) {
+      this.app.fetchModel(this);
+    }
+  }
+});
+
+/**
+ * Model for Open States Committee
+ */
+LT.OSCommitteeModel = LT.OSModel.extend({
+  osType: 'committees'
+});
+
+/**
  * Model for Open States Bill
  */
 LT.OSBillModel = LT.OSModel.extend({
@@ -66,11 +89,13 @@ LT.OSBillModel = LT.OSModel.extend({
   },
 
   initialize: function(attr, options) {
+    var thisModel = this;
     LT.OSBillModel.__super__.initialize.apply(this, arguments);
   },
 
+  // Get some aggregate data from the Open State data
   parse: function(data, options) {
-    // Get some aggregate data from the Open State data
+    var thisModel = this;
 
     // Parse some dates
     data.created_at = moment(data.created_at);
@@ -114,6 +139,13 @@ LT.OSBillModel = LT.OSModel.extend({
       data = this.options.osBillParse(data, this);
     }
 
+    // Add a legislator model to each sponsor
+    data.sponsors = _.map(data.sponsors, function(s, si) {
+      s.id = s.leg_id;
+      s.leg = thisModel.app.getModel('OSLegislatorModel', 'leg_id', s);
+      return s;
+    });
+
     return data;
   },
 
@@ -144,20 +176,6 @@ LT.OSBillModel = LT.OSModel.extend({
 });
 
 /**
- * Model for Open States Legislator
- */
-LT.OSLegislatorModel = LT.OSModel.extend({
-  osType: 'legislators'
-});
-
-/**
- * Model for Open States Committee
- */
-LT.OSCommitteeModel = LT.OSModel.extend({
-  osType: 'committees'
-});
-
-/**
  * eBill model.  This model holds the editorial data
  * and references to OS bill.
  */
@@ -176,10 +194,19 @@ LT.BillModel = LT.BaseModel.extend({
   loadOSBills: function() {
     var thisModel = this;
     _.each(this.subbills, function(b, bi) {
+      var model;
+
       if (thisModel.get(b)) {
-        thisModel.set(b, thisModel.app.getModel('OSBillModel', 'bill_id', {
+        // Create and attache new model
+        model = thisModel.app.getModel('OSBillModel', 'bill_id', {
           bill_id: thisModel.get(b)
-        }));
+        });
+        thisModel.set(b, model);
+
+        // Propagate bill events
+        model.on('all', function(e) {
+          thisModel.trigger(b + ':' + e);
+        });
       }
     });
   },
@@ -421,10 +448,15 @@ LT.BillModel = LT.BaseModel.extend({
 LT.CategoryModel = LT.BaseModel.extend({
 
   initialize: function(attr, options) {
+    var thisModel = this;
     LT.CategoryModel.__super__.initialize.apply(this, arguments);
 
     // Keep a reference to bills in this category
     this.set('bills', new LT.BillsCollection(null));
+    // Propagate collection events
+    this.get('bills').on('all', function(e) {
+      thisModel.trigger('bills:' + e);
+    });
   },
 
   getBills: function(bills) {

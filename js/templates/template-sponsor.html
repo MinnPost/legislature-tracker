@@ -1,6 +1,28 @@
 
 {{#(primary == true && sponsor.type === 'primary')}}
-  <div class="sponsor">
-    {{ sponsor.name }} ({{ sponsor.type }})
+  <div class="sponsor clear-block">
+    {{#(!!sponsor.leg.photo_url)}}
+      <div class="sponsor-image">
+        {{#(!!options.legImageProxy)}}
+          <img src="{{ options.legImageProxy }}{{ encodeURI(sponsor.leg.photo_url) }}" />
+        {{/()}}
+        {{#(!options.legImageProxy)}}
+          <img src="{{ encodeURI(sponsor.photo_url) }}" />
+        {{/()}}
+      </div>
+    {{/()}}
+
+    <div class="sponsor-info">
+      {{#(!!sponsor.leg.full_name)}}
+        {{ sponsor.leg.full_name }} <br />
+        District {{ sponsor.leg.district }} <br />
+        {{ translate('partyAbbr', sponsor.leg.party) }}, 
+        {{ translate('chamber', sponsor.leg.chamber) }}
+      {{/()}}
+
+      {{#(!sponsor.leg.full_name)}}
+        {{ sponsor.name }}
+      {{/()}}
+    </div>
   </div>
 {{/()}}

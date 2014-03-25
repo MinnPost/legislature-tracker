@@ -43,3 +43,13 @@ LT.OSBillsCollection = Backbone.Collection.extend({
   }
 });
 
+/**
+ * Collection of Open States legistlators.
+ */
+LT.OSLegislatorsCollection = Backbone.Collection.extend({
+  model: LT.OSLegislatorModel,
+
+  comparator: function(sponsor) {
+    return ((sponsor.get('type') === 'primary') ? 'aaa' : 'bbb') + sponsor.get('name');
+  }
+});

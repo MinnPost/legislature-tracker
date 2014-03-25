@@ -88,7 +88,11 @@
 
 
   {{#(compact == true)}}
-    <div class="ebill-sponsors clear-block">
+    <div class="ebill-sponsors clear-block
+      {{#bill.bill_conference}}has-conference{{/bill.bill_conference}}
+      {{#bill.bill_primary}}has-primary{{/bill.bill_primary}}
+      {{#bill.bill_companion}}has-companion{{/bill.bill_companion}}
+      ">
       {{#bill.bill_conference}}
         <div class="osbill bill-conference">
           <strong>Conference bill {{ bill_id }}</strong>
@@ -106,6 +110,15 @@
           {{/sponsors}}
         </div>
       {{/bill.bill_primary}}
+
+      {{#bill.bill_companion}}
+        <div class="osbill bill-companion">
+          <strong>Companion bill {{ bill_id }}</strong>
+          {{#sponsors}}
+            <sponsor sponsor="{{ this }}" compact="true" primary="true">
+          {{/sponsors}}
+        </div>
+      {{/bill.bill_companion}}
     </div>
   {{/()}}
 

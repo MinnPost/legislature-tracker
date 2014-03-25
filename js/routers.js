@@ -35,6 +35,10 @@ LT.MainRouter = Backbone.Router.extend({
 
     // Make reference to content to change
     this.$content = this.app.$el.find('.ls-content-container');
+
+    // Some helpful bound functions
+    this.imagePath = _.bind(this.app.imagePath, this.app);
+    this.translate = _.bind(this.app.translate, this.app);
   },
 
   // Start application (after data has been loaded)
@@ -66,7 +70,7 @@ LT.MainRouter = Backbone.Router.extend({
       data: {
         options: this.options,
         categories: this.app.categories,
-        imagePath: _.bind(this.app.imagePath, this.app)
+        imagePath: this.imagePath
       },
       options: this.options,
       partials: {
@@ -79,6 +83,11 @@ LT.MainRouter = Backbone.Router.extend({
   routeCategory: function(category) {
     var thisRouter = this;
     var categoryID = decodeURI(category);
+    var commonData = {
+      options: this.options,
+      imagePath: this.imagePath,
+      translate: this.translate
+    };
 
     // Get category
     category = this.app.categories.get(categoryID);
@@ -98,13 +107,10 @@ LT.MainRouter = Backbone.Router.extend({
     this.app.views.category = new LT.CategoryView({
       el: this.$content,
       template: this.app.templates.category,
-      data: {
-        options: this.options,
+      data: _.extend({}, commonData, {
         category: category,
-        categoryID: categoryID,
-        imagePath: _.bind(this.app.imagePath, this.app),
-        translate: _.bind(this.app.translate, this.app)
-      },
+        categoryID: categoryID
+      }),
       options: this.options,
       partials: {
         loading: this.app.templates.loading
@@ -112,22 +118,19 @@ LT.MainRouter = Backbone.Router.extend({
       components: {
         ebill: LT.EBillView.extend({
           template: this.app.templates.ebill,
+          data: commonData,
           components: {
             osbill: LT.OSBillView.extend({
-              template: this.app.templates.osbill
+              template: this.app.templates.osbill,
+              data: commonData
             }),
             sponsor: LT.OSSponsorView.extend({
-              template: this.app.templates.sponsor
+              template: this.app.templates.sponsor,
+              data: commonData
             })
           }
         })
       }
-    });
-
-    // For some reason, Ractive is not getting notified
-    // of changes to the bills in the category
-    this.app.on('fetched:osbills:category:' + category.id, function() {
-      thisRouter.app.views.category.update();
     });
   },
 

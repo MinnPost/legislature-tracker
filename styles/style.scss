@@ -187,12 +187,7 @@
   /**
    * Common parts
    */
-
   .elinks {
-
-    strong {
-      font-size: 1.25em;
-    }
 
     ul.elinks-list {
       padding-left: 0;
@@ -200,6 +195,28 @@
       li {
         list-style: none;
       }
+    }
+  }
+
+  /**
+   * Sponsors
+   */
+  .sponsor {
+
+    .sponsor-image {
+      width: 4em;
+      float: left;
+      margin-right: .25em;
+
+      img {
+        max-width: 4em;
+      }
+    }
+
+    .sponsor-info {
+      width: 10em;
+      float: left;
+      font-size: .85em;
     }
   }
 
@@ -342,6 +359,21 @@
 
     .elinks {
       margin-bottom: 1em;
+    }
+
+    .ebill-sponsors {
+
+      &.has-conference.has-primary.has-companion .osbill {
+        float: left;
+        width: 33.33333%;
+      }
+
+      &.has-conference.has-primary .osbill,
+      &.has-conference.has-companion .osbill,
+      &.has-primary.has-companion .osbill {
+        float: left;
+        width: 50%;
+      }
     }
   }
 
