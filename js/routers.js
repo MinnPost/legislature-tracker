@@ -115,6 +115,9 @@ LT.MainRouter = Backbone.Router.extend({
           components: {
             osbill: LT.OSBillView.extend({
               template: this.app.templates.osbill
+            }),
+            sponsor: LT.OSSponsorView.extend({
+              template: this.app.templates.sponsor
             })
           }
         })

@@ -1,94 +1,119 @@
 
-
 <div class="bill ebill {{^bill.hasBill}}no-bill{{/bill.hasBill}}">
-  <div class="bill-top">
-    <div class="bill-status">
+  <div class="bill-status">
+    <img
+      class="lower {{#(bill.newest_action && Math.abs(parseInt(bill.newest_action.date.diff(moment(), 'days'))) < options.recentChangeThreshold)}}passed{{/()}}"
+      src="{{ imagePath('RecentChanges.png') }}"
+      title="{{#(bill.newest_action && Math.abs(parseInt(bill.newest_action.date.diff(moment(), 'days'))) < options.recentChangeThreshold)}}Recently changed{{/()}}
+      {{^(bill.newest_action && Math.abs(parseInt(bill.newest_action.date.diff(moment(), 'days'))) < options.recentChangeThreshold)}}Not changed recently{{/()}}"
+     />
+
+    <img
+      class="lower {{#(bill.actions && bill.actions.lower)}}passed{{/()}}"
+      src="{{ imagePath('PassedHouse.png') }}"
+      title="{{#(bill.actions && bill.actions.lower)}}Passed{{/()}}
+        {{^(bill.actions && bill.actions.lower)}}Not passed{{/()}} {{ translate('chamber', 'lower') }}"
+     />
+
+    <img
+      class="upper {{#(bill.actions && bill.actions.upper)}}passed{{/()}}"
+      src="{{ imagePath('PassedSenate.png') }}"
+      title="{{#(bill.actions && bill.actions.upper)}}Passed{{/()}}
+        {{^(bill.actions && bill.actions.upper)}}Not passed{{/()}} {{ translate('chamber', 'upper') }}"
+     />
+
+    {{#options.conferenceBill}}
       <img
-        class="lower {{#(bill.newest_action && Math.abs(parseInt(bill.newest_action.date.diff(moment(), 'days'))) < options.recentChangeThreshold)}}passed{{/()}}"
-        src="{{ imagePath('RecentChanges.png') }}"
-        title="{{#(bill.newest_action && Math.abs(parseInt(bill.newest_action.date.diff(moment(), 'days'))) < options.recentChangeThreshold)}}Recently changed{{/()}}
-        {{^(bill.newest_action && Math.abs(parseInt(bill.newest_action.date.diff(moment(), 'days'))) < options.recentChangeThreshold)}}Not changed recently{{/()}}"
+        class="conference {{#(bill.bill_type && bill.bill_type.conference)}}passed{{/()}}"
+        src="{{ imagePath('InConferenceCommittee.png') }}"
+        title="{{#(bill.bill_type && bill.bill_type.conference)}}Conference bill created{{/()}}
+          {{^(bill.bill_type && bill.bill_type.conference)}}Coinference bill not created{{/()}}"
        />
+    {{/options.conferenceBill}}
 
-      <img
-        class="lower {{#(bill.actions && bill.actions.lower)}}passed{{/()}}"
-        src="{{ imagePath('PassedHouse.png') }}"
-        title="{{#(bill.actions && bill.actions.lower)}}Passed{{/()}}
-          {{^(bill.actions && bill.actions.lower)}}Not passed{{/()}} {{ translate('chamber', 'lower') }}"
-       />
+   <img
+     class="signed {{#(bill.actions && bill.actions.signed)}}passed{{/()}}"
+     src="{{ imagePath('SignedIntoLaw.png') }}"
+     title="{{#(bill.actions && bill.actions.signed)}}Signed into law by the Governor{{/()}}
+       {{^(bill.actions && bill.actions.upper)}}Not signed into law{{/()}}"
+    />
+  </div>
 
-      <img
-        class="upper {{#(bill.actions && bill.actions.upper)}}passed{{/()}}"
-        src="{{ imagePath('PassedSenate.png') }}"
-        title="{{#(bill.actions && bill.actions.upper)}}Passed{{/()}}
-          {{^(bill.actions && bill.actions.upper)}}Not passed{{/()}} {{ translate('chamber', 'upper') }}"
-       />
-
-      {{#options.conferenceBill}}
-        <img
-          class="conference {{#(bill.bill_type && bill.bill_type.conference)}}passed{{/()}}"
-          src="{{ imagePath('InConferenceCommittee.png') }}"
-          title="{{#(bill.bill_type && bill.bill_type.conference)}}Conference bill created{{/()}}
-            {{^(bill.bill_type && bill.bill_type.conference)}}Coinference bill not created{{/()}}"
-         />
-      {{/options.conferenceBill}}
-
-     <img
-       class="signed {{#(bill.actions && bill.actions.signed)}}passed{{/()}}"
-       src="{{ imagePath('SignedIntoLaw.png') }}"
-       title="{{#(bill.actions && bill.actions.signed)}}Signed into law by the Governor{{/()}}
-         {{^(bill.actions && bill.actions.upper)}}Not signed into law{{/()}}"
-      />
-    </div>
-
+  {{#compact}}
     <h3>
       {{ bill.title }}
       <a class="permalink" title="Permanent link to bill" href="#/bill/{{ encodeURI(bill.bill) }}"></a>
     </h3>
+  {{/compact}}
+  {{^compact}}
+    <h2>{{ bill.title }}</h2>
+  {{/compact}}
 
-    {{^bill.hasBill}}
-      <div class="latest-action">
-        <em>This bill has not been tracked by the legislature yet.</em>
-      </div>
-    {{/bill.hasBill}}
-
-    {{#bill.newest_action}}
-      <div class="latest-action">Last action {{ date.fromNow() }}.</div>
-    {{/bill.newest_action}}
-
-    <div class="description">
-      {{ bill.description }}
+  {{^bill.hasBill}}
+    <div class="latest-action">
+      <em>This bill has not been tracked by the legislature yet.</em>
     </div>
+  {{/bill.hasBill}}
 
-    <div class="e-bill-categories">
-      <strong>Categories:</strong>
-      {{#bill.categories:i}}
-        <a href="#/category/{{ id }}">
-          {{#image}}
-            <img class="category-image" src="{{ imagePath(image) }}" />
-          {{/image}}
-          {{ title }}
-        </a>{{#(i < bill.categories.length - 1)}},{{/()}}
-      {{/bill.categories}}
-    </div>
+  {{#bill.newest_action}}
+    <div class="latest-action">Last action about {{ date.fromNow() }}: {{ action }}.</div>
+  {{/bill.newest_action}}
+
+  <div class="description">
+    {{ bill.description }}
   </div>
 
+  <div class="ebill-categories">
+    <strong>Categories:</strong>
+    {{#bill.categories:i}}
+      <a href="#/category/{{ id }}">
+        {{#image}}
+          <img class="category-image" src="{{ imagePath(image) }}" />
+        {{/image}}
+        {{ title }}
+      </a>{{#(i < bill.categories.length - 1)}},{{/()}}
+    {{/bill.categories}}
+  </div>
 
-  <div class="bill-bottom">
-    {{#(bill.links && bill.links.length && bill.links.length > 0)}}
-      <div class="e-links">
-        <h4>In the news</h4>
-        <ul class="e-links-list">
-          {{#bill.links}}
-            <li><a href="{{ url }}">{{ title }}</a></li>
-          {{/bill.links}}
-        </ul>
-      </div>
-    {{/()}}
+  {{#(bill.links && bill.links.length && bill.links.length > 0)}}
+    <div class="elinks">
+      <strong>In the news</strong>
+      <ul class="elinks-list">
+        {{#bill.links}}
+          <li><a href="{{ url }}">{{ title }}</a></li>
+        {{/bill.links}}
+      </ul>
+    </div>
+  {{/()}}
 
+
+  {{#(compact == true)}}
+    <div class="ebill-sponsors clear-block">
+      {{#bill.bill_conference}}
+        <div class="osbill bill-conference">
+          <strong>Conference bill {{ bill_id }}</strong>
+          {{#sponsors}}
+            <sponsor sponsor="{{ this }}" compact="true" primary="true">
+          {{/sponsors}}
+        </div>
+      {{/bill.bill_conference}}
+
+      {{#bill.bill_primary}}
+        <div class="osbill bill-primary">
+          <strong>Primary bill {{ bill_id }}</strong>
+          {{#sponsors}}
+            <sponsor sponsor="{{ this }}" compact="true" primary="true">
+          {{/sponsors}}
+        </div>
+      {{/bill.bill_primary}}
+    </div>
+  {{/()}}
+
+
+  {{#(compact != true)}}
     {{#(bill.custom_events && bill.custom_events.length && bill.custom_events.length > 0)}}
       <div class="custom-events">
-        <h4>Events</h4>
+        <strong>Events</strong>
         <ul class="custom-events-inner">
           {{#bill.custom_events}}
             <li><strong>{{ bill_id }} {{ action }}</strong> on  {{ date.format('MMM DD, YYYY') }}: {{ e.description }}</li>
@@ -123,6 +148,6 @@
         </div>
       </div>
     {{/bill.bill_companion}}
+  {{/()}}
 
-  </div>
 </div>

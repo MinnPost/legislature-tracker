@@ -32,14 +32,15 @@
 
 
 this.LTTemplates = {
-  'template-application' : '<div class="ls">\n  <div class="ls-header-container">\n    <div class="ls-header">\n\n      <a class="all-categories-link" href="#/">\n        <img src="{{ options.imagePath }}back-100-85.png" />\n        All Categories\n      </a>\n\n      <span class="categories-nav">\n        &nbsp;&nbsp;|&nbsp;&nbsp;\n\n        {{#categories}}\n          <a class="" href="#/category/{{ id }}" title="{{ title }}">\n            {{ (short_title) ? short_title : title.split(\' \')[0] }}\n          </a>\n          &nbsp;&nbsp;\n        {{/categories}}\n      </span>\n    </div>\n  </div>\n\n  {{#options.title}}\n    <h2>{{ options.title }}</h2>\n  {{/options.title}}\n\n  <div class="ls-content-container">\n    {{>loading}}\n  </div>\n</div>',
+  'template-application' : '<div class="ls">\n\n  {{#(menuOff !== true && !!categories)}}\n    <div class="ls-header-container">\n      <div class="ls-header">\n\n        <a class="all-categories-link" href="#/">\n          <img src="{{ options.imagePath }}back-100-85.png" />\n          All Categories\n        </a>\n\n        <span class="categories-nav">\n          &nbsp;&nbsp;|&nbsp;&nbsp;\n\n          {{#categories}}\n            <a class="" href="#/category/{{ id }}" title="{{ title }}">\n              {{ (short_title) ? short_title : title.split(\' \')[0] }}\n            </a>\n            &nbsp;&nbsp;\n          {{/categories}}\n        </span>\n      </div>\n    </div>\n  {{/()}}\n\n  {{#options.title}}\n    <h2>{{ options.title }}</h2>\n  {{/options.title}}\n\n  <div class="ls-content-container">\n    {{>loading}}\n  </div>\n</div>\n',
   'template-categories' : '\n{{^categories}}\n  {{>loading}}\n{{/categories}}\n\n<div class="categories-container">\n  <ul class="category-list clear-block">\n    {{#categories:i}}\n      <li class="category-item category-item-{{ i }}">\n        <div class="category-inner category-{{ _.cssClass(id) }}">\n          {{#image}}\n            <a href="#/category/{{ encodeURI(id) }}">\n              <img class="category-image" src="{{ imagePath(image) }}" />\n            </a>\n          {{/image}}\n\n          <h3>\n            <a href="#/category/{{ encodeURI(id) }}">\n              {{ title }}\n            </a>\n          </h3>\n\n          <div>\n            Watching <strong>{{ bills.length }}</strong> bills.\n          </div>\n        </div>\n      </li>\n    {{/categories}}\n  </ul>\n</div>',
-  'template-category' : '\n{{^category}}\n  {{>loading}}\n{{/category}}\n\n<div class="category-container">\n  <h2>\n    {{#category.image}}\n      <img class="category-image" src="{{ imagePath(category.image) }}" />\n    {{/category.image}}\n\n    {{ category.title }}\n  </h2>\n\n  <p>{{ category.description }}</p>\n\n  {{#(category.links && category.links.length && category.links.length > 0)}}\n    <div class="e-links">\n      <h4>In the news</h4>\n\n      <ul class="e-links-list">\n        {{#category.links}}\n          <li><a href="{{ url }}">{{ title }}</a></li>\n        {{/category.links}}\n      </ul>\n    </div>\n  {{/()}}\n\n  <div class="clear-block bills-list">\n    {{#category.bills:bill}}\n      <ebill bill="{{ this }}" compact="true" imagePath="{{ imagePath }}" options="{{ options }}">\n    {{/category.bills}}\n  </div>\n\n  <div class="clear-block total-bill">\n    Watching\n    <strong>{{ category.bills.length }}</strong>\n    {{#(typeof category.total_bill_count != \'undefined\')}}\n      of {{ category.total_bill_count }}\n    {{/()}}\n    bills in the {{ category.title }} category.\n  </div>\n</div>\n',
-  'template-ebill' : '\n\n<div class="bill ebill {{^bill.hasBill}}no-bill{{/bill.hasBill}}">\n  <div class="bill-top">\n    <div class="bill-status">\n      <img\n        class="lower {{#(bill.newest_action && Math.abs(parseInt(bill.newest_action.date.diff(moment(), \'days\'))) < options.recentChangeThreshold)}}passed{{/()}}"\n        src="{{ imagePath(\'RecentChanges.png\') }}"\n        title="{{#(bill.newest_action && Math.abs(parseInt(bill.newest_action.date.diff(moment(), \'days\'))) < options.recentChangeThreshold)}}Recently changed{{/()}}\n        {{^(bill.newest_action && Math.abs(parseInt(bill.newest_action.date.diff(moment(), \'days\'))) < options.recentChangeThreshold)}}Not changed recently{{/()}}"\n       />\n\n      <img\n        class="lower {{#(bill.actions && bill.actions.lower)}}passed{{/()}}"\n        src="{{ imagePath(\'PassedHouse.png\') }}"\n        title="{{#(bill.actions && bill.actions.lower)}}Passed{{/()}}\n          {{^(bill.actions && bill.actions.lower)}}Not passed{{/()}} {{ translate(\'chamber\', \'lower\') }}"\n       />\n\n      <img\n        class="upper {{#(bill.actions && bill.actions.upper)}}passed{{/()}}"\n        src="{{ imagePath(\'PassedSenate.png\') }}"\n        title="{{#(bill.actions && bill.actions.upper)}}Passed{{/()}}\n          {{^(bill.actions && bill.actions.upper)}}Not passed{{/()}} {{ translate(\'chamber\', \'upper\') }}"\n       />\n\n      {{#options.conferenceBill}}\n        <img\n          class="conference {{#(bill.bill_type && bill.bill_type.conference)}}passed{{/()}}"\n          src="{{ imagePath(\'InConferenceCommittee.png\') }}"\n          title="{{#(bill.bill_type && bill.bill_type.conference)}}Conference bill created{{/()}}\n            {{^(bill.bill_type && bill.bill_type.conference)}}Coinference bill not created{{/()}}"\n         />\n      {{/options.conferenceBill}}\n\n     <img\n       class="signed {{#(bill.actions && bill.actions.signed)}}passed{{/()}}"\n       src="{{ imagePath(\'SignedIntoLaw.png\') }}"\n       title="{{#(bill.actions && bill.actions.signed)}}Signed into law by the Governor{{/()}}\n         {{^(bill.actions && bill.actions.upper)}}Not signed into law{{/()}}"\n      />\n    </div>\n\n    <h3>\n      {{ bill.title }}\n      <a class="permalink" title="Permanent link to bill" href="#/bill/{{ encodeURI(bill.bill) }}"></a>\n    </h3>\n\n    {{^bill.hasBill}}\n      <div class="latest-action">\n        <em>This bill has not been tracked by the legislature yet.</em>\n      </div>\n    {{/bill.hasBill}}\n\n    {{#bill.newest_action}}\n      <div class="latest-action">Last action {{ date.fromNow() }}.</div>\n    {{/bill.newest_action}}\n\n    <div class="description">\n      {{ bill.description }}\n    </div>\n\n    <div class="e-bill-categories">\n      <strong>Categories:</strong>\n      {{#bill.categories:i}}\n        <a href="#/category/{{ id }}">\n          {{#image}}\n            <img class="category-image" src="{{ imagePath(image) }}" />\n          {{/image}}\n          {{ title }}\n        </a>{{#(i < bill.categories.length - 1)}},{{/()}}\n      {{/bill.categories}}\n    </div>\n  </div>\n\n\n  <div class="bill-bottom">\n    {{#(bill.links && bill.links.length && bill.links.length > 0)}}\n      <div class="e-links">\n        <h4>In the news</h4>\n        <ul class="e-links-list">\n          {{#bill.links}}\n            <li><a href="{{ url }}">{{ title }}</a></li>\n          {{/bill.links}}\n        </ul>\n      </div>\n    {{/()}}\n\n    {{#(bill.custom_events && bill.custom_events.length && bill.custom_events.length > 0)}}\n      <div class="custom-events">\n        <h4>Events</h4>\n        <ul class="custom-events-inner">\n          {{#bill.custom_events}}\n            <li><strong>{{ bill_id }} {{ action }}</strong> on  {{ date.format(\'MMM DD, YYYY\') }}: {{ e.description }}</li>\n          {{/bill.custom_events}}\n        </ul>\n      </div>\n    {{/()}}\n\n    {{#bill.bill_conference}}\n      <div class="conference-bill">\n        <div class="conference-bill-inner clear-block">\n          <h3>Conference Bill</h3>\n          <osbill bill="{{ this }}" type="conference" imagePath="{{ imagePath }}" translate="{{ translate }}" options="{{ options }}">\n        </div>\n      </div>\n    {{/bill.bill_conference}}\n\n    {{#bill.bill_primary}}\n      <div class="primary-bill">\n        <div class="primary-bill-inner clear-block">\n          <h3>{{ (options.chamberLabel) ? translate(\'chamber\', chamber) + \' Bill\' : \'Primary Bill\' }}</h3>\n          <osbill bill="{{ this }}" type="primary" imagePath="{{ imagePath }}" translate="{{ translate }}" options="{{ options }}">\n        </div>\n      </div>\n    {{/bill.bill_primary}}\n\n    {{#bill.bill_companion}}\n      <div class="companion-bill">\n        <div class="companion-bill-inner clear-block">\n          <h3>{{ (options.chamberLabel) ? translate(\'chamber\', chamber) + \' Bill\' : \'Companion Bill\' }}</h3>\n          <osbill bill="{{ this }}" type="companion" imagePath="{{ imagePath }}" translate="{{ translate }}" options="{{ options }}">\n        </div>\n      </div>\n    {{/bill.bill_companion}}\n\n  </div>\n</div>\n',
+  'template-category' : '\n{{^category}}\n  {{>loading}}\n{{/category}}\n\n<div class="category-container">\n  <h2>\n    {{#category.image}}\n      <img class="category-image" src="{{ imagePath(category.image) }}" />\n    {{/category.image}}\n\n    {{ category.title }}\n  </h2>\n\n  <p class="category-description">{{ category.description }}</p>\n\n  {{#(category.links && category.links.length && category.links.length > 0)}}\n    <div class="elinks">\n      <strong>In the news</strong>\n      <ul class="elinks-list">\n        {{#category.links}}\n          <li><a href="{{ url }}">{{ title }}</a></li>\n        {{/category.links}}\n      </ul>\n    </div>\n  {{/()}}\n\n  <div class="clear-block bills-list">\n    {{#category.bills:bill}}\n      <ebill bill="{{ this }}" compact="true" imagePath="{{ imagePath }}" options="{{ options }}">\n    {{/category.bills}}\n  </div>\n\n  <div class="clear-block total-bill">\n    Watching\n    <strong>{{ category.bills.length }}</strong>\n    {{#(typeof category.total_bill_count != \'undefined\')}}\n      of {{ category.total_bill_count }}\n    {{/()}}\n    bills in the {{ category.title }} category.\n  </div>\n</div>\n',
+  'template-ebill' : '\n<div class="bill ebill {{^bill.hasBill}}no-bill{{/bill.hasBill}}">\n  <div class="bill-status">\n    <img\n      class="lower {{#(bill.newest_action && Math.abs(parseInt(bill.newest_action.date.diff(moment(), \'days\'))) < options.recentChangeThreshold)}}passed{{/()}}"\n      src="{{ imagePath(\'RecentChanges.png\') }}"\n      title="{{#(bill.newest_action && Math.abs(parseInt(bill.newest_action.date.diff(moment(), \'days\'))) < options.recentChangeThreshold)}}Recently changed{{/()}}\n      {{^(bill.newest_action && Math.abs(parseInt(bill.newest_action.date.diff(moment(), \'days\'))) < options.recentChangeThreshold)}}Not changed recently{{/()}}"\n     />\n\n    <img\n      class="lower {{#(bill.actions && bill.actions.lower)}}passed{{/()}}"\n      src="{{ imagePath(\'PassedHouse.png\') }}"\n      title="{{#(bill.actions && bill.actions.lower)}}Passed{{/()}}\n        {{^(bill.actions && bill.actions.lower)}}Not passed{{/()}} {{ translate(\'chamber\', \'lower\') }}"\n     />\n\n    <img\n      class="upper {{#(bill.actions && bill.actions.upper)}}passed{{/()}}"\n      src="{{ imagePath(\'PassedSenate.png\') }}"\n      title="{{#(bill.actions && bill.actions.upper)}}Passed{{/()}}\n        {{^(bill.actions && bill.actions.upper)}}Not passed{{/()}} {{ translate(\'chamber\', \'upper\') }}"\n     />\n\n    {{#options.conferenceBill}}\n      <img\n        class="conference {{#(bill.bill_type && bill.bill_type.conference)}}passed{{/()}}"\n        src="{{ imagePath(\'InConferenceCommittee.png\') }}"\n        title="{{#(bill.bill_type && bill.bill_type.conference)}}Conference bill created{{/()}}\n          {{^(bill.bill_type && bill.bill_type.conference)}}Coinference bill not created{{/()}}"\n       />\n    {{/options.conferenceBill}}\n\n   <img\n     class="signed {{#(bill.actions && bill.actions.signed)}}passed{{/()}}"\n     src="{{ imagePath(\'SignedIntoLaw.png\') }}"\n     title="{{#(bill.actions && bill.actions.signed)}}Signed into law by the Governor{{/()}}\n       {{^(bill.actions && bill.actions.upper)}}Not signed into law{{/()}}"\n    />\n  </div>\n\n  {{#compact}}\n    <h3>\n      {{ bill.title }}\n      <a class="permalink" title="Permanent link to bill" href="#/bill/{{ encodeURI(bill.bill) }}"></a>\n    </h3>\n  {{/compact}}\n  {{^compact}}\n    <h2>{{ bill.title }}</h2>\n  {{/compact}}\n\n  {{^bill.hasBill}}\n    <div class="latest-action">\n      <em>This bill has not been tracked by the legislature yet.</em>\n    </div>\n  {{/bill.hasBill}}\n\n  {{#bill.newest_action}}\n    <div class="latest-action">Last action about {{ date.fromNow() }}: {{ action }}.</div>\n  {{/bill.newest_action}}\n\n  <div class="description">\n    {{ bill.description }}\n  </div>\n\n  <div class="ebill-categories">\n    <strong>Categories:</strong>\n    {{#bill.categories:i}}\n      <a href="#/category/{{ id }}">\n        {{#image}}\n          <img class="category-image" src="{{ imagePath(image) }}" />\n        {{/image}}\n        {{ title }}\n      </a>{{#(i < bill.categories.length - 1)}},{{/()}}\n    {{/bill.categories}}\n  </div>\n\n  {{#(bill.links && bill.links.length && bill.links.length > 0)}}\n    <div class="elinks">\n      <strong>In the news</strong>\n      <ul class="elinks-list">\n        {{#bill.links}}\n          <li><a href="{{ url }}">{{ title }}</a></li>\n        {{/bill.links}}\n      </ul>\n    </div>\n  {{/()}}\n\n\n  {{#(compact == true)}}\n    <div class="ebill-sponsors clear-block">\n      {{#bill.bill_conference}}\n        <div class="osbill bill-conference">\n          <strong>Conference bill {{ bill_id }}</strong>\n          {{#sponsors}}\n            <sponsor sponsor="{{ this }}" compact="true" primary="true">\n          {{/sponsors}}\n        </div>\n      {{/bill.bill_conference}}\n\n      {{#bill.bill_primary}}\n        <div class="osbill bill-primary">\n          <strong>Primary bill {{ bill_id }}</strong>\n          {{#sponsors}}\n            <sponsor sponsor="{{ this }}" compact="true" primary="true">\n          {{/sponsors}}\n        </div>\n      {{/bill.bill_primary}}\n    </div>\n  {{/()}}\n\n\n  {{#(compact != true)}}\n    {{#(bill.custom_events && bill.custom_events.length && bill.custom_events.length > 0)}}\n      <div class="custom-events">\n        <strong>Events</strong>\n        <ul class="custom-events-inner">\n          {{#bill.custom_events}}\n            <li><strong>{{ bill_id }} {{ action }}</strong> on  {{ date.format(\'MMM DD, YYYY\') }}: {{ e.description }}</li>\n          {{/bill.custom_events}}\n        </ul>\n      </div>\n    {{/()}}\n\n    {{#bill.bill_conference}}\n      <div class="conference-bill">\n        <div class="conference-bill-inner clear-block">\n          <h3>Conference Bill</h3>\n          <osbill bill="{{ this }}" type="conference" imagePath="{{ imagePath }}" translate="{{ translate }}" options="{{ options }}">\n        </div>\n      </div>\n    {{/bill.bill_conference}}\n\n    {{#bill.bill_primary}}\n      <div class="primary-bill">\n        <div class="primary-bill-inner clear-block">\n          <h3>{{ (options.chamberLabel) ? translate(\'chamber\', chamber) + \' Bill\' : \'Primary Bill\' }}</h3>\n          <osbill bill="{{ this }}" type="primary" imagePath="{{ imagePath }}" translate="{{ translate }}" options="{{ options }}">\n        </div>\n      </div>\n    {{/bill.bill_primary}}\n\n    {{#bill.bill_companion}}\n      <div class="companion-bill">\n        <div class="companion-bill-inner clear-block">\n          <h3>{{ (options.chamberLabel) ? translate(\'chamber\', chamber) + \' Bill\' : \'Companion Bill\' }}</h3>\n          <osbill bill="{{ this }}" type="companion" imagePath="{{ imagePath }}" translate="{{ translate }}" options="{{ options }}">\n        </div>\n      </div>\n    {{/bill.bill_companion}}\n  {{/()}}\n\n</div>\n',
   'template-error' : '<div class="error-container">\n  <div class="error"><span>There was an error.</span></div>\n</div>',
   'template-legislator' : '\n<div class="legislator">\n  <% if (LT.options.legImageProxy) { %>\n    <img src="<%= LT.options.legImageProxy %><%= encodeURI(photo_url) %>" />\n  <% } else { %>\n    <img src="<%= photo_url %>" />\n  <% } %>\n  \n  <div class="legislator-info">\n    <%= full_name %><br />\n    <% if (typeof district != \'undefined\') { %>\n      District <%= district %>\n    <% } %>\n    <% if (typeof party != \'undefined\') { %>\n      (<%= LT.utils.translate(\'partyAbbr\', party) %>) \n    <% } %> <br />\n    <% if (typeof chamber != \'undefined\') { %>\n      <%= LT.utils.translate(\'chamber\', chamber) %>\n    <% } %>\n  </div>\n</div>',
   'template-loading' : '<div class="loading-general-container">\n  <div class="loading-general"><span>Loading...</span></div>\n</div>',
   'template-osbill' : '\n<div class="osbill">\n  <h4>\n    {{#(!!bill.title)}}\n      {{ bill.title }} ({{ bill.bill_id }})\n    {{/()}}\n\n    {{^(!!bill.title)}}\n      {{ bill.bill_id }}\n    {{/()}}\n  </h4>\n  <div class="sponsors primary-sponsors">\n    <h5>Primary sponsors</h5>\n\n    <div class="clear-block">\n      {{#bill.sponsors}}\n        {{#(type === \'primary\')}}\n          <div class="sponsor" data-leg-id="{{ leg_id }}" data-sponsor-type="{{ type }}">\n            {{ name }} ({{ type }})\n          </div>\n        {{/()}}\n      {{/bill.sponsors}}\n    </div>\n  </div>\n\n  <div class="actions">\n    <h5><span class="latest-action-label">Latest</span> Actions</h5>\n\n    <div class="actions-inner">\n      {{#bill.actions}}\n        {{#(!!date)}}\n          <div>\n            {{ date.format(\'MMM DD, YYYY\') }}:\n            {{ action }}\n            ({{ translate(\'chamber\', actor) }})\n          </div>\n        {{/())}}\n      {{/bill.actions}}\n    </div>\n  </div>\n\n  {{#(bill.sponsors && bill.sponsors.length && bill.sponsors.length)}}\n    <div class="sponsors co-sponsors clear-block">\n      <h5>Co-Sponsors</h5>\n\n      <div class="co-sponsors-inner clear-block">\n        {{#bill.sponsors}}\n          {{#(type !== \'primary\')}}\n            <div class="sponsor" data-leg-id="{{ leg_id }}" data-sponsor-type="{{ type }}">\n              {{ name }} ({{ type }})\n            </div>\n          {{/()}}\n        {{/bill.sponsors}}\n      </div>\n    </div>\n  {{/()}}\n\n  {{#(bill.votes && bill.votes.length && bill.votes.length > 0)}}\n    <div class="votes">\n      <h5>Votes</h5>\n\n      <div class="votes-inner clear-block">\n        {{#bill.votes}}\n          {{ date.format(\'MMM DD, YYYY\') }}\n          {{ motion }} {{ (passed) ? \'passed\' : \'failed\' }}\n          {{ yes_count }} Y -\n          {{ no_count }} N <br />\n        {{/bill.votes}}\n      </div>\n    </div>\n  {{/()}}\n\n  <div class="sources">\n    <h5>Sources</h5>\n\n    {{#bill.sources}}\n      <a href="{{ url }}" target="_blank">\n        {{#(!!text)}}\n          {{ text }}\n        {{/()}}\n        {{#(!text)}}\n          {{ url }}\n        {{/()}}\n      </a> <br />\n    {{/bill.sources}}\n  </div>\n</div>\n',
+  'template-sponsor' : '\n{{#(primary == true && sponsor.type === \'primary\')}}\n  <div class="sponsor">\n    {{ sponsor.name }} ({{ sponsor.type }})\n  </div>\n{{/()}}\n',
 };
 
 /**
@@ -866,7 +867,7 @@ LT.ApplicationView = LT.BaseView.extend({
 });
 
 /**
- * Categories view for application.
+ * Categories view.
  */
 LT.CategoriesView = LT.BaseView.extend({
   init: function() {
@@ -875,7 +876,7 @@ LT.CategoriesView = LT.BaseView.extend({
 });
 
 /**
- * Category view for application.
+ * Category view.
  */
 LT.CategoryView = LT.BaseView.extend({
   init: function() {
@@ -884,7 +885,7 @@ LT.CategoryView = LT.BaseView.extend({
 });
 
 /**
- * EBill view for application.
+ * EBill view.
  */
 LT.EBillView = LT.BaseView.extend({
   init: function() {
@@ -893,9 +894,18 @@ LT.EBillView = LT.BaseView.extend({
 });
 
 /**
- * OSBill view for application.
+ * OSBill view.
  */
 LT.OSBillView = LT.BaseView.extend({
+  init: function() {
+    this.baseInit.apply(this, arguments);
+  }
+});
+
+/**
+ * OSSponsor view
+ */
+LT.OSSponsorView = LT.BaseView.extend({
   init: function() {
     this.baseInit.apply(this, arguments);
   }
@@ -934,8 +944,7 @@ LT.MainRouter = Backbone.Router.extend({
       options: this.options,
       partials: {
         loading: this.app.templates.loading
-      },
-      adaptors: ['Backbone']
+      }
     });
 
     // Make reference to content to change
@@ -961,6 +970,9 @@ LT.MainRouter = Backbone.Router.extend({
     // to do this.
     this.app.fetchBasicBillData();
 
+    // Turn off the top menu
+    this.app.views.application.set('menuOff', true);
+
     // Create categories view
     this.app.views.categories = new LT.CategoriesView({
       el: this.$content,
@@ -973,8 +985,7 @@ LT.MainRouter = Backbone.Router.extend({
       options: this.options,
       partials: {
         loading: this.app.templates.loading
-      },
-      adaptors: ['Backbone']
+      }
     });
   },
 
@@ -985,6 +996,9 @@ LT.MainRouter = Backbone.Router.extend({
 
     // Get category
     category = this.app.categories.get(categoryID);
+
+    // Turn on the top menu
+    this.app.views.application.set('menuOff', false);
 
     // Check for valid bill
     if (!category) {
@@ -1015,6 +1029,9 @@ LT.MainRouter = Backbone.Router.extend({
           components: {
             osbill: LT.OSBillView.extend({
               template: this.app.templates.osbill
+            }),
+            sponsor: LT.OSSponsorView.extend({
+              template: this.app.templates.sponsor
             })
           }
         })
@@ -1040,6 +1057,9 @@ LT.MainRouter = Backbone.Router.extend({
     var thisRouter = this;
     var billID = decodeURI(bill);
     bill = this.app.bills.where({ bill: billID })[0];
+
+    // Turn on the top menu
+    this.app.views.application.set('menuOff', false);
 
     // Check for valid bill
     if (!bill) {
@@ -1340,7 +1360,7 @@ _.extend(App.prototype, {
     this.templates.osbill = this.getTemplate('template-osbill');
     this.templates.category = this.getTemplate('template-category');
     this.templates.categories = this.getTemplate('template-categories');
-    this.templates.header = this.getTemplate('template-header');
+    this.templates.sponsor = this.getTemplate('template-sponsor');
   },
 
   // Default options

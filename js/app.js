@@ -253,7 +253,7 @@ _.extend(App.prototype, {
     this.templates.osbill = this.getTemplate('template-osbill');
     this.templates.category = this.getTemplate('template-category');
     this.templates.categories = this.getTemplate('template-categories');
-    this.templates.header = this.getTemplate('template-header');
+    this.templates.sponsor = this.getTemplate('template-sponsor');
   },
 
   // Default options

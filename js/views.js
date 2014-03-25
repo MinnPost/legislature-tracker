@@ -24,7 +24,7 @@ LT.ApplicationView = LT.BaseView.extend({
 });
 
 /**
- * Categories view for application.
+ * Categories view.
  */
 LT.CategoriesView = LT.BaseView.extend({
   init: function() {
@@ -33,7 +33,7 @@ LT.CategoriesView = LT.BaseView.extend({
 });
 
 /**
- * Category view for application.
+ * Category view.
  */
 LT.CategoryView = LT.BaseView.extend({
   init: function() {
@@ -42,7 +42,7 @@ LT.CategoryView = LT.BaseView.extend({
 });
 
 /**
- * EBill view for application.
+ * EBill view.
  */
 LT.EBillView = LT.BaseView.extend({
   init: function() {
@@ -51,9 +51,18 @@ LT.EBillView = LT.BaseView.extend({
 });
 
 /**
- * OSBill view for application.
+ * OSBill view.
  */
 LT.OSBillView = LT.BaseView.extend({
+  init: function() {
+    this.baseInit.apply(this, arguments);
+  }
+});
+
+/**
+ * OSSponsor view
+ */
+LT.OSSponsorView = LT.BaseView.extend({
   init: function() {
     this.baseInit.apply(this, arguments);
   }
