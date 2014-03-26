@@ -2,28 +2,28 @@
 {{#(((!!type && sponsor.type === type) || !type) && !compact)}}
 
   <div class="sponsor clear-block">
-    {{#(!!sponsor.leg.photo_url)}}
+    {{#sponsor.leg.photo_url}}
       <div class="sponsor-image">
-        {{#(!!options.legImageProxy)}}
-          <img src="{{ options.legImageProxy }}{{ encodeURI(sponsor.leg.photo_url) }}" />
-        {{/()}}
-        {{#(!options.legImageProxy)}}
-          <img src="{{ encodeURI(sponsor.photo_url) }}" />
-        {{/()}}
+        {{#options.legImageProxy}}
+          <img src="{{ this }}{{ encodeURI(sponsor.leg.photo_url) }}" />
+        {{/options.legImageProxy}}
+        {{^options.legImageProxy}}
+          <img src="{{ encodeURI(sponsor.leg.photo_url) }}" />
+        {{/options.legImageProxy}}
       </div>
-    {{/()}}
+    {{/sponsor.leg.photo_url}}
 
     <div class="sponsor-info">
-      {{#(!!sponsor.leg.full_name)}}
+      {{#sponsor.leg.full_name}}
         {{ sponsor.leg.full_name }} <br />
         District {{ sponsor.leg.district }} <br />
         {{ translate('partyAbbr', sponsor.leg.party) }},
         {{ translate('chamber', sponsor.leg.chamber) }}
-      {{/()}}
+      {{/sponsor.leg.full_name}}
 
-      {{#(!sponsor.leg.full_name)}}
+      {{^sponsor.leg.full_name}}
         {{ sponsor.name }}
-      {{/()}}
+      {{/sponsor.leg.full_name}}
     </div>
   </div>
 {{/()}}
@@ -31,13 +31,13 @@
 
 {{#(((!!type && sponsor.type === type) || !type) && !!compact)}}
   <div class="sponsor">
-    {{#(!!sponsor.leg.full_name)}}
+    {{#sponsor.leg.full_name}}
       {{ sponsor.leg.full_name }},
       {{ translate('partyAbbr', sponsor.leg.party) }}
-    {{/()}}
+    {{/sponsor.leg.full_name}}
 
-    {{#(!sponsor.leg.full_name)}}
+    {{^sponsor.leg.full_name}}
       {{ sponsor.name }}
-    {{/()}}
+    {{/sponsor.leg.full_name}}
   </div>
 {{/()}}
