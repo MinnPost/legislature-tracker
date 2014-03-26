@@ -26,7 +26,7 @@ LT.OSModel = LT.BaseModel.extend({
   },
 
   urlEnd: function() {
-    return '/?apikey=' + encodeURI(this.options.app.options.OSKey) + '&callback=?';
+    return '/?apikey=' + encodeURI(this.app.options.OSKey) + '&callback=?';
   },
 
   url: function() {
@@ -82,8 +82,8 @@ LT.OSBillModel = LT.OSModel.extend({
       return this.urlBase() + 'bills/'  + this.id + this.urlEnd();
     }
     else if (!_.isUndefined(this.get('bill_id')) && this.get('bill_id') !== '') {
-      return this.urlBase() + 'bills/'  + encodeURI(this.options.app.options.state) + '/' +
-        encodeURI(this.options.app.options.session) + '/' +
+      return this.urlBase() + 'bills/'  + encodeURI(this.app.options.state) + '/' +
+        encodeURI(this.app.options.session) + '/' +
         encodeURI(this.get('bill_id')) + this.urlEnd();
     }
   },
@@ -135,7 +135,7 @@ LT.OSBillModel = LT.OSModel.extend({
     data.newest_action = data.actions[0];
 
     // Add a hook for any custom bill parsing
-    if (this.options.app.options.osBillParse && _.isFunction(this.options.app.options.osBillParse)) {
+    if (this.app.options.osBillParse && _.isFunction(this.app.options.osBillParse)) {
       data = this.options.osBillParse(data, this);
     }
 
@@ -160,12 +160,12 @@ LT.OSBillModel = LT.OSModel.extend({
     if (_.isBoolean(this.get('substitued'))) {
       sub = this.get('substitued');
     }
-    else if (this.options.substituteMatch === false) {
+    else if (this.app.options.substituteMatch === false) {
       sub = false;
     }
     else {
       sub = _.find(this.get('actions'), function(a) {
-        return a.action.match(thisModel.options.substituteMatch);
+        return a.action.match(thisModel.app.options.substituteMatch);
       });
       sub = (sub) ? true : false;
       this.set('substitued', sub);
@@ -202,11 +202,6 @@ LT.BillModel = LT.BaseModel.extend({
           bill_id: thisModel.get(b)
         });
         thisModel.set(b, model);
-
-        // Propagate bill events
-        model.on('all', function(e) {
-          thisModel.trigger(b + ':' + e);
-        });
       }
     });
   },
@@ -236,7 +231,7 @@ LT.BillModel = LT.BaseModel.extend({
 
     _.each(this.subbills, function(p, pi) {
       if (thisModel.get('hasBill') && thisModel.get(p)) {
-        defers.push(thisModel.options.app.fetchModel(thisModel.get(p)));
+        defers.push(thisModel.app.fetchModel(thisModel.get(p)));
       }
     });
 
@@ -251,6 +246,13 @@ LT.BillModel = LT.BaseModel.extend({
     });
   },
 
+  // Override the fetch method to use the osbills one
+  fetch: function() {
+    return this.fetchOSBills();
+  },
+
+  // Check to see if we don't have a companion but Open States
+  // says there is one.
   loadOSCompanion: function() {
     var thisModel = this;
     var match;
@@ -262,27 +264,29 @@ LT.BillModel = LT.BaseModel.extend({
 
       match = LT.parse.detectCompanionBill(this.get('bill_primary').get('companions')[0].bill_id);
       if (match) {
-        this.set('bill_companion', thisModel.options.app.getModel('OSBillModel', 'bill_id', { bill_id : match }));
-        defers.push(thisModel.options.app.fetchModel(this.get('bill_companion')));
+        this.set('bill_companion', thisModel.app.getModel('OSBillModel', 'bill_id', { bill_id : match }));
+        defers.push(thisModel.app.fetchModel(this.get('bill_companion')));
       }
     }
 
     return $.when.apply($, defers);
   },
 
+  // Get the category objects associated with this bill
   getCategories: function() {
     var thisModel = this;
 
     if (this.get('categories')) {
       this.set('categories', _.map(this.get('categories'), function(c) {
         if (!_.isObject(c)) {
-          c = thisModel.options.app.getModel('CategoryModel', 'id', { id: c });
+          c = thisModel.app.getModel('CategoryModel', 'id', { id: c });
         }
         return c;
       }));
     }
   },
 
+  // Determine the last updated date from each osbill
   lastUpdatedAt: function() {
     var last_updated_at;
     var p = this.get('bill_primary');
@@ -304,15 +308,11 @@ LT.BillModel = LT.BaseModel.extend({
       }
       this.set('last_updated_at', last_updated_at);
     }
-    // Check if this bill loaded correctly
-    else if (_.isUndefined(this.get('last_updated_at')) && !p.get('updated_at')) {
-      LT.log('Could not fetch primary bill data from OpenStates. Check that the id ' +
-        this.get('bill_primary').get('bill_id') + ' is formatted properly.');
-    }
 
     return this.get('last_updated_at');
   },
 
+  // Determine the last action from each osbill
   newestAction: function() {
     var newest_action;
     var p = this.get('bill_primary');
@@ -338,10 +338,11 @@ LT.BillModel = LT.BaseModel.extend({
     return this.get('newest_action');
   },
 
+  // We need to get actions and meta data from individual
+  // bills.  This could get a bit complicated...
   parseMeta: function() {
-
-    // We need to get actions and meta data from individual
-    // bills.  This could get a bit complicated...
+    var thisModel = this;
+    var swap, swap2;
     var actions = {
       upper: false,
       lower: false,
@@ -373,7 +374,18 @@ LT.BillModel = LT.BaseModel.extend({
         }
         if (this.get('bill_primary').isSubstituted()) {
           type.substituted = true;
-          // Swap primary for companion
+
+          // Swap primary for companion.  Yeah, sorry.
+          swap = this.get('bill_primary').get('bill_id');
+          swap2 = this.get('bill_companion').get('bill_id');
+          this.unset('bill_primary');
+          this.set('bill_primary', (function() {
+            return thisModel.app.getModel('OSBillModel', 'bill_id', { bill_id: swap2 });
+          })());
+          this.unset('bill_companion');
+          this.set('bill_companion', (function() {
+            return thisModel.app.getModel('OSBillModel', 'bill_id', { bill_id: swap });
+          })());
         }
       }
 
@@ -435,9 +447,15 @@ LT.BillModel = LT.BaseModel.extend({
       }
     }
 
+    // Determine if this bill has been updated recently
+    type.recent = (Math.abs(parseInt(this.newestAction().date.diff(moment(), 'days'), 10)) <= this.app.options.recentChangeThreshold);
+
+    // Attach new data
     this.set('actions', actions);
     this.set('bill_type', type);
 
+    // Helps bumps the view a bit
+    this.trigger('change');
     return this;
   }
 });
@@ -453,10 +471,6 @@ LT.CategoryModel = LT.BaseModel.extend({
 
     // Keep a reference to bills in this category
     this.set('bills', new LT.BillsCollection(null));
-    // Propagate collection events
-    this.get('bills').on('all', function(e) {
-      thisModel.trigger('bills:' + e);
-    });
   },
 
   getBills: function(bills) {

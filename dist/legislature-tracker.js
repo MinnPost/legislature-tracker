@@ -35,11 +35,11 @@ this.LTTemplates = {
   'template-application' : '<div class="ls">\n\n  {{#(menuOff !== true && !!categories)}}\n    <div class="ls-header-container">\n      <div class="ls-header">\n\n        <a class="all-categories-link" href="#/">\n          <img src="{{ options.imagePath }}back-100-85.png" />\n          All Categories\n        </a>\n\n        <span class="categories-nav">\n          &nbsp;&nbsp;|&nbsp;&nbsp;\n\n          {{#categories}}\n            <a class="" href="#/category/{{ id }}" title="{{ title }}">\n              {{ (short_title) ? short_title : title.split(\' \')[0] }}\n            </a>\n            &nbsp;&nbsp;\n          {{/categories}}\n        </span>\n      </div>\n    </div>\n  {{/()}}\n\n  {{#options.title}}\n    <h2>{{ options.title }}</h2>\n  {{/options.title}}\n\n  <div class="ls-content-container">\n    {{>loading}}\n  </div>\n</div>\n',
   'template-categories' : '\n{{^categories}}\n  {{>loading}}\n{{/categories}}\n\n<div class="categories-container">\n  <ul class="category-list clear-block">\n    {{#categories:i}}\n      <li class="category-item category-item-{{ i }}">\n        <div class="category-inner category-{{ _.cssClass(id) }}">\n          {{#image}}\n            <a href="#/category/{{ encodeURI(id) }}">\n              <img class="category-image" src="{{ imagePath(image) }}" />\n            </a>\n          {{/image}}\n\n          <h3>\n            <a href="#/category/{{ encodeURI(id) }}">\n              {{ title }}\n            </a>\n          </h3>\n\n          <div>\n            Watching <strong>{{ bills.length }}</strong> bills.\n          </div>\n        </div>\n      </li>\n    {{/categories}}\n  </ul>\n</div>',
   'template-category' : '\n{{^category}}\n  {{>loading}}\n{{/category}}\n\n<div class="category-container">\n  <h2>\n    {{#category.image}}\n      <img class="category-image" src="{{ imagePath(category.image) }}" />\n    {{/category.image}}\n\n    {{ category.title }}\n  </h2>\n\n  <p class="category-description">{{ category.description }}</p>\n\n  {{#(category.links && category.links.length && category.links.length > 0)}}\n    <div class="elinks">\n      <strong>In the news</strong>\n      <ul class="elinks-list">\n        {{#category.links}}\n          <li><a href="{{ url }}">{{ title }}</a></li>\n        {{/category.links}}\n      </ul>\n    </div>\n  {{/()}}\n\n  <div class="clear-block bills-list">\n    {{#category.bills:bill}}\n      <ebill bill="{{ this }}" compact="true" imagePath="{{ imagePath }}" options="{{ options }}">\n    {{/category.bills}}\n  </div>\n\n  <div class="clear-block total-bill">\n    Watching\n    <strong>{{ category.bills.length }}</strong>\n    {{#(typeof category.total_bill_count != \'undefined\')}}\n      of {{ category.total_bill_count }}\n    {{/()}}\n    bills in the {{ category.title }} category.\n  </div>\n</div>\n',
-  'template-ebill' : '\n<div class="bill ebill {{^bill.hasBill}}no-bill{{/bill.hasBill}}">\n  <div class="bill-status">\n    <img\n      class="lower {{#(bill.newest_action && Math.abs(parseInt(bill.newest_action.date.diff(moment(), \'days\'))) < options.recentChangeThreshold)}}passed{{/()}}"\n      src="{{ imagePath(\'RecentChanges.png\') }}"\n      title="{{#(bill.newest_action && Math.abs(parseInt(bill.newest_action.date.diff(moment(), \'days\'))) < options.recentChangeThreshold)}}Recently changed{{/()}}\n      {{^(bill.newest_action && Math.abs(parseInt(bill.newest_action.date.diff(moment(), \'days\'))) < options.recentChangeThreshold)}}Not changed recently{{/()}}"\n     />\n\n    <img\n      class="lower {{#(bill.actions && bill.actions.lower)}}passed{{/()}}"\n      src="{{ imagePath(\'PassedHouse.png\') }}"\n      title="{{#(bill.actions && bill.actions.lower)}}Passed{{/()}}\n        {{^(bill.actions && bill.actions.lower)}}Not passed{{/()}} {{ translate(\'chamber\', \'lower\') }}"\n     />\n\n    <img\n      class="upper {{#(bill.actions && bill.actions.upper)}}passed{{/()}}"\n      src="{{ imagePath(\'PassedSenate.png\') }}"\n      title="{{#(bill.actions && bill.actions.upper)}}Passed{{/()}}\n        {{^(bill.actions && bill.actions.upper)}}Not passed{{/()}} {{ translate(\'chamber\', \'upper\') }}"\n     />\n\n    {{#options.conferenceBill}}\n      <img\n        class="conference {{#(bill.bill_type && bill.bill_type.conference)}}passed{{/()}}"\n        src="{{ imagePath(\'InConferenceCommittee.png\') }}"\n        title="{{#(bill.bill_type && bill.bill_type.conference)}}Conference bill created{{/()}}\n          {{^(bill.bill_type && bill.bill_type.conference)}}Coinference bill not created{{/()}}"\n       />\n    {{/options.conferenceBill}}\n\n   <img\n     class="signed {{#(bill.actions && bill.actions.signed)}}passed{{/()}}"\n     src="{{ imagePath(\'SignedIntoLaw.png\') }}"\n     title="{{#(bill.actions && bill.actions.signed)}}Signed into law by the Governor{{/()}}\n       {{^(bill.actions && bill.actions.upper)}}Not signed into law{{/()}}"\n    />\n  </div>\n\n  {{#compact}}\n    <h3>\n      {{ bill.title }}\n      <a class="permalink" title="Permanent link to bill" href="#/bill/{{ encodeURI(bill.bill) }}"></a>\n    </h3>\n  {{/compact}}\n  {{^compact}}\n    <h2>{{ bill.title }}</h2>\n  {{/compact}}\n\n  {{^bill.hasBill}}\n    <div class="latest-action">\n      <em>This bill has not been tracked by the legislature yet.</em>\n    </div>\n  {{/bill.hasBill}}\n\n  {{#bill.newest_action}}\n    <div class="latest-action">Last action about {{ date.fromNow() }}: {{ action }}.</div>\n  {{/bill.newest_action}}\n\n  <div class="description">\n    {{ bill.description }}\n  </div>\n\n  <div class="ebill-categories">\n    <strong>Categories:</strong>\n    {{#bill.categories:i}}\n      <a href="#/category/{{ id }}">\n        {{#image}}\n          <img class="category-image" src="{{ imagePath(image) }}" />\n        {{/image}}\n        {{ title }}\n      </a>{{#(i < bill.categories.length - 1)}},{{/()}}\n    {{/bill.categories}}\n  </div>\n\n  {{#(bill.links && bill.links.length && bill.links.length > 0)}}\n    <div class="elinks">\n      <strong>In the news</strong>\n      <ul class="elinks-list">\n        {{#bill.links}}\n          <li><a href="{{ url }}">{{ title }}</a></li>\n        {{/bill.links}}\n      </ul>\n    </div>\n  {{/()}}\n\n\n  {{#(compact == true)}}\n    <div class="osbills ebill-sponsors clear-block\n      {{#bill.bill_conference}}has-conference{{/bill.bill_conference}}\n      {{#bill.bill_primary}}has-primary{{/bill.bill_primary}}\n      {{#bill.bill_companion}}has-companion{{/bill.bill_companion}}\n      ">\n      {{#bill.bill_conference}}\n        <div class="osbill bill-conference">\n          <strong>Conference bill {{ bill_id }}</strong>\n          {{#sponsors}}\n            <sponsor sponsor="{{ this }}" type="primary">\n          {{/sponsors}}\n        </div>\n      {{/bill.bill_conference}}\n\n      {{#bill.bill_primary}}\n        <div class="osbill bill-primary">\n          <strong>Primary bill {{ bill_id }}</strong>\n          {{#sponsors}}\n            <sponsor sponsor="{{ this }}" type="primary">\n          {{/sponsors}}\n        </div>\n      {{/bill.bill_primary}}\n\n      {{#bill.bill_companion}}\n        <div class="osbill bill-companion">\n          <strong>Companion bill {{ bill_id }}</strong>\n          {{#sponsors}}\n            <sponsor sponsor="{{ this }}" type="primary">\n          {{/sponsors}}\n        </div>\n      {{/bill.bill_companion}}\n    </div>\n  {{/()}}\n\n\n  {{#(compact != true)}}\n    {{#(bill.custom_events && bill.custom_events.length && bill.custom_events.length > 0)}}\n      <div class="custom-events">\n        <strong>Events</strong>\n        <ul class="custom-events-inner">\n          {{#bill.custom_events}}\n            <li><strong>{{ bill_id }} {{ action }}</strong> on  {{ date.format(\'MMM DD, YYYY\') }}: {{ e.description }}</li>\n          {{/bill.custom_events}}\n        </ul>\n      </div>\n    {{/()}}\n\n    <div class="osbills clear-block\n      {{#bill.bill_conference}}has-conference{{/bill.bill_conference}}\n      {{#bill.bill_primary}}has-primary{{/bill.bill_primary}}\n      {{#bill.bill_companion}}has-companion{{/bill.bill_companion}}\n    ">\n\n      {{#bill.bill_conference}}\n        <div class="osbill conference-bill">\n          <h3>Conference Bill</h3>\n          <osbill bill="{{ this }}" type="conference" imagePath="{{ imagePath }}" translate="{{ translate }}" options="{{ options }}">\n        </div>\n      {{/bill.bill_conference}}\n\n      {{#bill.bill_primary}}\n        <div class="osbill primary-bill">\n          <h3>{{ (options.chamberLabel) ? translate(\'chamber\', chamber) + \' Bill\' : \'Primary Bill\' }}</h3>\n          <osbill bill="{{ this }}" type="primary" imagePath="{{ imagePath }}" translate="{{ translate }}" options="{{ options }}">\n        </div>\n      {{/bill.bill_primary}}\n\n      {{#bill.bill_companion}}\n        <div class="osbill companion-bill">\n          <h3>{{ (options.chamberLabel) ? translate(\'chamber\', chamber) + \' Bill\' : \'Companion Bill\' }}</h3>\n          <osbill bill="{{ this }}" type="companion" imagePath="{{ imagePath }}" translate="{{ translate }}" options="{{ options }}">\n        </div>\n      {{/bill.bill_companion}}\n  {{/()}}\n\n</div>\n',
+  'template-ebill' : '\n<div class="bill ebill {{^bill.hasBill}}no-bill{{/bill.hasBill}}">\n  <div class="bill-status">\n    <img\n      class="lower {{#bill.bill_type.recent}}passed{{/bill.bill_type.recent}}"\n      src="{{ imagePath(\'RecentChanges.png\') }}"\n      title="{{#bill.bill_type.recent}}Recently changed{{/bill.bill_type.recent}}\n        {{^bill.bill_type.recent}}Not changed recently{{/bill.bill_type.recent}}"\n     />\n\n    <img\n      class="lower {{#bill.actions.lower}}passed{{/bill.actions.lower}}"\n      src="{{ imagePath(\'PassedHouse.png\') }}"\n      title="{{#bill.actions.lower}}Passed{{/bill.actions.lower}}\n        {{^bill.actions.lower}}Not passed (yet){{/bill.actions.lower}} {{ translate(\'chamber\', \'lower\') }}"\n     />\n\n    <img\n      class="lower {{#bill.actions.upper}}passed{{/bill.actions.upper}}"\n      src="{{ imagePath(\'PassedSenate.png\') }}"\n      title="{{#bill.actions.upper}}Passed{{/bill.actions.upper}}\n        {{^bill.actions.upper}}Not passed (yet){{/bill.actions.upper}} {{ translate(\'chamber\', \'upper\') }}"\n     />\n\n    {{#options.conferenceBill}}\n      <img\n        class="conference {{#bill.bill_type.conference}}passed{{/bill.bill_type.conference}}"\n        src="{{ imagePath(\'InConferenceCommittee.png\') }}"\n        title="{{#bill.bill_type.conference}}Conference bill created{{/bill.bill_type.conference}}\n          {{#bill.bill_type.conference}}Conference bill not created (yet){{/bill.bill_type.conference}}"\n       />\n    {{/options.conferenceBill}}\n\n   <img\n     class="signed {{#bill.actions.signed}}passed{{/bill.actions.signed}}"\n     src="{{ imagePath(\'SignedIntoLaw.png\') }}"\n     title="{{#bill.actions.signed}}Signed into law by the Governor{{/bill.actions.signed}}\n       {{#bill.actions.signed}}Not signed into law (yet){{/bill.actions.signed}}"\n    />\n  </div>\n\n  {{#compact}}\n    <h3>\n      {{ bill.title }}\n      <a class="permalink" title="Permanent link to bill" href="#/bill/{{ encodeURI(bill.bill) }}"></a>\n    </h3>\n  {{/compact}}\n  {{^compact}}\n    <h2>{{ bill.title }}</h2>\n  {{/compact}}\n\n  {{^bill.hasBill}}\n    <div class="latest-action">\n      <em>This bill has not been tracked by the legislature yet.</em>\n    </div>\n  {{/bill.hasBill}}\n\n  {{#bill.newest_action}}\n    <div class="latest-action">Last action about {{ date.fromNow() }}: {{ action }}.</div>\n  {{/bill.newest_action}}\n\n  <div class="description">\n    {{ bill.description }}\n  </div>\n\n  <div class="ebill-categories">\n    <strong>Categories:</strong>\n    {{#bill.categories:i}}\n      <a href="#/category/{{ id }}">\n        {{#image}}\n          <img class="category-image" src="{{ imagePath(image) }}" />\n        {{/image}}\n        {{ title }}\n      </a>{{#(i < bill.categories.length - 1)}},{{/()}}\n    {{/bill.categories}}\n  </div>\n\n  {{#(bill.links && bill.links.length && bill.links.length > 0)}}\n    <div class="elinks">\n      <strong>In the news</strong>\n      <ul class="elinks-list">\n        {{#bill.links}}\n          <li><a href="{{ url }}">{{ title }}</a></li>\n        {{/bill.links}}\n      </ul>\n    </div>\n  {{/()}}\n\n\n  {{#(compact == true)}}\n    <div class="osbills ebill-sponsors clear-block\n      {{#bill.bill_conference}}has-conference{{/bill.bill_conference}}\n      {{#bill.bill_primary}}has-primary{{/bill.bill_primary}}\n      {{#bill.bill_companion}}has-companion{{/bill.bill_companion}}\n      ">\n      {{#bill.bill_conference}}\n        <div class="osbill bill-conference">\n          <strong>Conference bill {{ bill_id }}</strong>\n          {{#sponsors}}\n            <sponsor sponsor="{{ this }}" type="primary">\n          {{/sponsors}}\n        </div>\n      {{/bill.bill_conference}}\n\n      {{#bill.bill_primary}}\n        <div class="osbill bill-primary">\n          <strong>Primary bill {{ bill_id }}</strong>\n          {{#sponsors}}\n            <sponsor sponsor="{{ this }}" type="primary">\n          {{/sponsors}}\n        </div>\n      {{/bill.bill_primary}}\n\n      {{#bill.bill_companion}}\n        <div class="osbill bill-companion">\n          <strong>Companion bill {{ bill_id }}</strong>\n          {{#sponsors}}\n            <sponsor sponsor="{{ this }}" type="primary">\n          {{/sponsors}}\n        </div>\n      {{/bill.bill_companion}}\n    </div>\n  {{/()}}\n\n\n  {{#(compact != true)}}\n    {{#(bill.custom_events && bill.custom_events.length && bill.custom_events.length > 0)}}\n      <div class="custom-events">\n        <strong>Events</strong>\n        <ul class="custom-events-inner">\n          {{#bill.custom_events}}\n            <li><strong>{{ bill_id }} {{ action }}</strong> on  {{ date.format(\'MMM DD, YYYY\') }}: {{ e.description }}</li>\n          {{/bill.custom_events}}\n        </ul>\n      </div>\n    {{/()}}\n\n    <div class="osbills clear-block\n      {{#bill.bill_conference}}has-conference{{/bill.bill_conference}}\n      {{#bill.bill_primary}}has-primary{{/bill.bill_primary}}\n      {{#bill.bill_companion}}has-companion{{/bill.bill_companion}}\n    ">\n\n      {{#bill.bill_conference}}\n        <div class="osbill conference-bill">\n          <h3>Conference Bill</h3>\n          <osbill bill="{{ this }}" type="conference" imagePath="{{ imagePath }}" translate="{{ translate }}" options="{{ options }}">\n        </div>\n      {{/bill.bill_conference}}\n\n      {{#bill.bill_primary}}\n        <div class="osbill primary-bill">\n          <h3>{{ (options.chamberLabel) ? translate(\'chamber\', chamber) + \' Bill\' : \'Primary Bill\' }}</h3>\n          <osbill bill="{{ this }}" type="primary" imagePath="{{ imagePath }}" translate="{{ translate }}" options="{{ options }}">\n        </div>\n      {{/bill.bill_primary}}\n\n      {{#bill.bill_companion}}\n        <div class="osbill companion-bill">\n          <h3>{{ (options.chamberLabel) ? translate(\'chamber\', chamber) + \' Bill\' : \'Companion Bill\' }}</h3>\n          <osbill bill="{{ this }}" type="companion" imagePath="{{ imagePath }}" translate="{{ translate }}" options="{{ options }}">\n        </div>\n      {{/bill.bill_companion}}\n  {{/()}}\n\n</div>\n',
   'template-error' : '<div class="error-container">\n  <div class="error"><span>There was an error.</span></div>\n</div>',
   'template-legislator' : '\n<div class="legislator">\n  <% if (LT.options.legImageProxy) { %>\n    <img src="<%= LT.options.legImageProxy %><%= encodeURI(photo_url) %>" />\n  <% } else { %>\n    <img src="<%= photo_url %>" />\n  <% } %>\n  \n  <div class="legislator-info">\n    <%= full_name %><br />\n    <% if (typeof district != \'undefined\') { %>\n      District <%= district %>\n    <% } %>\n    <% if (typeof party != \'undefined\') { %>\n      (<%= LT.utils.translate(\'partyAbbr\', party) %>) \n    <% } %> <br />\n    <% if (typeof chamber != \'undefined\') { %>\n      <%= LT.utils.translate(\'chamber\', chamber) %>\n    <% } %>\n  </div>\n</div>',
   'template-loading' : '<div class="loading-general-container">\n  <div class="loading-general"><span>Loading...</span></div>\n</div>',
-  'template-osbill' : '\n<div class="osbill-container {{ type }}-bill">\n  <h4>\n    {{#(!!bill.title)}}\n      {{ bill.title }} ({{ bill.bill_id }})\n    {{/()}}\n\n    {{^(!!bill.title)}}\n      {{ bill.bill_id }}\n    {{/()}}\n  </h4>\n\n  <div class="primary-sponsors">\n    <strong>Primary sponsors</strong>\n    <div class="clear-block">\n      {{#bill.sponsors}}\n        <sponsor sponsor="{{ this }}" type="primary">\n      {{/bill.sponsors}}\n    </div>\n  </div>\n\n  <div class="actions">\n    <strong>Actions</strong>\n    <div class="actions-inner">\n      {{#bill.actions}}\n        {{#(!!date)}}\n          <div>\n            {{ date.format(\'MMM DD, YYYY\') }}:\n            {{ action }}\n            ({{ translate(\'chamber\', actor) }})\n          </div>\n        {{/())}}\n      {{/bill.actions}}\n    </div>\n  </div>\n\n  <div class="co-sponsors">\n    <strong>Co-Sponsors</strong>\n    <div>\n      {{#bill.sponsors}}\n        <sponsor sponsor="{{ this }}" type="cosponsor" compact="true">\n      {{/bill.sponsors}}\n    </div>\n  </div>\n\n  {{#(bill.votes && bill.votes.length && bill.votes.length > 0)}}\n    <div class="votes">\n      <strong>Votes</strong>\n      <div>\n        {{#bill.votes}}\n          {{ date.format(\'MMM DD, YYYY\') }}\n          {{ motion }} {{ (passed) ? \'passed\' : \'failed\' }}\n          {{ yes_count }} Y -\n          {{ no_count }} N <br />\n        {{/bill.votes}}\n      </div>\n    </div>\n  {{/()}}\n\n  <div class="sources">\n    <strong>Sources</strong>\n    {{#bill.sources}}\n      <a href="{{ url }}" target="_blank">\n        {{#(!!text)}}\n          {{ text }}\n        {{/()}}\n        {{#(!text)}}\n          {{ url }}\n        {{/()}}\n      </a> <br />\n    {{/bill.sources}}\n  </div>\n</div>\n',
+  'template-osbill' : '\n<div class="osbill-container {{ type }}-bill">\n  <h4>\n    {{#(!!bill.title)}}\n      {{ bill.title }} ({{ bill.bill_id }})\n    {{/()}}\n\n    {{^(!!bill.title)}}\n      {{ bill.bill_id }}\n    {{/()}}\n  </h4>\n\n  <div class="primary-sponsors">\n    <strong>Primary sponsors</strong>\n    <div class="clear-block">\n      {{#bill.sponsors}}\n        <sponsor sponsor="{{ this }}" type="primary">\n      {{/bill.sponsors}}\n    </div>\n  </div>\n\n  <div class="actions">\n    <strong>Actions</strong>\n    <div class="actions-inner">\n      {{#bill.actions}}\n        {{#(!!date)}}\n          <div>\n            {{ date.format(\'MMM DD, YYYY\') }}:\n            {{ action }}\n            ({{ translate(\'chamber\', actor) }})\n          </div>\n        {{/())}}\n      {{/bill.actions}}\n    </div>\n  </div>\n\n  <div class="co-sponsors">\n    <strong>Co-Sponsors</strong>\n    <div>\n      {{#bill.sponsors}}\n        <sponsor sponsor="{{ this }}" type="cosponsor" compact="true">\n      {{/bill.sponsors}}\n    </div>\n  </div>\n\n  {{#(bill.votes && bill.votes.length && bill.votes.length > 0)}}\n    <div class="votes">\n      <strong>Votes</strong>\n      <div>\n        {{#bill.votes}}\n          {{ date.format(\'MMM DD, YYYY\') }}\n          {{ motion }} {{ (passed) ? \'passed\' : \'failed\' }}\n          {{ yes_count }} Y -\n          {{ no_count }} N <br />\n        {{/bill.votes}}\n      </div>\n    </div>\n  {{/()}}\n\n  <div class="sources">\n    <strong>Sources</strong>\n    <div>\n      {{#bill.sources}}\n        <a href="{{ url }}" target="_blank">\n          {{#(!!text)}}\n            {{ text }}\n          {{/()}}\n          {{#(!text)}}\n            {{ url }}\n          {{/()}}\n        </a> <br />\n      {{/bill.sources}}\n    </div>\n  </div>\n</div>\n',
   'template-sponsor' : '\n{{#(((!!type && sponsor.type === type) || !type) && !compact)}}\n\n  <div class="sponsor clear-block">\n    {{#(!!sponsor.leg.photo_url)}}\n      <div class="sponsor-image">\n        {{#(!!options.legImageProxy)}}\n          <img src="{{ options.legImageProxy }}{{ encodeURI(sponsor.leg.photo_url) }}" />\n        {{/()}}\n        {{#(!options.legImageProxy)}}\n          <img src="{{ encodeURI(sponsor.photo_url) }}" />\n        {{/()}}\n      </div>\n    {{/()}}\n\n    <div class="sponsor-info">\n      {{#(!!sponsor.leg.full_name)}}\n        {{ sponsor.leg.full_name }} <br />\n        District {{ sponsor.leg.district }} <br />\n        {{ translate(\'partyAbbr\', sponsor.leg.party) }},\n        {{ translate(\'chamber\', sponsor.leg.chamber) }}\n      {{/()}}\n\n      {{#(!sponsor.leg.full_name)}}\n        {{ sponsor.name }}\n      {{/()}}\n    </div>\n  </div>\n{{/()}}\n\n\n{{#(((!!type && sponsor.type === type) || !type) && !!compact)}}\n  <div class="sponsor">\n    {{#(!!sponsor.leg.full_name)}}\n      {{ sponsor.leg.full_name }},\n      {{ translate(\'partyAbbr\', sponsor.leg.party) }}\n    {{/()}}\n\n    {{#(!sponsor.leg.full_name)}}\n      {{ sponsor.name }}\n    {{/()}}\n  </div>\n{{/()}}\n',
 };
 
@@ -167,6 +167,144 @@ $.fn.hasScrollBar = function() {
   return (this.get(0) && this.get(0).scrollHeight) ?
     (this.get(0).scrollHeight > this.height()) : false;
 };
+
+
+
+/**
+ * (copied) Backbone Ractive adaptor plugin
+ *
+ * original: https://github.com/RactiveJS/Ractive-adaptors-Backbone
+ *
+ * Added 'sync' event.
+*/
+(function ( global, factory ) {
+
+  'use strict';
+
+  // Common JS (i.e. browserify) environment
+  if ( typeof module !== 'undefined' && module.exports && typeof require === 'function' ) {
+    factory( require( 'ractive' ), require( 'backbone' ) );
+  }
+
+  // AMD?
+  else if ( typeof define === 'function' && define.amd ) {
+    define([ 'Ractive', 'Backbone' ], factory );
+  }
+
+  // browser global
+  else if ( global.Ractive && global.Backbone ) {
+    factory( global.Ractive, global.Backbone );
+  }
+
+  else {
+    throw new Error( 'Could not find Ractive or Backbone! Both must be loaded before the Ractive-Backbone plugin' );
+  }
+
+}( typeof window !== 'undefined' ? window : this, function ( Ractive, Backbone ) {
+
+  'use strict';
+
+  var BackboneModelWrapper, BackboneCollectionWrapper;
+
+  if ( !Ractive || !Backbone ) {
+    throw new Error( 'Could not find Ractive or Backbone! Check your paths config' );
+  }
+
+  Ractive.adaptors.Backbone = {
+    filter: function ( object ) {
+      if (object instanceof Backbone.Model || object instanceof Backbone.Collection) {
+      }
+      return object instanceof Backbone.Model || object instanceof Backbone.Collection;
+    },
+    wrap: function ( ractive, object, keypath, prefix ) {
+      if ( object instanceof Backbone.Model ) {
+        return new BackboneModelWrapper( ractive, object, keypath, prefix );
+      }
+
+      return new BackboneCollectionWrapper( ractive, object, keypath, prefix );
+    }
+  };
+
+  BackboneModelWrapper = function ( ractive, model, keypath, prefix ) {
+    var wrapper = this;
+
+    this.value = model;
+    model.on( 'change', this.modelChangeHandler = function () {
+      wrapper.setting = true;
+      ractive.set( prefix( model.changed ) );
+      wrapper.setting = false;
+    });
+    // Handle sync
+    model.on( 'sync', this.modelSyncHandler = function () {
+      ractive.update(keypath);
+    });
+  };
+
+  BackboneModelWrapper.prototype = {
+    teardown: function () {
+      this.value.off( 'change', this.changeHandler );
+      this.value.off( 'sync', this.modelSyncHandler );
+    },
+    get: function () {
+      return this.value.attributes;
+    },
+    set: function ( keypath, value ) {
+      // Only set if the model didn't originate the change itself, and
+      // only if it's an immediate child property
+      if ( !this.setting && keypath.indexOf( '.' ) === -1 ) {
+        this.value.set( keypath, value );
+      }
+    },
+    reset: function ( object ) {
+      // If the new object is a Backbone model, assume this one is
+      // being retired. Ditto if it's not a model at all
+      if ( object instanceof Backbone.Model || typeof object !== 'object' ) {
+        return false;
+      }
+
+      // Otherwise if this is a POJO, reset the model
+      this.value.reset( object );
+    }
+  };
+
+  BackboneCollectionWrapper = function ( ractive, collection, keypath ) {
+    var wrapper = this;
+
+    this.value = collection;
+
+    collection.on( 'add remove reset sort', this.changeHandler = function () {
+      // TODO smart merge. It should be possible, if awkward, to trigger smart
+      // updates instead of a blunderbuss .set() approach
+      wrapper.setting = true;
+      ractive.set( keypath, collection.models );
+      wrapper.setting = false;
+    });
+  };
+
+  BackboneCollectionWrapper.prototype = {
+    teardown: function () {
+      this.value.off( 'add remove reset sort', this.changeHandler );
+    },
+    get: function () {
+      return this.value.models;
+    },
+    reset: function ( models ) {
+      if ( this.setting ) {
+        return;
+      }
+
+      // If the new object is a Backbone collection, assume this one is
+      // being retired. Ditto if it's not a collection at all
+      if ( models instanceof Backbone.Collection || Object.prototype.toString.call( models ) !== '[object Array]' ) {
+        return false;
+      }
+
+      // Otherwise if this is a plain array, reset the collection
+      this.value.reset( models );
+    }
+  };
+
+}));
 
 
 /**
@@ -378,7 +516,7 @@ LT.OSModel = LT.BaseModel.extend({
   },
 
   urlEnd: function() {
-    return '/?apikey=' + encodeURI(this.options.app.options.OSKey) + '&callback=?';
+    return '/?apikey=' + encodeURI(this.app.options.OSKey) + '&callback=?';
   },
 
   url: function() {
@@ -434,8 +572,8 @@ LT.OSBillModel = LT.OSModel.extend({
       return this.urlBase() + 'bills/'  + this.id + this.urlEnd();
     }
     else if (!_.isUndefined(this.get('bill_id')) && this.get('bill_id') !== '') {
-      return this.urlBase() + 'bills/'  + encodeURI(this.options.app.options.state) + '/' +
-        encodeURI(this.options.app.options.session) + '/' +
+      return this.urlBase() + 'bills/'  + encodeURI(this.app.options.state) + '/' +
+        encodeURI(this.app.options.session) + '/' +
         encodeURI(this.get('bill_id')) + this.urlEnd();
     }
   },
@@ -487,7 +625,7 @@ LT.OSBillModel = LT.OSModel.extend({
     data.newest_action = data.actions[0];
 
     // Add a hook for any custom bill parsing
-    if (this.options.app.options.osBillParse && _.isFunction(this.options.app.options.osBillParse)) {
+    if (this.app.options.osBillParse && _.isFunction(this.app.options.osBillParse)) {
       data = this.options.osBillParse(data, this);
     }
 
@@ -512,12 +650,12 @@ LT.OSBillModel = LT.OSModel.extend({
     if (_.isBoolean(this.get('substitued'))) {
       sub = this.get('substitued');
     }
-    else if (this.options.substituteMatch === false) {
+    else if (this.app.options.substituteMatch === false) {
       sub = false;
     }
     else {
       sub = _.find(this.get('actions'), function(a) {
-        return a.action.match(thisModel.options.substituteMatch);
+        return a.action.match(thisModel.app.options.substituteMatch);
       });
       sub = (sub) ? true : false;
       this.set('substitued', sub);
@@ -554,11 +692,6 @@ LT.BillModel = LT.BaseModel.extend({
           bill_id: thisModel.get(b)
         });
         thisModel.set(b, model);
-
-        // Propagate bill events
-        model.on('all', function(e) {
-          thisModel.trigger(b + ':' + e);
-        });
       }
     });
   },
@@ -588,7 +721,7 @@ LT.BillModel = LT.BaseModel.extend({
 
     _.each(this.subbills, function(p, pi) {
       if (thisModel.get('hasBill') && thisModel.get(p)) {
-        defers.push(thisModel.options.app.fetchModel(thisModel.get(p)));
+        defers.push(thisModel.app.fetchModel(thisModel.get(p)));
       }
     });
 
@@ -603,6 +736,13 @@ LT.BillModel = LT.BaseModel.extend({
     });
   },
 
+  // Override the fetch method to use the osbills one
+  fetch: function() {
+    return this.fetchOSBills();
+  },
+
+  // Check to see if we don't have a companion but Open States
+  // says there is one.
   loadOSCompanion: function() {
     var thisModel = this;
     var match;
@@ -614,27 +754,29 @@ LT.BillModel = LT.BaseModel.extend({
 
       match = LT.parse.detectCompanionBill(this.get('bill_primary').get('companions')[0].bill_id);
       if (match) {
-        this.set('bill_companion', thisModel.options.app.getModel('OSBillModel', 'bill_id', { bill_id : match }));
-        defers.push(thisModel.options.app.fetchModel(this.get('bill_companion')));
+        this.set('bill_companion', thisModel.app.getModel('OSBillModel', 'bill_id', { bill_id : match }));
+        defers.push(thisModel.app.fetchModel(this.get('bill_companion')));
       }
     }
 
     return $.when.apply($, defers);
   },
 
+  // Get the category objects associated with this bill
   getCategories: function() {
     var thisModel = this;
 
     if (this.get('categories')) {
       this.set('categories', _.map(this.get('categories'), function(c) {
         if (!_.isObject(c)) {
-          c = thisModel.options.app.getModel('CategoryModel', 'id', { id: c });
+          c = thisModel.app.getModel('CategoryModel', 'id', { id: c });
         }
         return c;
       }));
     }
   },
 
+  // Determine the last updated date from each osbill
   lastUpdatedAt: function() {
     var last_updated_at;
     var p = this.get('bill_primary');
@@ -656,15 +798,11 @@ LT.BillModel = LT.BaseModel.extend({
       }
       this.set('last_updated_at', last_updated_at);
     }
-    // Check if this bill loaded correctly
-    else if (_.isUndefined(this.get('last_updated_at')) && !p.get('updated_at')) {
-      LT.log('Could not fetch primary bill data from OpenStates. Check that the id ' +
-        this.get('bill_primary').get('bill_id') + ' is formatted properly.');
-    }
 
     return this.get('last_updated_at');
   },
 
+  // Determine the last action from each osbill
   newestAction: function() {
     var newest_action;
     var p = this.get('bill_primary');
@@ -690,10 +828,11 @@ LT.BillModel = LT.BaseModel.extend({
     return this.get('newest_action');
   },
 
+  // We need to get actions and meta data from individual
+  // bills.  This could get a bit complicated...
   parseMeta: function() {
-
-    // We need to get actions and meta data from individual
-    // bills.  This could get a bit complicated...
+    var thisModel = this;
+    var swap, swap2;
     var actions = {
       upper: false,
       lower: false,
@@ -725,7 +864,18 @@ LT.BillModel = LT.BaseModel.extend({
         }
         if (this.get('bill_primary').isSubstituted()) {
           type.substituted = true;
-          // Swap primary for companion
+
+          // Swap primary for companion.  Yeah, sorry.
+          swap = this.get('bill_primary').get('bill_id');
+          swap2 = this.get('bill_companion').get('bill_id');
+          this.unset('bill_primary');
+          this.set('bill_primary', (function() {
+            return thisModel.app.getModel('OSBillModel', 'bill_id', { bill_id: swap2 });
+          })());
+          this.unset('bill_companion');
+          this.set('bill_companion', (function() {
+            return thisModel.app.getModel('OSBillModel', 'bill_id', { bill_id: swap });
+          })());
         }
       }
 
@@ -787,9 +937,15 @@ LT.BillModel = LT.BaseModel.extend({
       }
     }
 
+    // Determine if this bill has been updated recently
+    type.recent = (Math.abs(parseInt(this.newestAction().date.diff(moment(), 'days'), 10)) <= this.app.options.recentChangeThreshold);
+
+    // Attach new data
     this.set('actions', actions);
     this.set('bill_type', type);
 
+    // Helps bumps the view a bit
+    this.trigger('change');
     return this;
   }
 });
@@ -805,10 +961,6 @@ LT.CategoryModel = LT.BaseModel.extend({
 
     // Keep a reference to bills in this category
     this.set('bills', new LT.BillsCollection(null));
-    // Propagate collection events
-    this.get('bills').on('all', function(e) {
-      thisModel.trigger('bills:' + e);
-    });
   },
 
   getBills: function(bills) {
@@ -849,9 +1001,8 @@ LT.BillsCollection = Backbone.Collection.extend({
   model: LT.BillModel,
 
   comparator: function(b) {
-    var compare = (b.newestAction()) ? b.newestAction().date.unix() * -1 :
+    return (b.newestAction()) ? b.newestAction().date.unix() * -1 :
       b.get('title');
-    return compare;
   }
 });
 
@@ -1088,6 +1239,11 @@ LT.MainRouter = Backbone.Router.extend({
         })
       }
     });
+
+    // Most of the data has been loaded at this point
+    this.app.on('fetched:osbills:category:' + category.id, function() {
+      category.get('bills').sort();
+    });
   },
 
   // Recent category is like any other except that
@@ -1142,14 +1298,6 @@ LT.MainRouter = Backbone.Router.extend({
             })
           }
         })
-      }
-    });
-
-    // Ractive does not see the changes to the Subbills
-    bill.on('all', function(e) {
-      e = e.split(':');
-      if (e[e.length - 1] === 'change') {
-        thisRouter.app.views.bill.update();
       }
     });
   },
@@ -1340,7 +1488,7 @@ _.extend(App.prototype, {
     // Ensure that the categories has bills
     category.getBills(this.bills);
     category.get('bills').each(function(b, bi) {
-      defers.push(b.fetchOSBills());
+      defers.push(thisApp.fetchModel(b));
     });
     return $.when.apply($, defers).done(function() {
       thisApp.trigger('fetched:osbills');
@@ -1371,7 +1519,7 @@ _.extend(App.prototype, {
     if (model.get('fetched') !== true) {
       return model.fetch({
         success: function(model, response, options) {
-          model.set('fetched', true);
+          model.set('fetched', true, { silent: true });
         }
       });
     }

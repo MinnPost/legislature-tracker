@@ -87,7 +87,7 @@ module.exports = function(grunt) {
           'bower_components/tabletop/src/tabletop.js',
           'bower_components/moment/moment.js',
           'bower_components/ractive/build/Ractive-legacy.min.js',
-          'bower_components/ractive-backbone/Ractive-Backbone.min.js',
+          //'bower_components/ractive-backbone/Ractive-Backbone.min.js',
           'bower_components/Ractive-events-tap/Ractive-events-tap.min.js'
         ],
         dest: 'dist/<%= pkg.name %>.libs.js',

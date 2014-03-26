@@ -2,40 +2,40 @@
 <div class="bill ebill {{^bill.hasBill}}no-bill{{/bill.hasBill}}">
   <div class="bill-status">
     <img
-      class="lower {{#(bill.newest_action && Math.abs(parseInt(bill.newest_action.date.diff(moment(), 'days'))) < options.recentChangeThreshold)}}passed{{/()}}"
+      class="lower {{#bill.bill_type.recent}}passed{{/bill.bill_type.recent}}"
       src="{{ imagePath('RecentChanges.png') }}"
-      title="{{#(bill.newest_action && Math.abs(parseInt(bill.newest_action.date.diff(moment(), 'days'))) < options.recentChangeThreshold)}}Recently changed{{/()}}
-      {{^(bill.newest_action && Math.abs(parseInt(bill.newest_action.date.diff(moment(), 'days'))) < options.recentChangeThreshold)}}Not changed recently{{/()}}"
+      title="{{#bill.bill_type.recent}}Recently changed{{/bill.bill_type.recent}}
+        {{^bill.bill_type.recent}}Not changed recently{{/bill.bill_type.recent}}"
      />
 
     <img
-      class="lower {{#(bill.actions && bill.actions.lower)}}passed{{/()}}"
+      class="lower {{#bill.actions.lower}}passed{{/bill.actions.lower}}"
       src="{{ imagePath('PassedHouse.png') }}"
-      title="{{#(bill.actions && bill.actions.lower)}}Passed{{/()}}
-        {{^(bill.actions && bill.actions.lower)}}Not passed{{/()}} {{ translate('chamber', 'lower') }}"
+      title="{{#bill.actions.lower}}Passed{{/bill.actions.lower}}
+        {{^bill.actions.lower}}Not passed (yet){{/bill.actions.lower}} {{ translate('chamber', 'lower') }}"
      />
 
     <img
-      class="upper {{#(bill.actions && bill.actions.upper)}}passed{{/()}}"
+      class="lower {{#bill.actions.upper}}passed{{/bill.actions.upper}}"
       src="{{ imagePath('PassedSenate.png') }}"
-      title="{{#(bill.actions && bill.actions.upper)}}Passed{{/()}}
-        {{^(bill.actions && bill.actions.upper)}}Not passed{{/()}} {{ translate('chamber', 'upper') }}"
+      title="{{#bill.actions.upper}}Passed{{/bill.actions.upper}}
+        {{^bill.actions.upper}}Not passed (yet){{/bill.actions.upper}} {{ translate('chamber', 'upper') }}"
      />
 
     {{#options.conferenceBill}}
       <img
-        class="conference {{#(bill.bill_type && bill.bill_type.conference)}}passed{{/()}}"
+        class="conference {{#bill.bill_type.conference}}passed{{/bill.bill_type.conference}}"
         src="{{ imagePath('InConferenceCommittee.png') }}"
-        title="{{#(bill.bill_type && bill.bill_type.conference)}}Conference bill created{{/()}}
-          {{^(bill.bill_type && bill.bill_type.conference)}}Coinference bill not created{{/()}}"
+        title="{{#bill.bill_type.conference}}Conference bill created{{/bill.bill_type.conference}}
+          {{#bill.bill_type.conference}}Conference bill not created (yet){{/bill.bill_type.conference}}"
        />
     {{/options.conferenceBill}}
 
    <img
-     class="signed {{#(bill.actions && bill.actions.signed)}}passed{{/()}}"
+     class="signed {{#bill.actions.signed}}passed{{/bill.actions.signed}}"
      src="{{ imagePath('SignedIntoLaw.png') }}"
-     title="{{#(bill.actions && bill.actions.signed)}}Signed into law by the Governor{{/()}}
-       {{^(bill.actions && bill.actions.upper)}}Not signed into law{{/()}}"
+     title="{{#bill.actions.signed}}Signed into law by the Governor{{/bill.actions.signed}}
+       {{#bill.actions.signed}}Not signed into law (yet){{/bill.actions.signed}}"
     />
   </div>
 

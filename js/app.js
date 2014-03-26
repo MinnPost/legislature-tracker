@@ -177,7 +177,7 @@ _.extend(App.prototype, {
     // Ensure that the categories has bills
     category.getBills(this.bills);
     category.get('bills').each(function(b, bi) {
-      defers.push(b.fetchOSBills());
+      defers.push(thisApp.fetchModel(b));
     });
     return $.when.apply($, defers).done(function() {
       thisApp.trigger('fetched:osbills');
@@ -208,7 +208,7 @@ _.extend(App.prototype, {
     if (model.get('fetched') !== true) {
       return model.fetch({
         success: function(model, response, options) {
-          model.set('fetched', true);
+          model.set('fetched', true, { silent: true });
         }
       });
     }

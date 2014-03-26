@@ -59,15 +59,17 @@
 
   <div class="sources">
     <strong>Sources</strong>
-    {{#bill.sources}}
-      <a href="{{ url }}" target="_blank">
-        {{#(!!text)}}
-          {{ text }}
-        {{/()}}
-        {{#(!text)}}
-          {{ url }}
-        {{/()}}
-      </a> <br />
-    {{/bill.sources}}
+    <div>
+      {{#bill.sources}}
+        <a href="{{ url }}" target="_blank">
+          {{#(!!text)}}
+            {{ text }}
+          {{/()}}
+          {{#(!text)}}
+            {{ url }}
+          {{/()}}
+        </a> <br />
+      {{/bill.sources}}
+    </div>
   </div>
 </div>

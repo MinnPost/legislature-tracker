@@ -132,6 +132,11 @@ LT.MainRouter = Backbone.Router.extend({
         })
       }
     });
+
+    // Most of the data has been loaded at this point
+    this.app.on('fetched:osbills:category:' + category.id, function() {
+      category.get('bills').sort();
+    });
   },
 
   // Recent category is like any other except that
@@ -186,14 +191,6 @@ LT.MainRouter = Backbone.Router.extend({
             })
           }
         })
-      }
-    });
-
-    // Ractive does not see the changes to the Subbills
-    bill.on('all', function(e) {
-      e = e.split(':');
-      if (e[e.length - 1] === 'change') {
-        thisRouter.app.views.bill.update();
       }
     });
   },
