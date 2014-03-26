@@ -227,18 +227,26 @@ $.fn.hasScrollBar = function() {
 
     this.value = collection;
 
-    collection.on( 'add remove reset sort', this.changeHandler = function () {
+    collection.on( 'add remove reset', this.changeHandler = function () {
       // TODO smart merge. It should be possible, if awkward, to trigger smart
       // updates instead of a blunderbuss .set() approach
       wrapper.setting = true;
       ractive.set( keypath, collection.models );
       wrapper.setting = false;
     });
+    // Separate sort handler as sort is not changing the models
+    collection.on( 'sort', this.sortHandler = function () {
+      wrapper.setting = true;
+      ractive.update(keypath);
+      wrapper.setting = false;
+    });
+
   };
 
   BackboneCollectionWrapper.prototype = {
     teardown: function () {
-      this.value.off( 'add remove reset sort', this.changeHandler );
+      this.value.off( 'add remove reset', this.changeHandler );
+      this.value.off( 'sort', this.sortHandler );
     },
     get: function () {
       return this.value.models;
