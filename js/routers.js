@@ -145,6 +145,11 @@ LT.MainRouter = Backbone.Router.extend({
   routeEBill: function(bill) {
     var thisRouter = this;
     var billID = decodeURI(bill);
+    var commonData = {
+      options: this.options,
+      imagePath: this.imagePath,
+      translate: this.translate
+    };
     bill = this.app.bills.where({ bill: billID })[0];
 
     // Turn on the top menu
@@ -162,28 +167,34 @@ LT.MainRouter = Backbone.Router.extend({
     this.app.views.bill = new LT.EBillView({
       el: this.$content,
       template: this.app.templates.ebill,
-      data: {
-        options: this.options,
+      data: _.extend({}, commonData, {
         bill: bill,
-        billID: billID,
-        imagePath: _.bind(this.app.imagePath, this.app),
-        translate: _.bind(this.app.translate, this.app)
-      },
+        billID: billID
+      }),
       options: this.options,
       partials: {
         loading: this.app.templates.loading
       },
       components: {
         osbill: LT.OSBillView.extend({
-          template: this.app.templates.osbill
+          template: this.app.templates.osbill,
+          data: commonData,
+          components: {
+            sponsor: LT.OSSponsorView.extend({
+              template: this.app.templates.sponsor,
+              data: commonData
+            })
+          }
         })
       }
     });
 
-    // For some reason, Ractive is not getting notified
-    // of changes to the osbills in the bill
-    bill.on('fetched:osbills', function() {
-      thisRouter.app.views.bill.update();
+    // Ractive does not see the changes to the Subbills
+    bill.on('all', function(e) {
+      e = e.split(':');
+      if (e[e.length - 1] === 'change') {
+        thisRouter.app.views.bill.update();
+      }
     });
   },
 

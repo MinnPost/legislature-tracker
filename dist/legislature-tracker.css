@@ -43,25 +43,7 @@
    * Bill styles
    */
   /**
-   * Sources
-   */
-  /**
-   * Votes
-   */
-  /**
-   * Bill description
-   */
-  /**
-   * Bill sponsors/legislators styles
-   */
-  /**
-   * Conference bill styles
-   */
-  /**
    * Responsive, media query styles styles
-   */
-  /**
-   * Responsive styling
    */
 }
 /* line 16, ../../styles/_reset.scss */
@@ -412,152 +394,37 @@
   margin-bottom: 1em;
 }
 /* line 366, ../../styles/style.scss */
-.ls .bill .ebill-sponsors.has-conference.has-primary.has-companion .osbill {
+.ls .bill .osbills.has-conference.has-primary.has-companion .osbill {
   float: left;
   width: 33.33333%;
 }
 /* line 373, ../../styles/style.scss */
-.ls .bill .ebill-sponsors.has-conference.has-primary .osbill, .ls .bill .ebill-sponsors.has-conference.has-companion .osbill, .ls .bill .ebill-sponsors.has-primary.has-companion .osbill {
+.ls .bill .osbills.has-conference.has-primary .osbill, .ls .bill .osbills.has-conference.has-companion .osbill, .ls .bill .osbills.has-primary.has-companion .osbill {
   float: left;
   width: 50%;
 }
-/* line 383, ../../styles/style.scss */
-.ls .bills-list .bill {
-  margin-bottom: 1em;
-  padding-bottom: 1em;
-  border-bottom: 1px solid #BBBBBB;
+/* line 378, ../../styles/style.scss */
+.ls .bill .osbills .osbill-container {
+  padding-right: .5em;
 }
-/* line 389, ../../styles/style.scss */
-.ls .bills-list .bill.is-expandable {
-  border: 1px solid #DDDDDD;
-  padding: 2.5%;
-  /*
-    -moz-border-bottom-right-radius: 10px;
-    -webkit-border-bottom-right-radius: 10px;
-    border-bottom-right-radius: 10px;
-  */
-}
-/* line 399, ../../styles/style.scss */
-.ls .bills-list .bill.no-bill {
-  border: 1px dashed #DDDDDD;
-}
-/* line 403, ../../styles/style.scss */
-.ls .primary-bill {
-  width: 100%;
-  float: none;
-}
-/* line 411, ../../styles/style.scss */
-.ls .actions-inner {
-  font-size: .85em;
-  height: 100px;
-}
-/* line 416, ../../styles/style.scss */
-.ls .co-sponsors-inner {
-  height: 150px;
-}
-/* line 421, ../../styles/style.scss */
-.ls .actions-inner,
-.ls .co-sponsors-inner {
-  border: 1px solid #EBEBEB;
-  -moz-box-shadow: 0px 6px 4px -4px rgba(50, 50, 50, 0.3);
-  -webkit-box-shadow: 0px 6px 4px -4px rgba(50, 50, 50, 0.3);
-  box-shadow: 0px 6px 4px -4px rgba(50, 50, 50, 0.3);
-  padding: .25em .75em;
-}
-/* line 429, ../../styles/style.scss */
-.ls .overflowed {
-  overflow-y: scroll;
-}
-/* line 433, ../../styles/style.scss */
-.ls .actions-inner {
-  overflow-y: scroll;
-}
-/* line 438, ../../styles/style.scss */
-.ls .primary-bill-inner,
-.ls .companion-bill-inner {
-  margin-right: 1.5em;
-}
-/* line 444, ../../styles/style.scss */
-.ls .bill .bill-details-link,
-.ls .bill .latest-action-label {
-  display: none;
-}
-/* line 451, ../../styles/style.scss */
-.ls .sources a {
-  font-size: .75em;
-}
-/* line 458, ../../styles/style.scss */
-.ls .votes .votes-inner {
-  font-size: .85em;
-}
-/* line 465, ../../styles/style.scss */
-.ls .bill .description .ellipsis-ellipsis {
-  display: none;
-}
-/* line 468, ../../styles/style.scss */
-.ls .bill.is-expandable .description .ellipsis-ellipsis {
-  display: inline;
-}
-/* line 471, ../../styles/style.scss */
-.ls .bill.is-expandable.expanded .description .ellipsis-ellipsis {
-  display: none;
-}
-/* line 475, ../../styles/style.scss */
-.ls .bill.is-expandable .description .ellipsis-end {
-  display: none;
-}
-/* line 478, ../../styles/style.scss */
-.ls .bill.is-expandable.expanded .description .ellipsis-end {
-  display: inline;
-}
-/* line 482, ../../styles/style.scss */
-.ls .bill.is-expandable .description .ellipsis-start p {
-  display: inline;
-}
-/* line 485, ../../styles/style.scss */
-.ls .bill.is-expandable.expanded .description .ellipsis-start p {
-  display: block;
-}
-/* line 489, ../../styles/style.scss */
-.ls .bill .description .ellipsis-start p:last-child {
+/* line 384, ../../styles/style.scss */
+.ls .bill .osbills .osbill-container .primary-sponsors,
+.ls .bill .osbills .osbill-container .co-sponsors,
+.ls .bill .osbills .osbill-container .sources,
+.ls .bill .osbills .osbill-container .votes {
   margin-bottom: 1em;
 }
-/* line 492, ../../styles/style.scss */
-.ls .bill.is-expandable .description .ellipsis-start p:last-child {
-  margin-bottom: 0;
-}
-/* line 495, ../../styles/style.scss */
-.ls .bill.is-expandable.expanded .description .ellipsis-start p:last-child {
+/* line 388, ../../styles/style.scss */
+.ls .bill .osbills .osbill-container .actions {
   margin-bottom: 1em;
 }
-/* line 503, ../../styles/style.scss */
-.ls .sponsors .sponsor {
-  width: 25%;
-  float: left;
+/* line 391, ../../styles/style.scss */
+.ls .bill .osbills .osbill-container .actions .actions-inner {
   font-size: .85em;
-}
-/* line 509, ../../styles/style.scss */
-.ls .with-companion .sponsors .sponsor,
-.ls .companion-bill .sponsors .sponsor {
-  width: 50%;
-  float: left;
-  font-size: .85em;
-}
-/* line 514, ../../styles/style.scss */
-.ls .legislator img {
-  max-height: 75px;
-  float: left;
-  margin: 0 .5em 1em 0;
-  -moz-border-bottom-right-radius: 5px;
-  -webkit-border-bottom-right-radius: 5px;
-  border-bottom-right-radius: 5px;
-}
-/* line 527, ../../styles/style.scss */
-.ls .has-conference-bill {
-  display: none;
+  color: #676767;
 }
 @media screen and (max-width: 942) {
-  /* line 537, ../../styles/style.scss */
+  /* line 407, ../../styles/style.scss */
   .ls .ls-header.glued {
     left: 0;
     right: 0;
@@ -567,116 +434,62 @@
   }
 }
 @media screen and (max-width: 768px) {
-  /* line 547, ../../styles/style.scss */
+  /* line 417, ../../styles/style.scss */
   .ls .ls-header .categories-nav {
     display: none;
   }
-  /* line 551, ../../styles/style.scss */
+  /* line 421, ../../styles/style.scss */
   .ls .categories-container .aggregate-stat {
     margin-right: 1em;
   }
-  /* line 555, ../../styles/style.scss */
+  /* line 425, ../../styles/style.scss */
   .ls .categories-container .aggregate-counts {
     margin-bottom: 3em;
   }
-  /* line 559, ../../styles/style.scss */
+  /* line 429, ../../styles/style.scss */
   .ls .categories-container {
     background-position: bottom center;
     background-size: 100% auto;
     padding-top: 3em;
   }
-  /* line 565, ../../styles/style.scss */
+  /* line 435, ../../styles/style.scss */
   .ls .categories-container ul li {
     width: 33.32222222%;
     text-align: center;
   }
-  /* line 570, ../../styles/style.scss */
-  .ls .bill .bill-details-link {
-    display: inline;
-    font-weight: bold;
-  }
-  /* line 574, ../../styles/style.scss */
-  .ls .bill .bill-expand {
-    display: none;
-  }
-  /* line 578, ../../styles/style.scss */
-  .ls .sponsors .sponsor {
-    width: 50%;
-  }
-  /* line 582, ../../styles/style.scss */
-  .ls .with-companion .sponsors .sponsor,
-  .ls .companion-bill .sponsors .sponsor {
-    width: 100%;
-  }
 }
 @media screen and (max-width: 520px) {
-  /* line 10, ../../styles/style.scss */
-  .ls {
-    /* Just show latest actions */
-  }
-  /* line 589, ../../styles/style.scss */
+  /* line 443, ../../styles/style.scss */
   .ls .bill .bill-status {
     float: none;
     display: block;
     text-align: left;
     margin-bottom: .5em;
   }
-  /* line 597, ../../styles/style.scss */
-  .ls .primary-bill.with-companion,
-  .ls .companion-bill {
-    width: 100%;
-    float: none;
-  }
-  /* line 602, ../../styles/style.scss */
-  .ls .bill .bill-bottom .sponsors.co-sponsors {
-    display: none;
-  }
-  /* line 607, ../../styles/style.scss */
-  .ls .bill .bill-bottom .latest-action-label {
-    display: inline;
-  }
-  /* line 610, ../../styles/style.scss */
-  .ls .bill-bottom .actions-inner.overflowed {
-    overflow-y: hidden;
-  }
-  /* line 613, ../../styles/style.scss */
-  .ls .bill-bottom .actions-inner {
-    border: none;
-    -moz-box-shadow: none;
-    -webkit-box-shadow: none;
-    box-shadow: none;
-    padding: 0;
-    height: auto;
-    max-height: 5em;
-  }
 }
 @media screen and (max-width: 420px) {
-  /* line 630, ../../styles/style.scss */
+  /* line 454, ../../styles/style.scss */
   .ls .categories-container .aggregate-counts {
     margin-bottom: 2em;
   }
-  /* line 634, ../../styles/style.scss */
+  /* line 458, ../../styles/style.scss */
   .ls .categories-container {
     padding-top: 2em;
   }
-  /* line 638, ../../styles/style.scss */
+  /* line 462, ../../styles/style.scss */
   .ls .categories-container ul li {
     width: 50%;
     text-align: center;
   }
-  /* line 643, ../../styles/style.scss */
-  .ls .sponsors .sponsor {
-    width: 100%;
-  }
 }
 @media screen and (max-width: 375px) {
-  /* line 649, ../../styles/style.scss */
+  /* line 469, ../../styles/style.scss */
   .ls .categories-container .aggregate-counts .aggregate-stat {
     display: block;
   }
 }
 @media screen and (max-width: 280px) {
-  /* line 656, ../../styles/style.scss */
+  /* line 476, ../../styles/style.scss */
   .ls .categories-container ul li {
     width: 100%;
     text-align: center;

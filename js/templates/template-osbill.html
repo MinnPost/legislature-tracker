@@ -1,5 +1,5 @@
 
-<div class="osbill">
+<div class="osbill-container {{ type }}-bill">
   <h4>
     {{#(!!bill.title)}}
       {{ bill.title }} ({{ bill.bill_id }})
@@ -9,23 +9,18 @@
       {{ bill.bill_id }}
     {{/()}}
   </h4>
-  <div class="sponsors primary-sponsors">
-    <h5>Primary sponsors</h5>
 
+  <div class="primary-sponsors">
+    <strong>Primary sponsors</strong>
     <div class="clear-block">
       {{#bill.sponsors}}
-        {{#(type === 'primary')}}
-          <div class="sponsor" data-leg-id="{{ leg_id }}" data-sponsor-type="{{ type }}">
-            {{ name }} ({{ type }})
-          </div>
-        {{/()}}
+        <sponsor sponsor="{{ this }}" type="primary">
       {{/bill.sponsors}}
     </div>
   </div>
 
   <div class="actions">
-    <h5><span class="latest-action-label">Latest</span> Actions</h5>
-
+    <strong>Actions</strong>
     <div class="actions-inner">
       {{#bill.actions}}
         {{#(!!date)}}
@@ -39,27 +34,19 @@
     </div>
   </div>
 
-  {{#(bill.sponsors && bill.sponsors.length && bill.sponsors.length)}}
-    <div class="sponsors co-sponsors clear-block">
-      <h5>Co-Sponsors</h5>
-
-      <div class="co-sponsors-inner clear-block">
-        {{#bill.sponsors}}
-          {{#(type !== 'primary')}}
-            <div class="sponsor" data-leg-id="{{ leg_id }}" data-sponsor-type="{{ type }}">
-              {{ name }} ({{ type }})
-            </div>
-          {{/()}}
-        {{/bill.sponsors}}
-      </div>
+  <div class="co-sponsors">
+    <strong>Co-Sponsors</strong>
+    <div>
+      {{#bill.sponsors}}
+        <sponsor sponsor="{{ this }}" type="cosponsor" compact="true">
+      {{/bill.sponsors}}
     </div>
-  {{/()}}
+  </div>
 
   {{#(bill.votes && bill.votes.length && bill.votes.length > 0)}}
     <div class="votes">
-      <h5>Votes</h5>
-
-      <div class="votes-inner clear-block">
+      <strong>Votes</strong>
+      <div>
         {{#bill.votes}}
           {{ date.format('MMM DD, YYYY') }}
           {{ motion }} {{ (passed) ? 'passed' : 'failed' }}
@@ -71,8 +58,7 @@
   {{/()}}
 
   <div class="sources">
-    <h5>Sources</h5>
-
+    <strong>Sources</strong>
     {{#bill.sources}}
       <a href="{{ url }}" target="_blank">
         {{#(!!text)}}

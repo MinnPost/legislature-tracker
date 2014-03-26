@@ -1,5 +1,6 @@
 
-{{#(primary == true && sponsor.type === 'primary')}}
+{{#(((!!type && sponsor.type === type) || !type) && !compact)}}
+
   <div class="sponsor clear-block">
     {{#(!!sponsor.leg.photo_url)}}
       <div class="sponsor-image">
@@ -16,7 +17,7 @@
       {{#(!!sponsor.leg.full_name)}}
         {{ sponsor.leg.full_name }} <br />
         District {{ sponsor.leg.district }} <br />
-        {{ translate('partyAbbr', sponsor.leg.party) }}, 
+        {{ translate('partyAbbr', sponsor.leg.party) }},
         {{ translate('chamber', sponsor.leg.chamber) }}
       {{/()}}
 
@@ -24,5 +25,19 @@
         {{ sponsor.name }}
       {{/()}}
     </div>
+  </div>
+{{/()}}
+
+
+{{#(((!!type && sponsor.type === type) || !type) && !!compact)}}
+  <div class="sponsor">
+    {{#(!!sponsor.leg.full_name)}}
+      {{ sponsor.leg.full_name }},
+      {{ translate('partyAbbr', sponsor.leg.party) }}
+    {{/()}}
+
+    {{#(!sponsor.leg.full_name)}}
+      {{ sponsor.name }}
+    {{/()}}
   </div>
 {{/()}}

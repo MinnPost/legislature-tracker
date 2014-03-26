@@ -88,7 +88,7 @@
 
 
   {{#(compact == true)}}
-    <div class="ebill-sponsors clear-block
+    <div class="osbills ebill-sponsors clear-block
       {{#bill.bill_conference}}has-conference{{/bill.bill_conference}}
       {{#bill.bill_primary}}has-primary{{/bill.bill_primary}}
       {{#bill.bill_companion}}has-companion{{/bill.bill_companion}}
@@ -97,7 +97,7 @@
         <div class="osbill bill-conference">
           <strong>Conference bill {{ bill_id }}</strong>
           {{#sponsors}}
-            <sponsor sponsor="{{ this }}" compact="true" primary="true">
+            <sponsor sponsor="{{ this }}" type="primary">
           {{/sponsors}}
         </div>
       {{/bill.bill_conference}}
@@ -106,7 +106,7 @@
         <div class="osbill bill-primary">
           <strong>Primary bill {{ bill_id }}</strong>
           {{#sponsors}}
-            <sponsor sponsor="{{ this }}" compact="true" primary="true">
+            <sponsor sponsor="{{ this }}" type="primary">
           {{/sponsors}}
         </div>
       {{/bill.bill_primary}}
@@ -115,7 +115,7 @@
         <div class="osbill bill-companion">
           <strong>Companion bill {{ bill_id }}</strong>
           {{#sponsors}}
-            <sponsor sponsor="{{ this }}" compact="true" primary="true">
+            <sponsor sponsor="{{ this }}" type="primary">
           {{/sponsors}}
         </div>
       {{/bill.bill_companion}}
@@ -135,32 +135,32 @@
       </div>
     {{/()}}
 
-    {{#bill.bill_conference}}
-      <div class="conference-bill">
-        <div class="conference-bill-inner clear-block">
+    <div class="osbills clear-block
+      {{#bill.bill_conference}}has-conference{{/bill.bill_conference}}
+      {{#bill.bill_primary}}has-primary{{/bill.bill_primary}}
+      {{#bill.bill_companion}}has-companion{{/bill.bill_companion}}
+    ">
+
+      {{#bill.bill_conference}}
+        <div class="osbill conference-bill">
           <h3>Conference Bill</h3>
           <osbill bill="{{ this }}" type="conference" imagePath="{{ imagePath }}" translate="{{ translate }}" options="{{ options }}">
         </div>
-      </div>
-    {{/bill.bill_conference}}
+      {{/bill.bill_conference}}
 
-    {{#bill.bill_primary}}
-      <div class="primary-bill">
-        <div class="primary-bill-inner clear-block">
+      {{#bill.bill_primary}}
+        <div class="osbill primary-bill">
           <h3>{{ (options.chamberLabel) ? translate('chamber', chamber) + ' Bill' : 'Primary Bill' }}</h3>
           <osbill bill="{{ this }}" type="primary" imagePath="{{ imagePath }}" translate="{{ translate }}" options="{{ options }}">
         </div>
-      </div>
-    {{/bill.bill_primary}}
+      {{/bill.bill_primary}}
 
-    {{#bill.bill_companion}}
-      <div class="companion-bill">
-        <div class="companion-bill-inner clear-block">
+      {{#bill.bill_companion}}
+        <div class="osbill companion-bill">
           <h3>{{ (options.chamberLabel) ? translate('chamber', chamber) + ' Bill' : 'Companion Bill' }}</h3>
           <osbill bill="{{ this }}" type="companion" imagePath="{{ imagePath }}" translate="{{ translate }}" options="{{ options }}">
         </div>
-      </div>
-    {{/bill.bill_companion}}
+      {{/bill.bill_companion}}
   {{/()}}
 
 </div>

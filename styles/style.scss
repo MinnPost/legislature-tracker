@@ -361,7 +361,7 @@
       margin-bottom: 1em;
     }
 
-    .ebill-sponsors {
+    .osbills {
 
       &.has-conference.has-primary.has-companion .osbill {
         float: left;
@@ -374,159 +374,29 @@
         float: left;
         width: 50%;
       }
+
+      .osbill-container {
+        padding-right: .5em;
+
+        .primary-sponsors,
+        .co-sponsors,
+        .sources,
+        .votes {
+          margin-bottom: 1em;
+        }
+
+        .actions {
+          margin-bottom: 1em;
+
+          .actions-inner {
+            font-size: .85em;
+            color: $color-medium-gray;
+          }
+        }
+      }
     }
   }
 
-
-
-
-  .bills-list .bill {
-    margin-bottom: 1em;
-    padding-bottom: 1em;
-    border-bottom: 1px solid #BBBBBB;
-  }
-
-  .bills-list .bill.is-expandable {
-    border: 1px solid #DDDDDD;
-    padding: 2.5%;
-  /*
-    -moz-border-bottom-right-radius: 10px;
-    -webkit-border-bottom-right-radius: 10px;
-    border-bottom-right-radius: 10px;
-  */
-  }
-
-  .bills-list .bill.no-bill{
-  	border: 1px dashed #DDDDDD;
-  }
-
-  .primary-bill {
-    width: 100%;
-    float: none;
-  }
-  .primary-bill.with-companion,
-  .companion-bill {
-  }
-
-  .actions-inner {
-    font-size: .85em;
-    height: 100px;
-  }
-
-  .co-sponsors-inner {
-    height: 150px;
-  }
-
-  .actions-inner,
-  .co-sponsors-inner {
-    border: 1px solid #EBEBEB;
-    -moz-box-shadow: 0px 6px 4px -4px rgba(50, 50, 50, .3);
-    -webkit-box-shadow: 0px 6px 4px -4px rgba(50, 50, 50, .3);
-    box-shadow: 0px 6px 4px -4px rgba(50, 50, 50, .3);
-    padding: .25em .75em;
-  }
-
-  .overflowed {
-    overflow-y: scroll;
-  }
-
-  .actions-inner {
-    overflow-y: scroll;
-  }
-
-  .primary-bill-inner,
-  .companion-bill-inner {
-    margin-right: 1.5em;
-  }
-
-
-  .bill .bill-details-link,
-  .bill .latest-action-label {
-    display: none;
-  }
-
-  /**
-   * Sources
-   */
-  .sources a {
-    font-size: .75em;
-  }
-
-  /**
-   * Votes
-   */
-  .votes .votes-inner {
-    font-size: .85em;
-  }
-
-  /**
-   * Bill description
-   */
-  .bill .description .ellipsis-ellipsis {
-    display: none;
-  }
-  .bill.is-expandable .description .ellipsis-ellipsis {
-    display: inline;
-  }
-  .bill.is-expandable.expanded .description .ellipsis-ellipsis {
-    display: none;
-  }
-
-  .bill.is-expandable .description .ellipsis-end {
-    display: none;
-  }
-  .bill.is-expandable.expanded .description .ellipsis-end {
-    display: inline;
-  }
-
-  .bill.is-expandable .description .ellipsis-start p {
-    display: inline;
-  }
-  .bill.is-expandable.expanded .description .ellipsis-start p {
-    display: block;
-  }
-
-  .bill .description .ellipsis-start p:last-child {
-    margin-bottom: 1em;
-  }
-  .bill.is-expandable .description .ellipsis-start p:last-child {
-    margin-bottom: 0;
-  }
-  .bill.is-expandable.expanded .description .ellipsis-start p:last-child {
-    margin-bottom: 1em;
-  }
-
-
-  /**
-   * Bill sponsors/legislators styles
-   */
-  .sponsors .sponsor {
-    width: 25%;
-    float: left;
-    font-size: .85em;
-  }
-  .with-companion .sponsors .sponsor,
-  .companion-bill .sponsors .sponsor {
-    width: 50%;
-    float: left;
-    font-size: .85em;
-  }
-  .legislator img {
-    max-height: 75px;
-    float: left;
-    margin: 0 .5em 1em 0;
-    -moz-border-bottom-right-radius: 5px;
-    -webkit-border-bottom-right-radius: 5px;
-    border-bottom-right-radius: 5px;
-  }
-
-
-  /**
-   * Conference bill styles
-   */
-  .has-conference-bill {
-    display: none;
-  }
 
 
   /**
@@ -566,22 +436,6 @@
       width: 33.32222222%;
       text-align: center;
     }
-
-    .bill .bill-details-link {
-      display: inline;
-      font-weight: bold;
-    }
-    .bill .bill-expand {
-      display: none;
-    }
-
-    .sponsors .sponsor {
-      width: 50%;
-    }
-    .with-companion .sponsors .sponsor,
-    .companion-bill .sponsors .sponsor {
-      width: 100%;
-    }
   }
 
 
@@ -592,39 +446,9 @@
       text-align: left;
       margin-bottom: .5em;
     }
-
-    .primary-bill.with-companion,
-    .companion-bill {
-      width: 100%;
-      float: none;
-    }
-
-    .bill .bill-bottom .sponsors.co-sponsors {
-      display: none;
-    }
-
-    /* Just show latest actions */
-    .bill .bill-bottom .latest-action-label {
-      display: inline;
-    }
-    .bill-bottom .actions-inner.overflowed {
-      overflow-y: hidden;
-    }
-    .bill-bottom .actions-inner {
-      border: none;
-      -moz-box-shadow: none;
-      -webkit-box-shadow: none;
-      box-shadow: none;
-      padding: 0;
-      height: auto;
-      max-height: 5em;
-    }
   }
 
 
-  /**
-   * Responsive styling
-   */
   @media screen and (max-width: 420px) {
 
     .categories-container .aggregate-counts {
@@ -638,10 +462,6 @@
     .categories-container ul li {
       width: 50%;
       text-align: center;
-    }
-
-    .sponsors .sponsor {
-      width: 100%;
     }
   }
 
