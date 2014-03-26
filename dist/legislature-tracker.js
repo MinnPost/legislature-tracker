@@ -1194,6 +1194,11 @@ LT.MainRouter = Backbone.Router.extend({
     // Turn off the top menu
     this.app.views.application.set('menuOff', true);
 
+    // Check if we already have this view
+    if (_.isObject(this.app.views.categories)) {
+      this.app.views.categories.teardown();
+    }
+
     // Create categories view
     this.app.views.categories = new LT.CategoriesView({
       el: this.$content,
@@ -1230,6 +1235,11 @@ LT.MainRouter = Backbone.Router.extend({
     // Check for valid bill
     if (!category) {
       this.navigate('/', { trigger: true, replace: true });
+    }
+
+    // Check if we already have this view
+    if (_.isObject(this.app.views.category)) {
+      this.app.views.category.teardown();
     }
 
     // Fetch bills in category
@@ -1302,6 +1312,11 @@ LT.MainRouter = Backbone.Router.extend({
     // Check for valid bill
     if (!bill) {
       this.navigate('/', { trigger: true, replace: true });
+    }
+
+    // Check if we already have this view
+    if (_.isObject(this.app.views.bill)) {
+      this.app.views.bill.teardown();
     }
 
     // Load up bill parts
