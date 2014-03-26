@@ -107,7 +107,7 @@ _.extend(App.prototype, {
 
     // Only do once
     if (this.fetched.basicBillData === true) {
-      return;
+      return $.when.apply($, []);
     }
 
     // First collect all the bill id's we need
@@ -120,6 +120,7 @@ _.extend(App.prototype, {
     // Make URL to search with all the bill ids
     url = 'http://openstates.org/api/v1/bills/?state=' +
       this.options.state +
+      '&fields=action_dates,chamber,title,id,created_at,updated_at,bill_id' +
       '&search_window=session:' + this.options.session +
       '&bill_id__in=' + encodeURI(billIDs.join('|')) +
       '&apikey=' + this.options.OSKey + '&callback=?';
@@ -131,6 +132,14 @@ _.extend(App.prototype, {
         thisApp.trigger('fetched:basic-bill-data');
 
         _.each(data, function(d) {
+          // This should someone how use another fetch and model parsing,
+          // but for now this will do.
+          d.action_dates = _.filterObject(d.action_dates, function(a, ai) {
+            return a;
+          });
+          d.action_dates = _.mapObject(d.action_dates, function(a, ai) {
+            return moment(a);
+          });
           d.created_at = moment(d.created_at);
           d.updated_at = moment(d.updated_at);
           thisApp.getModel('OSBillModel', 'bill_id', d).set(d);
@@ -149,7 +158,7 @@ _.extend(App.prototype, {
     // the right timeframe
     this.bills.each(function(b, bi) {
       var c = b.get('categories');
-      if (Math.abs(parseInt(b.lastUpdatedAt().diff(moment(), 'days'), 10)) < thisApp.options.recentChangeThreshold) {
+      if (b.isRecent()) {
         c.push(recent.get('id'));
         b.set('categories', c);
       }

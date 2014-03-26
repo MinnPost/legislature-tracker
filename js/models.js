@@ -98,8 +98,8 @@ LT.OSBillModel = LT.OSModel.extend({
     var thisModel = this;
 
     // Parse some dates
-    data.created_at = moment(data.created_at);
-    data.updated_at = moment(data.updated_at);
+    data.created_at = data.created_at ? moment(data.created_at) : undefined;
+    data.updated_at = data.updated_at ? moment(data.updated_at) : undefined;
 
     // Action dates.  Filter then make into a moment()
     data.action_dates = _.filterObject(data.action_dates, function(a, ai) {
@@ -140,11 +140,13 @@ LT.OSBillModel = LT.OSModel.extend({
     }
 
     // Add a legislator model to each sponsor
-    data.sponsors = _.map(data.sponsors, function(s, si) {
-      s.id = s.leg_id;
-      s.leg = thisModel.app.getModel('OSLegislatorModel', 'leg_id', s);
-      return s;
-    });
+    if (data.sponsors) {
+      data.sponsors = _.map(data.sponsors, function(s, si) {
+        s.id = s.leg_id;
+        s.leg = thisModel.app.getModel('OSLegislatorModel', 'leg_id', s);
+        return s;
+      });
+    }
 
     return data;
   },
@@ -293,7 +295,7 @@ LT.BillModel = LT.BaseModel.extend({
     var c = this.get('bill_companion');
     var co = this.get('bill_conference');
 
-    if (_.isUndefined(this.get('last_updated_at')) && p.get('updated_at')) {
+    if (p.get('updated_at')) {
       last_updated_at = p.get('updated_at');
 
       if (c && c.get('updated_at')) {
@@ -319,7 +321,7 @@ LT.BillModel = LT.BaseModel.extend({
     var c = this.get('bill_companion');
     var co = this.get('bill_conference');
 
-    if (this.get('hasBill') && _.isUndefined(this.get('newest_action')) && p.get('newest_action')) {
+    if (this.get('hasBill') && p.get('newest_action')) {
       newest_action = p.get('newest_action');
 
       if (c && c.get('newest_action')) {
@@ -336,6 +338,20 @@ LT.BillModel = LT.BaseModel.extend({
     }
 
     return this.get('newest_action');
+  },
+
+  // Determines if is recent.  Check for actions and action_dates.
+  isRecent: function() {
+    var newest = this.newestAction();
+    var pActions = (this.get('bill_primary')) ? this.get('bill_primary').get('action_dates') : null;
+
+    if (_.isObject(newest) && newest.date && moment().diff(newest.date, 'days') <= this.app.options.recentChangeThreshold) {
+      return true;
+    }
+    else if (_.isObject(pActions) && pActions.last && moment().diff(pActions.last, 'days') <= this.app.options.recentChangeThreshold) {
+      return true;
+    }
+    return false;
   },
 
   // We need to get actions and meta data from individual
@@ -448,7 +464,7 @@ LT.BillModel = LT.BaseModel.extend({
     }
 
     // Determine if this bill has been updated recently
-    type.recent = (Math.abs(parseInt(this.newestAction().date.diff(moment(), 'days'), 10)) <= this.app.options.recentChangeThreshold);
+    type.recent = this.isRecent();
 
     // Attach new data
     this.set('actions', actions);

@@ -596,8 +596,8 @@ LT.OSBillModel = LT.OSModel.extend({
     var thisModel = this;
 
     // Parse some dates
-    data.created_at = moment(data.created_at);
-    data.updated_at = moment(data.updated_at);
+    data.created_at = data.created_at ? moment(data.created_at) : undefined;
+    data.updated_at = data.updated_at ? moment(data.updated_at) : undefined;
 
     // Action dates.  Filter then make into a moment()
     data.action_dates = _.filterObject(data.action_dates, function(a, ai) {
@@ -638,11 +638,13 @@ LT.OSBillModel = LT.OSModel.extend({
     }
 
     // Add a legislator model to each sponsor
-    data.sponsors = _.map(data.sponsors, function(s, si) {
-      s.id = s.leg_id;
-      s.leg = thisModel.app.getModel('OSLegislatorModel', 'leg_id', s);
-      return s;
-    });
+    if (data.sponsors) {
+      data.sponsors = _.map(data.sponsors, function(s, si) {
+        s.id = s.leg_id;
+        s.leg = thisModel.app.getModel('OSLegislatorModel', 'leg_id', s);
+        return s;
+      });
+    }
 
     return data;
   },
@@ -791,7 +793,7 @@ LT.BillModel = LT.BaseModel.extend({
     var c = this.get('bill_companion');
     var co = this.get('bill_conference');
 
-    if (_.isUndefined(this.get('last_updated_at')) && p.get('updated_at')) {
+    if (p.get('updated_at')) {
       last_updated_at = p.get('updated_at');
 
       if (c && c.get('updated_at')) {
@@ -817,7 +819,7 @@ LT.BillModel = LT.BaseModel.extend({
     var c = this.get('bill_companion');
     var co = this.get('bill_conference');
 
-    if (this.get('hasBill') && _.isUndefined(this.get('newest_action')) && p.get('newest_action')) {
+    if (this.get('hasBill') && p.get('newest_action')) {
       newest_action = p.get('newest_action');
 
       if (c && c.get('newest_action')) {
@@ -834,6 +836,20 @@ LT.BillModel = LT.BaseModel.extend({
     }
 
     return this.get('newest_action');
+  },
+
+  // Determines if is recent.  Check for actions and action_dates.
+  isRecent: function() {
+    var newest = this.newestAction();
+    var pActions = (this.get('bill_primary')) ? this.get('bill_primary').get('action_dates') : null;
+
+    if (_.isObject(newest) && newest.date && moment().diff(newest.date, 'days') <= this.app.options.recentChangeThreshold) {
+      return true;
+    }
+    else if (_.isObject(pActions) && pActions.last && moment().diff(pActions.last, 'days') <= this.app.options.recentChangeThreshold) {
+      return true;
+    }
+    return false;
   },
 
   // We need to get actions and meta data from individual
@@ -946,7 +962,7 @@ LT.BillModel = LT.BaseModel.extend({
     }
 
     // Determine if this bill has been updated recently
-    type.recent = (Math.abs(parseInt(this.newestAction().date.diff(moment(), 'days'), 10)) <= this.app.options.recentChangeThreshold);
+    type.recent = this.isRecent();
 
     // Attach new data
     this.set('actions', actions);
@@ -1195,7 +1211,8 @@ LT.MainRouter = Backbone.Router.extend({
   },
 
   // Single Category view
-  routeCategory: function(category) {
+  routeCategory: function(category, fetchData) {
+    fetchData = fetchData || true;
     var thisRouter = this;
     var categoryID = decodeURI(category);
     var commonData = {
@@ -1216,7 +1233,9 @@ LT.MainRouter = Backbone.Router.extend({
     }
 
     // Fetch bills in category
-    this.app.fetchOSBillsFromCategory(category);
+    if (fetchData) {
+      this.app.fetchOSBillsFromCategory(category);
+    }
 
     // Create categories view
     this.app.views.category = new LT.CategoryView({
@@ -1257,8 +1276,13 @@ LT.MainRouter = Backbone.Router.extend({
   // Recent category is like any other except that
   // we need to load the basic data from each bill
   routeRecentCategory: function() {
-    this.app.fetchBasicBillData();
-    this.routeCategory('recent');
+    var thisRouter = this;
+
+    // Need basic info about bills, then get full data
+    this.app.fetchBasicBillData().done(function() {
+      thisRouter.app.fetchOSBillsFromCategory(thisRouter.app.categories.get('recent'));
+    });
+    this.routeCategory('recent', false);
   },
 
   // eBill route
@@ -1426,7 +1450,7 @@ _.extend(App.prototype, {
 
     // Only do once
     if (this.fetched.basicBillData === true) {
-      return;
+      return $.when.apply($, []);
     }
 
     // First collect all the bill id's we need
@@ -1439,6 +1463,7 @@ _.extend(App.prototype, {
     // Make URL to search with all the bill ids
     url = 'http://openstates.org/api/v1/bills/?state=' +
       this.options.state +
+      '&fields=action_dates,chamber,title,id,created_at,updated_at,bill_id' +
       '&search_window=session:' + this.options.session +
       '&bill_id__in=' + encodeURI(billIDs.join('|')) +
       '&apikey=' + this.options.OSKey + '&callback=?';
@@ -1450,6 +1475,14 @@ _.extend(App.prototype, {
         thisApp.trigger('fetched:basic-bill-data');
 
         _.each(data, function(d) {
+          // This should someone how use another fetch and model parsing,
+          // but for now this will do.
+          d.action_dates = _.filterObject(d.action_dates, function(a, ai) {
+            return a;
+          });
+          d.action_dates = _.mapObject(d.action_dates, function(a, ai) {
+            return moment(a);
+          });
           d.created_at = moment(d.created_at);
           d.updated_at = moment(d.updated_at);
           thisApp.getModel('OSBillModel', 'bill_id', d).set(d);
@@ -1468,7 +1501,7 @@ _.extend(App.prototype, {
     // the right timeframe
     this.bills.each(function(b, bi) {
       var c = b.get('categories');
-      if (Math.abs(parseInt(b.lastUpdatedAt().diff(moment(), 'days'), 10)) < thisApp.options.recentChangeThreshold) {
+      if (b.isRecent()) {
         c.push(recent.get('id'));
         b.set('categories', c);
       }

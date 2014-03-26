@@ -80,7 +80,8 @@ LT.MainRouter = Backbone.Router.extend({
   },
 
   // Single Category view
-  routeCategory: function(category) {
+  routeCategory: function(category, fetchData) {
+    fetchData = fetchData || true;
     var thisRouter = this;
     var categoryID = decodeURI(category);
     var commonData = {
@@ -101,7 +102,9 @@ LT.MainRouter = Backbone.Router.extend({
     }
 
     // Fetch bills in category
-    this.app.fetchOSBillsFromCategory(category);
+    if (fetchData) {
+      this.app.fetchOSBillsFromCategory(category);
+    }
 
     // Create categories view
     this.app.views.category = new LT.CategoryView({
@@ -142,8 +145,13 @@ LT.MainRouter = Backbone.Router.extend({
   // Recent category is like any other except that
   // we need to load the basic data from each bill
   routeRecentCategory: function() {
-    this.app.fetchBasicBillData();
-    this.routeCategory('recent');
+    var thisRouter = this;
+
+    // Need basic info about bills, then get full data
+    this.app.fetchBasicBillData().done(function() {
+      thisRouter.app.fetchOSBillsFromCategory(thisRouter.app.categories.get('recent'));
+    });
+    this.routeCategory('recent', false);
   },
 
   // eBill route
