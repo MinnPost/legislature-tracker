@@ -1294,6 +1294,8 @@ LT.MainRouter = Backbone.Router.extend({
         loading: this.app.templates.loading
       }
     });
+
+    this.scrollFocus();
   },
 
   // Single Category view
@@ -1357,6 +1359,8 @@ LT.MainRouter = Backbone.Router.extend({
         })
       }
     });
+
+    this.scrollFocus();
 
     // Most of the data has been loaded at this point
     this.app.on('fetched:osbills:category:' + category.id, function() {
@@ -1428,6 +1432,20 @@ LT.MainRouter = Backbone.Router.extend({
         })
       }
     });
+
+    this.scrollFocus();
+  },
+
+  // Move view to top of app
+  hasInitalFocus: false,
+  scrollFocus: function() {
+    // Only do after initial load
+    if (this.hasInitalFocus && this.app.options.scollFocus) {
+      $('html, body').animate({
+        scrollTop: this.app.$el.offset().top + this.app.options.scollFocusOffset
+      }, this.app.options.scollFocusTime);
+    }
+    this.hasInitalFocus = true;
   },
 
   // Handle error
@@ -1748,7 +1766,10 @@ _.extend(App.prototype, {
     detectCompanionBill: (/([A-Z]+ [1-9][0-9]*)$/),
     billNumberFormat: (/[A-Z]+ [1-9][0-9]*/),
     osBillParse: undefined,
-    stickMenu: true
+    stickMenu: true,
+    scollFocus: true,
+    scollFocusOffset: -15,
+    scollFocusTime: 500
   }
 });
 

@@ -309,6 +309,9 @@ _.extend(App.prototype, {
     detectCompanionBill: (/([A-Z]+ [1-9][0-9]*)$/),
     billNumberFormat: (/[A-Z]+ [1-9][0-9]*/),
     osBillParse: undefined,
-    stickMenu: true
+    stickMenu: true,
+    scollFocus: true,
+    scollFocusOffset: -15,
+    scollFocusTime: 500
   }
 });
