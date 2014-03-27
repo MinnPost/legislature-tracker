@@ -5,10 +5,10 @@
     {{#sponsor.leg.photo_url}}
       <div class="sponsor-image">
         {{#options.legImageProxy}}
-          <img src="{{ this }}{{ encodeURI(sponsor.leg.photo_url) }}" />
+          <img src="{{ options.legImageProxy }}{{ encodeURI(sponsor.leg.photo_url) }}" />
         {{/options.legImageProxy}}
         {{^options.legImageProxy}}
-          <img src="{{ encodeURI(sponsor.leg.photo_url) }}" />
+          <img src="{{ sponsor.leg.photo_url }}" />
         {{/options.legImageProxy}}
       </div>
     {{/sponsor.leg.photo_url}}
