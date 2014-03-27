@@ -21,8 +21,7 @@ LT.BillsCollection = Backbone.Collection.extend({
   model: LT.BillModel,
 
   comparator: function(b) {
-    return (b.newestAction()) ? b.newestAction().date.unix() * -1 :
-      b.get('title');
+    return (b.newestAction()) ? b.newestAction().date.unix() * -1 : 9999;
   }
 });
 
@@ -34,11 +33,7 @@ LT.OSBillsCollection = Backbone.Collection.extend({
 
   comparator: function(bill) {
     var last_action = bill.get('newest_action');
-
-    if (last_action) {
-      last_action = last_action.date.unix() * -1;
-    }
-    return last_action;
+    return (last_action) ? last_action.date.unix() * -1 : 9999;
   }
 });
 
