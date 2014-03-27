@@ -301,15 +301,14 @@ _.extend(App.prototype, {
     maxBills: 30,
     substituteMatch: (/substituted/i),
     imagePath: './styles/images/',
-    templatePath: './js/app/templates/',
     recentChangeThreshold: 7,
     tabletopOptions: {},
-    scrollOffset: false,
     conferenceBill: true,
     recentImage: 'RecentUpdatedBill.png',
     chamberLabel: false,
     detectCompanionBill: (/([A-Z]+ [1-9][0-9]*)$/),
     billNumberFormat: (/[A-Z]+ [1-9][0-9]*/),
-    osBillParse: false
+    osBillParse: undefined,
+    stickMenu: true
   }
 });

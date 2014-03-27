@@ -124,6 +124,100 @@ $.fn.hasScrollBar = function() {
 };
 
 
+/**
+ * Sticky navbar jQuery plugin
+ */
+LT.nav = LT.nav || {};
+
+// Plugin for sticking things.  Defaults are for sticking to top.
+LT.nav.stickDefaults = {
+  activeClass: 'stuck top',
+  wrapperClass: 'menu-stick-container',
+  topPadding: 0,
+  throttle: 90
+};
+function LTStick(element, options) {
+  // Defined some values and process options
+  this.element = element;
+  this.$element = $(element);
+  this._defaults = LT.nav.stickDefaults;
+  this.options = $.extend( {}, this._defaults, options);
+  this._name = 'ltStick';
+  this._scrollEvent = 'scroll.lt.ltStick';
+  this._on = false;
+
+  this.init();
+}
+LTStick.prototype = {
+  init: function() {
+    // If contaier not passed, use parent
+    this.$container = (this.options.container === undefined) ? this.$element.parent() : $(this.options.container);
+    this.elementHeight = this.$element.outerHeight(true);
+
+    // Create a spacer element so content doesn't jump
+    this.$spacer = $('<div>').height(this.elementHeight).hide();
+    this.$element.after(this.$spacer);
+
+    // Add wrapper
+    if (this.options.wrapperClass) {
+      this.$element.wrapInner('<div class="' + this.options.wrapperClass + '"></div>');
+    }
+
+    // Throttle the scoll listen for better perfomance
+    this._throttledListen = _.bind(_.throttle(this.listen, this.options.throttle), this);
+    this._throttledListen();
+    $(window).on(this._scrollEvent, this._throttledListen);
+  },
+
+  listen: function() {
+    var containerTop = this.$container.offset().top;
+    var containerBottom = containerTop + this.$container.height();
+    var scrollTop = $(window).scrollTop();
+    var top = (containerTop - this.options.topPadding);
+    var bottom = (containerBottom - this.elementHeight - this.options.topPadding - 2);
+
+    // Test whether we are in the container and whether its
+    // already stuck or not
+    if (!this._on && scrollTop > top && scrollTop < bottom) {
+      this.on();
+    }
+    else if (this._on && (scrollTop < top || scrollTop > bottom)) {
+      this.off();
+    }
+  },
+
+  on: function() {
+    this.$element.addClass(this.options.activeClass);
+    if (this.options.topPadding) {
+      this.$element.css('top', this.options.topPadding);
+    }
+    this.$spacer.show();
+    this._on = true;
+  },
+
+  off: function() {
+    this.$element.removeClass(this.options.activeClass);
+    if (this.options.topPadding) {
+      this.$element.css('top', 'inherit');
+    }
+    this.$spacer.hide();
+    this._on = false;
+  },
+
+  remove: function() {
+    this.$container.off(this._scrollEvent);
+  }
+};
+// Register plugin
+$.fn.ltStick = function(options) {
+  return this.each(function() {
+    if (!$.data(this, 'ltStick')) {
+      $.data(this, 'ltStick', new LTStick(this, options));
+    }
+  });
+};
+
+
 
 /**
  * (copied) Backbone Ractive adaptor plugin

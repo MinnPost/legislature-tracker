@@ -1,7 +1,7 @@
 <div class="ls">
 
-  {{#(menuOff !== true && !!categories)}}
-    <div class="ls-header-container">
+  {{#(!!categories)}}
+    <div class="ls-header-container {{#menuOff}}menu-off{{/menuOff}}">
       <div class="ls-header">
 
         <a class="all-categories-link" href="#/">

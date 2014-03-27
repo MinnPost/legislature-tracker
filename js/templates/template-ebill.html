@@ -109,7 +109,8 @@
 
       {{#bill.bill_primary}}
         <div class="osbill bill-primary">
-          <strong>Primary bill
+          <strong>
+            {{ (options.chamberLabel) ? translate('chamber', chamber) + ' Bill' : 'Primary Bill' }}
             {{#sources.0.url}}
               <a href="{{ sources.0.url }}" target="_blank">{{ bill_id }}</a>
             {{/sources.0.url}}
@@ -123,7 +124,8 @@
 
       {{#bill.bill_companion}}
         <div class="osbill bill-companion">
-          <strong>Companion bill
+          <strong>
+            {{ (options.chamberLabel) ? translate('chamber', chamber) + ' Bill' : 'Companion Bill' }}
             {{#sources.0.url}}
               <a href="{{ sources.0.url }}" target="_blank">{{ bill_id }}</a>
             {{/sources.0.url}}

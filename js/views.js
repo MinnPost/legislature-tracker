@@ -20,6 +20,22 @@ LT.BaseView = Ractive.extend({
 LT.ApplicationView = LT.BaseView.extend({
   init: function() {
     this.baseInit.apply(this, arguments);
+
+    // Stick the menu
+    this.stuck = false;
+    this.observe('categories', function(n, o) {
+      // Check if the option is enabled
+      if (!this.stuck && this.get('options').stickMenu !== true) {
+        this.stuck = true;
+      }
+      // And whether menu is loaded
+      if (!this.stuck && n && _.isObject(n) && n.length > 0) {
+        this.stuck = true;
+        $(this.el).find('.ls-header').ltStick({
+          container: $(this.el)
+        });
+      }
+    });
   }
 });
 
