@@ -295,7 +295,7 @@ LT.BillModel = LT.BaseModel.extend({
     var c = this.get('bill_companion');
     var co = this.get('bill_conference');
 
-    if (p.get('updated_at')) {
+    if (p && p.get('updated_at')) {
       last_updated_at = p.get('updated_at');
 
       if (c && c.get('updated_at')) {

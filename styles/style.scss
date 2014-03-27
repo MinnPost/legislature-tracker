@@ -303,6 +303,10 @@
         padding: 2%;
         border: 1px solid #DDDDDD;
         margin-bottom: 2em;
+
+        &.no-bill {
+          border: 1px dashed #DDDDDD;
+        }
       }
     }
 
