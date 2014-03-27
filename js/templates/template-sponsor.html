@@ -16,9 +16,9 @@
     <div class="sponsor-info">
       {{#sponsor.leg.full_name}}
         {{ sponsor.leg.full_name }} <br />
-        District {{ sponsor.leg.district }} <br />
-        {{ translate('partyAbbr', sponsor.leg.party) }},
-        {{ translate('chamber', sponsor.leg.chamber) }}
+        District {{ sponsor.leg.district }}
+        ({{ translate('chamber', sponsor.leg.chamber) }}) <br />
+        {{ translate('partyAbbr', sponsor.leg.party) }}
       {{/sponsor.leg.full_name}}
 
       {{^sponsor.leg.full_name}}

@@ -95,7 +95,12 @@
       ">
       {{#bill.bill_conference}}
         <div class="osbill bill-conference">
-          <strong>Conference bill {{ bill_id }}</strong>
+          <strong>Conference bill
+            {{#sources.0.url}}
+              <a href="{{ sources.0.url }}" target="_blank">{{ bill_id }}</a>
+            {{/sources.0.url}}
+            {{^sources.0.url}} {{ bill_id }} {{/sources.0.url}}
+          </strong>
           {{#sponsors}}
             <sponsor sponsor="{{ this }}" type="primary">
           {{/sponsors}}
@@ -104,7 +109,12 @@
 
       {{#bill.bill_primary}}
         <div class="osbill bill-primary">
-          <strong>Primary bill {{ bill_id }}</strong>
+          <strong>Primary bill
+            {{#sources.0.url}}
+              <a href="{{ sources.0.url }}" target="_blank">{{ bill_id }}</a>
+            {{/sources.0.url}}
+            {{^sources.0.url}} {{ bill_id }} {{/sources.0.url}}
+          </strong>
           {{#sponsors}}
             <sponsor sponsor="{{ this }}" type="primary">
           {{/sponsors}}
@@ -113,12 +123,22 @@
 
       {{#bill.bill_companion}}
         <div class="osbill bill-companion">
-          <strong>Companion bill {{ bill_id }}</strong>
+          <strong>Companion bill
+            {{#sources.0.url}}
+              <a href="{{ sources.0.url }}" target="_blank">{{ bill_id }}</a>
+            {{/sources.0.url}}
+            {{^sources.0.url}} {{ bill_id }} {{/sources.0.url}}
+          </strong>
           {{#sponsors}}
             <sponsor sponsor="{{ this }}" type="primary">
           {{/sponsors}}
         </div>
       {{/bill.bill_companion}}
+    </div>
+
+    <div class="details-link">
+      <a title="See more details about bill" href="#/bill/{{ encodeURI(bill.bill) }}">More details
+        <img src="{{ options.imagePath }}forward-100-85.png" /></a>
     </div>
   {{/()}}
 

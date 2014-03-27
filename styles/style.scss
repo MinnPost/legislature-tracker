@@ -366,6 +366,7 @@
     }
 
     .osbills {
+      margin-bottom: 1em;
 
       &.has-conference.has-primary.has-companion .osbill {
         float: left;
@@ -397,6 +398,15 @@
             color: $color-medium-gray;
           }
         }
+      }
+    }
+
+    .details-link {
+      text-align: right;
+
+      img {
+        max-height: 1em;
+        margin-left: .25em;
       }
     }
   }
