@@ -102,6 +102,17 @@
     LT.templates['js/app/templates/template-ebill.html'] = _.template($('#custom-ebill-template').html());
 
   }
+  else if (queryParts.example === 'MN14') {
+    // Show MN
+    title = '2014 MN Legislature Tracker';
+    options = $.extend(true, {}, options, {
+      state: 'MN',
+      session: '2013-2014',
+      OSKey: '49c5c72c157d4b37892ddb52c63d06be',
+      eKey: '0AjYft7IGrHzNdE1LbFhMU25zYVdoV0lCVDlDZXI1Tnc',
+      legImageProxy: 'http://i-mage-proxerific.herokuapp.com/resize?size=100x100&url='
+    });
+  }
   else {
     // Show MN
     title = '2013 MN Legislature Tracker';
