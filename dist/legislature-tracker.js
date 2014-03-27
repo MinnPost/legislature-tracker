@@ -179,31 +179,6 @@ $.fn.hasScrollBar = function() {
 */
 (function ( global, factory ) {
 
-  'use strict';
-
-  // Common JS (i.e. browserify) environment
-  if ( typeof module !== 'undefined' && module.exports && typeof require === 'function' ) {
-    factory( require( 'ractive' ), require( 'backbone' ) );
-  }
-
-  // AMD?
-  else if ( typeof define === 'function' && define.amd ) {
-    define([ 'Ractive', 'Backbone' ], factory );
-  }
-
-  // browser global
-  else if ( global.Ractive && global.Backbone ) {
-    factory( global.Ractive, global.Backbone );
-  }
-
-  else {
-    throw new Error( 'Could not find Ractive or Backbone! Both must be loaded before the Ractive-Backbone plugin' );
-  }
-
-}( typeof window !== 'undefined' ? window : this, function ( Ractive, Backbone ) {
-
-  'use strict';
-
   var BackboneModelWrapper, BackboneCollectionWrapper;
 
   if ( !Ractive || !Backbone ) {
@@ -312,7 +287,7 @@ $.fn.hasScrollBar = function() {
     }
   };
 
-}));
+})();
 
 
 /**
