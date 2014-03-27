@@ -19,13 +19,18 @@ LT.MainRouter = Backbone.Router.extend({
     this.options = options;
     this.app = options.app;
 
+    // Some helpful bound functions
+    this.imagePath = _.bind(this.app.imagePath, this.app);
+    this.translate = _.bind(this.app.translate, this.app);
+
     // Main view for application
     this.app.views.application = new LT.ApplicationView({
       el: this.app.$el,
       template: this.app.templates.application,
       data: {
         options: this.options,
-        categories: this.app.categories
+        categories: this.app.categories,
+        imagePath: this.imagePath
       },
       options: this.options,
       partials: {
@@ -35,10 +40,6 @@ LT.MainRouter = Backbone.Router.extend({
 
     // Make reference to content to change
     this.$content = this.app.$el.find('.ls-content-container');
-
-    // Some helpful bound functions
-    this.imagePath = _.bind(this.app.imagePath, this.app);
-    this.translate = _.bind(this.app.translate, this.app);
   },
 
   // Start application (after data has been loaded)
