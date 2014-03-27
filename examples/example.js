@@ -48,8 +48,8 @@
       }
     });
   }
-  else if (queryParts.example === 'MI') {
-    title = '2014 MI Legislature Tracker';
+  else if (queryParts.example === 'MO') {
+    title = '2014 MO Legislature Tracker';
     options = $.extend(true, {}, options, {
       state: 'MO',
       session: '2014',
