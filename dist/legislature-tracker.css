@@ -478,31 +478,36 @@
 }
 @media screen and (max-width: 768px) {
   /* line 457, ../../styles/style.scss */
+  .ls .categories-container {
+    background-position: bottom center;
+    background-size: 100% auto;
+  }
+  /* line 462, ../../styles/style.scss */
   .ls .ls-header .categories-nav {
     display: none;
   }
-  /* line 461, ../../styles/style.scss */
+  /* line 466, ../../styles/style.scss */
   .ls .categories-container .aggregate-stat {
     margin-right: 1em;
   }
-  /* line 465, ../../styles/style.scss */
+  /* line 470, ../../styles/style.scss */
   .ls .categories-container .aggregate-counts {
     margin-bottom: 3em;
   }
-  /* line 469, ../../styles/style.scss */
+  /* line 474, ../../styles/style.scss */
   .ls .categories-container {
     background-position: bottom center;
     background-size: 100% auto;
     padding-top: 3em;
   }
-  /* line 475, ../../styles/style.scss */
+  /* line 480, ../../styles/style.scss */
   .ls .categories-container ul li {
     width: 33.32222222%;
     text-align: center;
   }
 }
 @media screen and (max-width: 520px) {
-  /* line 483, ../../styles/style.scss */
+  /* line 488, ../../styles/style.scss */
   .ls .bill .bill-status {
     float: none;
     display: block;
@@ -511,28 +516,28 @@
   }
 }
 @media screen and (max-width: 420px) {
-  /* line 494, ../../styles/style.scss */
+  /* line 499, ../../styles/style.scss */
   .ls .categories-container .aggregate-counts {
     margin-bottom: 2em;
   }
-  /* line 498, ../../styles/style.scss */
+  /* line 503, ../../styles/style.scss */
   .ls .categories-container {
     padding-top: 2em;
   }
-  /* line 502, ../../styles/style.scss */
+  /* line 507, ../../styles/style.scss */
   .ls .categories-container ul li {
     width: 50%;
     text-align: center;
   }
 }
 @media screen and (max-width: 375px) {
-  /* line 509, ../../styles/style.scss */
+  /* line 514, ../../styles/style.scss */
   .ls .categories-container .aggregate-counts .aggregate-stat {
     display: block;
   }
 }
 @media screen and (max-width: 280px) {
-  /* line 516, ../../styles/style.scss */
+  /* line 521, ../../styles/style.scss */
   .ls .categories-container ul li {
     width: 100%;
     text-align: center;

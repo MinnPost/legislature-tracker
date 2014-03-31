@@ -454,6 +454,11 @@
   }
 
   @media screen and (max-width: 768px) {
+    .categories-container {
+      background-position: bottom center;
+      background-size: 100% auto;
+    }
+
     .ls-header .categories-nav {
       display: none;
     }
