@@ -47,49 +47,11 @@ _.mixin({
   },
 
   cssClass: function(str) {
-    return str.replace(/[^a-z0-9]/g, '-');
+    return str.toLowerCase().replace(/[^a-z0-9]/g, '-');
   },
 
   numberFormatCommas: function(number) {
     return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
-  },
-
-  ellipsisText: function(text, wordCount) {
-    // The default is to count words and create an ellipsis break
-    // there that will be handled by showing and hiding the relevant
-    // parts on details and non-detailed views.
-    //
-    // But if the separator is found, we will separate the text
-    // there.
-    var output = '';
-    var templateBreak = '<!-- break -->';
-    var templateStart = '<ins class="ellipsis-start">[[[TEXT]]]</ins>';
-    var templateEllipsis = '<ins class="ellipsis-ellipsis">...</ins>';
-    var templateEnd = '<ins class="ellipsis-end">[[[TEXT]]]</ins>';
-    var slice, sliceStart, sliceEnd, words;
-
-    // Look for break, otherwise use word count
-    if (text.indexOf(templateBreak) !== -1) {
-      slice = text.indexOf(templateBreak);
-      output += templateStart.replace('[[[TEXT]]]', text.substring(0, slice)) + ' ';
-      output += templateEllipsis + ' ';
-      output += templateEnd.replace('[[[TEXT]]]', text.substring(slice, text.length)) + ' ';
-    }
-    else {
-      words = text.split(' ');
-      if (words.length <= wordCount) {
-        output += templateStart.replace('[[[TEXT]]]', text);
-      }
-      else {
-        sliceStart = words.slice(0, wordCount);
-        sliceEnd = words.slice(wordCount);
-        output += templateStart.replace('[[[TEXT]]]', sliceStart.join(' ')) + ' ';
-        output += templateEllipsis + ' ';
-        output += templateEnd.replace('[[[TEXT]]]', sliceEnd.join(' ')) + ' ';
-      }
-    }
-
-    return output;
   },
 
   // A simple URL parser as stolen from
@@ -296,17 +258,11 @@ $.fn.ltStick = function(options) {
 
     this.value = collection;
 
-    collection.on( 'add remove reset', this.changeHandler = function () {
+    collection.on( 'add remove reset sort', this.changeHandler = function () {
       // TODO smart merge. It should be possible, if awkward, to trigger smart
       // updates instead of a blunderbuss .set() approach
       wrapper.setting = true;
       ractive.set( keypath, collection.models );
-      wrapper.setting = false;
-    });
-    // Separate sort handler as sort is not changing the models
-    collection.on( 'sort', this.sortHandler = function () {
-      wrapper.setting = true;
-      ractive.update(keypath);
       wrapper.setting = false;
     });
 
@@ -314,8 +270,7 @@ $.fn.ltStick = function(options) {
 
   BackboneCollectionWrapper.prototype = {
     teardown: function () {
-      this.value.off( 'add remove reset', this.changeHandler );
-      this.value.off( 'sort', this.sortHandler );
+      this.value.off( 'add remove reset sort', this.changeHandler );
     },
     get: function () {
       return this.value.models;

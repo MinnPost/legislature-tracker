@@ -21,7 +21,8 @@ LT.BillsCollection = Backbone.Collection.extend({
   model: LT.BillModel,
 
   comparator: function(b) {
-    return (b.newestAction()) ? b.newestAction().date.unix() * -1 : 9999;
+    var sort = (b.newestAction()) ? moment().diff(b.newestAction().date, 'days') : null;
+    return sort;
   }
 });
 

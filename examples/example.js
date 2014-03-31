@@ -126,7 +126,7 @@
   }
 
   // Make application
-  app = new LT(options);
+  app = window.LTDEBUG = new LT(options);
 
   // Chang page title
   $('.page-title').html(title);

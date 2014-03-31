@@ -48,6 +48,9 @@ LT.parsers.eBills = function(bills, options) {
     LT.parsers.translateFields(options.fieldTranslations.eBills, row);
     row.links = LT.parsers.eLinks(row.links);
 
+    // Back id
+    row.id = row.id || _.cssClass(row.bill) + _.cssClass(row.title);
+
     // Break up categories into an array
     row.categories = (row.categories) ? row.categories.split(',') : [];
     row.categories = _.map(row.categories, _.trim);
