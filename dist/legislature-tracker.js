@@ -1422,7 +1422,7 @@ LT.MainRouter = Backbone.Router.extend({
 // Container "class" for objects
 App = function(options) {
   // Options and dom element
-  this.options = _.extend({}, this.defaultOptions, options);
+  this.options = $.extend(true, {}, this.defaultOptions, options);
   this.options.app = this;
   this.options.$el = this.$el = $(this.options.el);
 

@@ -115,15 +115,6 @@
         return billD;
       },
       wordTranslations: {
-        chamber: {
-          'upper': 'Senate',
-          'lower': 'House'
-        },
-        partyAbbr: {
-          'Democratic-Farmer-Labor': 'DFL',
-          'Democratic': 'D',
-          'Republican': 'R'
-        },
         sponsors: {
           'Primary sponsors': 'Chief authors',
           'primary sponsors': 'chief authors',
