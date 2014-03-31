@@ -168,21 +168,21 @@
 
       {{#bill.bill_conference}}
         <div class="osbill conference-bill">
-          <h3>Conference bill</h3>
+          <h3>Conference bill {{ bill_id }}</h3>
           <osbill bill="{{ this }}" type="conference" imagePath="{{ imagePath }}" translate="{{ translate }}" options="{{ options }}">
         </div>
       {{/bill.bill_conference}}
 
       {{#bill.bill_primary}}
         <div class="osbill primary-bill">
-          <h3>{{ (options.chamberLabel) ? translate('chamber', chamber) + ' bill' : 'Primary bill' }}</h3>
+          <h3>{{ (options.chamberLabel) ? translate('chamber', chamber) + ' bill' : 'Primary bill' }} {{ bill_id }}</h3>
           <osbill bill="{{ this }}" type="primary" imagePath="{{ imagePath }}" translate="{{ translate }}" options="{{ options }}">
         </div>
       {{/bill.bill_primary}}
 
       {{#bill.bill_companion}}
         <div class="osbill companion-bill">
-          <h3>{{ (options.chamberLabel) ? translate('chamber', chamber) + ' bill' : 'Companion bill' }}</h3>
+          <h3>{{ (options.chamberLabel) ? translate('chamber', chamber) + ' bill' : 'Companion bill' }} {{ bill_id }}</h3>
           <osbill bill="{{ this }}" type="companion" imagePath="{{ imagePath }}" translate="{{ translate }}" options="{{ options }}">
         </div>
       {{/bill.bill_companion}}

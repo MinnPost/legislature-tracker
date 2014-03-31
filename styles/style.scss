@@ -236,9 +236,9 @@
     }
 
     .sponsor-info {
-      width: 10em;
+      padding-top: .25em;
+      max-width: 12em;
       float: left;
-      font-size: .85em;
     }
   }
 
@@ -423,6 +423,10 @@
             color: $color-medium-gray;
           }
         }
+      }
+
+      h4 {
+        font-weight: normal;
       }
     }
 
