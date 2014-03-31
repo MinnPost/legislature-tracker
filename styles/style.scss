@@ -169,6 +169,7 @@
 
     img {
       max-height: 1em;
+      max-width: 1em;
       margin-right: .25em;
     }
   }
@@ -246,6 +247,7 @@
    */
   .category-image {
     max-height: 1em;
+    max-width: 1em;
     margin-left: .5em;
     display: -moz-inline-stack;
     display: inline-block;
@@ -292,7 +294,8 @@
       }
 
       .category-image {
-        max-height: 85px;
+        max-height: 1em;
+        max-width: 1em;
         opacity: .85;
         filter: alpha(opacity = 85);
         margin: 0 auto;
@@ -358,6 +361,7 @@
 
       img {
         max-height: 2em;
+        max-width: 2em;
         margin-right: .5em;
         opacity: .25;
         filter: alpha(opacity = 25);
@@ -427,6 +431,7 @@
 
       img {
         max-height: 1em;
+        max-width: 1em;
         margin-left: .25em;
       }
     }
