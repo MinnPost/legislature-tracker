@@ -11,7 +11,7 @@
   </h4>
 
   <div class="primary-sponsors">
-    <strong>Primary sponsors</strong>
+    <strong>{{ translate('sponsors', 'Primary sponsors') }}</strong>
     <div class="clear-block">
       {{#bill.sponsors}}
         <sponsor sponsor="{{ this }}" type="primary">
@@ -35,7 +35,7 @@
   </div>
 
   <div class="co-sponsors">
-    <strong>Co-Sponsors</strong>
+    <strong>{{ translate('sponsors', 'Co-sponsors') }}</strong>
     <div>
       {{#bill.sponsors}}
         <sponsor sponsor="{{ this }}" type="cosponsor" compact="true">

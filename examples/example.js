@@ -113,6 +113,23 @@
       legImageProxy: 'http://i-mage-proxerific.herokuapp.com/resize?size=100x100&url=',
       osBillParse: function(billD, app) {
         return billD;
+      },
+      wordTranslations: {
+        chamber: {
+          'upper': 'Senate',
+          'lower': 'House'
+        },
+        partyAbbr: {
+          'Democratic-Farmer-Labor': 'DFL',
+          'Democratic': 'D',
+          'Republican': 'R'
+        },
+        sponsors: {
+          'Primary sponsors': 'Chief authors',
+          'primary sponsors': 'chief authors',
+          'Primary sponsor': 'Chief author',
+          'primary sponsor': 'chief author'
+        }
       }
     });
   }

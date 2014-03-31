@@ -95,12 +95,13 @@
       ">
       {{#bill.bill_conference}}
         <div class="osbill bill-conference">
-          <strong>Primary sponsors of conference bill
+          <h4>Conference bill
             {{#sources.0.url}}
               <a href="{{ sources.0.url }}" target="_blank">{{ bill_id }}</a>
             {{/sources.0.url}}
             {{^sources.0.url}} {{ bill_id }} {{/sources.0.url}}
-          </strong>
+          </h4>
+          <strong>{{ translate('sponsors', 'Primary sponsors') }}</strong>
           {{#sponsors}}
             <sponsor sponsor="{{ this }}" type="primary">
           {{/sponsors}}
@@ -109,14 +110,14 @@
 
       {{#bill.bill_primary}}
         <div class="osbill bill-primary">
-          <strong>
-            Primary sponsors of
-            {{ (options.chamberLabel) ? translate('chamber', chamber) + ' bill' : 'primary bill' }}
+          <h4>
+            {{ (options.chamberLabel) ? translate('chamber', chamber) + ' bill' : 'Primary bill' }}
             {{#sources.0.url}}
               <a href="{{ sources.0.url }}" target="_blank">{{ bill_id }}</a>
             {{/sources.0.url}}
             {{^sources.0.url}} {{ bill_id }} {{/sources.0.url}}
-          </strong>
+          </h4>
+          <strong>{{ translate('sponsors', 'Primary sponsors') }}</strong>
           {{#sponsors}}
             <sponsor sponsor="{{ this }}" type="primary">
           {{/sponsors}}
@@ -125,14 +126,14 @@
 
       {{#bill.bill_companion}}
         <div class="osbill bill-companion">
-          <strong>
-            Primary sponsors of
-            {{ (options.chamberLabel) ? translate('chamber', chamber) + ' bill' : 'companion bill' }}
+          <h4>
+            {{ (options.chamberLabel) ? translate('chamber', chamber) + ' bill' : 'Companion bill' }}
             {{#sources.0.url}}
               <a href="{{ sources.0.url }}" target="_blank">{{ bill_id }}</a>
             {{/sources.0.url}}
             {{^sources.0.url}} {{ bill_id }} {{/sources.0.url}}
-          </strong>
+          </h4>
+          <strong>{{ translate('sponsors', 'Primary sponsors') }}</strong>
           {{#sponsors}}
             <sponsor sponsor="{{ this }}" type="primary">
           {{/sponsors}}

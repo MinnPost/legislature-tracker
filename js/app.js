@@ -296,6 +296,16 @@ _.extend(App.prototype, {
         'Democratic-Farmer-Labor': 'DFL',
         'Democratic': 'D',
         'Republican': 'R'
+      },
+      sponsors: {
+        'Primary sponsors': 'Primary sponsors',
+        'primary sponsors': 'primary sponsors',
+        'Primary sponsor': 'Primary sponsor',
+        'primary sponsor': 'primary sponsor',
+        'Co-sponsors': 'Co-sponsors',
+        'co-sponsors': 'co-sponsors',
+        'Co-sponsor': 'Co-sponsor',
+        'co-sponsor': 'co-sponsor'
       }
     },
     maxBills: 30,
