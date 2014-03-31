@@ -505,9 +505,23 @@
     width: 33.32222222%;
     text-align: center;
   }
+  /* line 487, ../../styles/style.scss */
+  .ls .bill.ebill .osbills.clear-block.has-conference.has-primary.has-companion .osbill {
+    width: 50%;
+  }
+  /* line 490, ../../styles/style.scss */
+  .ls .bill.ebill .osbills.clear-block.has-conference.has-primary.has-companion .conference-bill {
+    width: 100%;
+  }
+}
+@media screen and (max-width: 620px) {
+  /* line 499, ../../styles/style.scss */
+  .ls .bill.ebill .osbills.clear-block .osbill {
+    width: 100%;
+  }
 }
 @media screen and (max-width: 520px) {
-  /* line 488, ../../styles/style.scss */
+  /* line 506, ../../styles/style.scss */
   .ls .bill .bill-status {
     float: none;
     display: block;
@@ -516,28 +530,28 @@
   }
 }
 @media screen and (max-width: 420px) {
-  /* line 499, ../../styles/style.scss */
+  /* line 517, ../../styles/style.scss */
   .ls .categories-container .aggregate-counts {
     margin-bottom: 2em;
   }
-  /* line 503, ../../styles/style.scss */
+  /* line 521, ../../styles/style.scss */
   .ls .categories-container {
     padding-top: 2em;
   }
-  /* line 507, ../../styles/style.scss */
+  /* line 525, ../../styles/style.scss */
   .ls .categories-container ul li {
     width: 50%;
     text-align: center;
   }
 }
 @media screen and (max-width: 375px) {
-  /* line 514, ../../styles/style.scss */
+  /* line 532, ../../styles/style.scss */
   .ls .categories-container .aggregate-counts .aggregate-stat {
     display: block;
   }
 }
 @media screen and (max-width: 280px) {
-  /* line 521, ../../styles/style.scss */
+  /* line 539, ../../styles/style.scss */
   .ls .categories-container ul li {
     width: 100%;
     text-align: center;

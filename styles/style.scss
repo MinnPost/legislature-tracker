@@ -481,6 +481,24 @@
       width: 33.32222222%;
       text-align: center;
     }
+
+    .bill.ebill .osbills.clear-block {
+      &.has-conference.has-primary.has-companion {
+        .osbill {
+          width: 50%;
+        }
+        .conference-bill {
+          width: 100%;
+        }
+      }
+    }
+  }
+
+  @media screen and (max-width: 620px) {
+
+    .bill.ebill .osbills.clear-block .osbill {
+      width: 100%;
+    }
   }
 
 
