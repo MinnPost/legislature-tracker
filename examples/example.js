@@ -110,7 +110,10 @@
       session: '2013-2014',
       OSKey: '49c5c72c157d4b37892ddb52c63d06be',
       eKey: '0AjYft7IGrHzNdE1LbFhMU25zYVdoV0lCVDlDZXI1Tnc',
-      legImageProxy: 'http://i-mage-proxerific.herokuapp.com/resize?size=100x100&url='
+      legImageProxy: 'http://i-mage-proxerific.herokuapp.com/resize?size=100x100&url=',
+      osBillParse: function(billD, app) {
+        return billD;
+      }
     });
   }
   else {

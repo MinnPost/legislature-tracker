@@ -136,7 +136,7 @@ LT.OSBillModel = LT.OSModel.extend({
 
     // Add a hook for any custom bill parsing
     if (this.app.options.osBillParse && _.isFunction(this.app.options.osBillParse)) {
-      data = this.options.osBillParse(data, this);
+      data = this.app.options.osBillParse.apply(this, [data, this.app]);
     }
 
     // Add a legislator model to each sponsor
