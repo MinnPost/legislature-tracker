@@ -289,23 +289,34 @@
         }
       }
 
-      h3 {
-        margin-bottom: .25em;
-      }
-
-      .category-image {
-        max-height: 5.5em;
-        max-width: 5.5em;
-        opacity: .85;
-        filter: alpha(opacity = 85);
-        margin: 0 auto;
+      a {
         display: block;
-        zoom: 1;
-        *display: block;
+
+        .category-item-link {
+          margin-bottom: .25em;
+          font-size: 1.5em;
+          font-weight: bold;
+        }
+
+        .category-image {
+          max-height: 5.5em;
+          max-width: 5.5em;
+          opacity: .85;
+          filter: alpha(opacity = 85);
+          margin: 0 auto;
+          display: block;
+          zoom: 1;
+          *display: block;
+        }
+
 
         &:hover {
-          opacity: 1;
-          filter: alpha(opacity = 100);
+
+          .category-image {
+            opacity: 1;
+            filter: alpha(opacity = 100);
+            text-decoration: none;
+          }
         }
       }
     }

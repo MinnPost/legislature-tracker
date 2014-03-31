@@ -8,17 +8,13 @@
     {{#categories:i}}
       <li class="category-item category-item-{{ i }}">
         <div class="category-inner category-{{ _.cssClass(id) }}">
-          {{#image}}
-            <a href="#/category/{{ encodeURI(id) }}">
+          <a href="#/category/{{ encodeURI(id) }}">
+            {{#image}}
               <img class="category-image" src="{{ imagePath(image) }}" />
-            </a>
-          {{/image}}
+            {{/image}}
 
-          <h3>
-            <a href="#/category/{{ encodeURI(id) }}">
-              {{ title }}
-            </a>
-          </h3>
+            <span class="category-item-link">{{ title }}</span>
+          </a>
 
           <div>
             Watching <strong>{{ bills.length }}</strong> bills.
