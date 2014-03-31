@@ -9,6 +9,9 @@ App = function(options) {
   this.options.app = this;
   this.options.$el = this.$el = $(this.options.el);
 
+  // Get the original document title if not set
+  this.options.documentTitle = this.options.documentTitle || document.title;
+
   // Event handling
   this.on('fetched:base-data', this.loadBaseData);
   this.on('loaded:basic-bill-data', this.loadRecentCategory);

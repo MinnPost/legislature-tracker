@@ -84,7 +84,9 @@ LT.MainRouter = Backbone.Router.extend({
       }
     });
 
+    // Browser bits
     this.scrollFocus();
+    this.pageTitle('Categories');
   },
 
   // Single Category view
@@ -149,7 +151,9 @@ LT.MainRouter = Backbone.Router.extend({
       }
     });
 
+    // Browser bits
     this.scrollFocus();
+    this.pageTitle('Category | ' + category.get('title'));
 
     // Most of the data has been loaded at this point
     this.app.on('fetched:osbills:category:' + category.id, function() {
@@ -222,7 +226,9 @@ LT.MainRouter = Backbone.Router.extend({
       }
     });
 
+    // Browser bits
     this.scrollFocus();
+    this.pageTitle('Bill | ' + bill.get('title'));
   },
 
   // Move view to top of app
@@ -235,6 +241,11 @@ LT.MainRouter = Backbone.Router.extend({
       }, this.app.options.scollFocusTime);
     }
     this.hasInitalFocus = true;
+  },
+
+  // Update title
+  pageTitle: function(title) {
+    document.title = this.app.options.documentTitle + ' | ' + title;
   },
 
   // Handle error
