@@ -95,7 +95,7 @@
       ">
       {{#bill.bill_conference}}
         <div class="osbill bill-conference">
-          <strong>Conference bill
+          <strong>Primary sponsors of conference bill
             {{#sources.0.url}}
               <a href="{{ sources.0.url }}" target="_blank">{{ bill_id }}</a>
             {{/sources.0.url}}
@@ -110,7 +110,8 @@
       {{#bill.bill_primary}}
         <div class="osbill bill-primary">
           <strong>
-            {{ (options.chamberLabel) ? translate('chamber', chamber) + ' Bill' : 'Primary Bill' }}
+            Primary sponsors of
+            {{ (options.chamberLabel) ? translate('chamber', chamber) + ' bill' : 'primary bill' }}
             {{#sources.0.url}}
               <a href="{{ sources.0.url }}" target="_blank">{{ bill_id }}</a>
             {{/sources.0.url}}
@@ -125,7 +126,8 @@
       {{#bill.bill_companion}}
         <div class="osbill bill-companion">
           <strong>
-            {{ (options.chamberLabel) ? translate('chamber', chamber) + ' Bill' : 'Companion Bill' }}
+            Primary sponsors of
+            {{ (options.chamberLabel) ? translate('chamber', chamber) + ' bill' : 'companion bill' }}
             {{#sources.0.url}}
               <a href="{{ sources.0.url }}" target="_blank">{{ bill_id }}</a>
             {{/sources.0.url}}
@@ -165,21 +167,21 @@
 
       {{#bill.bill_conference}}
         <div class="osbill conference-bill">
-          <h3>Conference Bill</h3>
+          <h3>Conference bill</h3>
           <osbill bill="{{ this }}" type="conference" imagePath="{{ imagePath }}" translate="{{ translate }}" options="{{ options }}">
         </div>
       {{/bill.bill_conference}}
 
       {{#bill.bill_primary}}
         <div class="osbill primary-bill">
-          <h3>{{ (options.chamberLabel) ? translate('chamber', chamber) + ' Bill' : 'Primary Bill' }}</h3>
+          <h3>{{ (options.chamberLabel) ? translate('chamber', chamber) + ' bill' : 'Primary bill' }}</h3>
           <osbill bill="{{ this }}" type="primary" imagePath="{{ imagePath }}" translate="{{ translate }}" options="{{ options }}">
         </div>
       {{/bill.bill_primary}}
 
       {{#bill.bill_companion}}
         <div class="osbill companion-bill">
-          <h3>{{ (options.chamberLabel) ? translate('chamber', chamber) + ' Bill' : 'Companion Bill' }}</h3>
+          <h3>{{ (options.chamberLabel) ? translate('chamber', chamber) + ' bill' : 'Companion bill' }}</h3>
           <osbill bill="{{ this }}" type="companion" imagePath="{{ imagePath }}" translate="{{ translate }}" options="{{ options }}">
         </div>
       {{/bill.bill_companion}}
