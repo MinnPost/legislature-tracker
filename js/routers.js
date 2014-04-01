@@ -91,7 +91,7 @@ LT.MainRouter = Backbone.Router.extend({
 
   // Single Category view
   routeCategory: function(category, fetchData) {
-    fetchData = fetchData || true;
+    fetchData = (_.isUndefined(fetchData) || fetchData === null) ? true : fetchData;
     var thisRouter = this;
     var categoryID = decodeURI(category);
     var commonData = {
@@ -155,9 +155,11 @@ LT.MainRouter = Backbone.Router.extend({
     this.scrollFocus();
     this.pageTitle('Category | ' + category.get('title'));
 
-    // Most of the data has been loaded at this point
+    // Most of the data has been loaded at this point, and we just want to
+    // poke the view to update things
     this.app.on('fetched:osbills:category:' + category.id, function() {
       category.get('bills').sort();
+      thisRouter.app.views.category.update();
     });
   },
 

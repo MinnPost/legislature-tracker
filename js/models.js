@@ -494,11 +494,17 @@ LT.CategoryModel = LT.BaseModel.extend({
     var thisModel = this;
     var cat = this.get('id');
 
+    // Only do once if we have bills
+    if (this.get('loadedBills') && this.get('bills').length > 0) {
+      return this;
+    }
+
     bills.each(function(b, bi) {
       if (_.indexOf(b.get('categories'), cat) !== -1) {
-        thisModel.get('bills').push(thisModel.app.getModel('BillModel', 'bill', b.attributes));
+        thisModel.get('bills').add(thisModel.app.getModel('BillModel', 'bill', b.toJSON()));
       }
     });
+    this.set('loadedBills', true, { silent: true });
     return this;
   }
 });

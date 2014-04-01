@@ -1020,11 +1020,17 @@ LT.CategoryModel = LT.BaseModel.extend({
     var thisModel = this;
     var cat = this.get('id');
 
+    // Only do once if we have bills
+    if (this.get('loadedBills') && this.get('bills').length > 0) {
+      return this;
+    }
+
     bills.each(function(b, bi) {
       if (_.indexOf(b.get('categories'), cat) !== -1) {
-        thisModel.get('bills').push(thisModel.app.getModel('BillModel', 'bill', b.attributes));
+        thisModel.get('bills').add(thisModel.app.getModel('BillModel', 'bill', b.toJSON()));
       }
     });
+    this.set('loadedBills', true, { silent: true });
     return this;
   }
 });
@@ -1262,7 +1268,7 @@ LT.MainRouter = Backbone.Router.extend({
 
   // Single Category view
   routeCategory: function(category, fetchData) {
-    fetchData = fetchData || true;
+    fetchData = (_.isUndefined(fetchData) || fetchData === null) ? true : fetchData;
     var thisRouter = this;
     var categoryID = decodeURI(category);
     var commonData = {
@@ -1326,9 +1332,11 @@ LT.MainRouter = Backbone.Router.extend({
     this.scrollFocus();
     this.pageTitle('Category | ' + category.get('title'));
 
-    // Most of the data has been loaded at this point
+    // Most of the data has been loaded at this point, and we just want to
+    // poke the view to update things
     this.app.on('fetched:osbills:category:' + category.id, function() {
       category.get('bills').sort();
+      thisRouter.app.views.category.update();
     });
   },
 
@@ -1560,10 +1568,10 @@ _.extend(App.prototype, {
     return $.getJSON(url)
       .done(function(data) {
         thisApp.fetched.basicBillData = true;
-        thisApp.trigger('fetched:basic-bill-data');
+        thisApp.trigger('fetched:basic-bill-data', data);
 
         _.each(data, function(d) {
-          // This should someone how use another fetch and model parsing,
+          // This should somehow use another fetch and model parsing,
           // but for now this will do.
           d.action_dates = _.filterObject(d.action_dates, function(a, ai) {
             return a;
@@ -1599,26 +1607,22 @@ _.extend(App.prototype, {
     recent.getBills(this.bills);
   },
 
-  // Get bills, given a bill
-  fetchOSBillsFromBill: function(bill) {
-    var id = category.get('id');
-    var defers = [];
-
-    _.each(category.get('bills'), function(b, bi) {
-      defers.push(b.fetch());
-    });
-  },
-
   // Get bills, given a category
-  fetchOSBillsFromCategory: function(category) {
+  fetchOSBillsFromCategory: function(category, force) {
     var thisApp = this;
     var defers = [];
+
+    // Only do once
+    if (category.get('fetchedBills') && !force) {
+      return $.when.apply($, defers);
+    }
 
     // Ensure that the categories has bills
     category.getBills(this.bills);
     category.get('bills').each(function(b, bi) {
       defers.push(thisApp.fetchModel(b));
     });
+    category.set('fetchedBills', true, { silent: true });
     return $.when.apply($, defers).done(function() {
       thisApp.trigger('fetched:osbills');
       thisApp.trigger('fetched:osbills:category:' + category.id);
