@@ -1058,6 +1058,12 @@ LT.CategoriesCollection = Backbone.Collection.extend({
 LT.BillsCollection = Backbone.Collection.extend({
   model: LT.BillModel,
 
+  initialize: function() {
+    this.on('change:newest_action', function() {
+      //this.sort();
+    });
+  },
+
   comparator: function(b) {
     var sort = (b.newestAction()) ? moment().diff(b.newestAction().date, 'days') : null;
     return sort;
@@ -1331,13 +1337,6 @@ LT.MainRouter = Backbone.Router.extend({
     // Browser bits
     this.scrollFocus();
     this.pageTitle('Category | ' + category.get('title'));
-
-    // Most of the data has been loaded at this point, and we just want to
-    // poke the view to update things
-    this.app.on('fetched:osbills:category:' + category.id, function() {
-      category.get('bills').sort();
-      thisRouter.app.views.category.update();
-    });
   },
 
   // Recent category is like any other except that

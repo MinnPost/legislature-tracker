@@ -20,6 +20,12 @@ LT.CategoriesCollection = Backbone.Collection.extend({
 LT.BillsCollection = Backbone.Collection.extend({
   model: LT.BillModel,
 
+  initialize: function() {
+    this.on('change:newest_action', function() {
+      //this.sort();
+    });
+  },
+
   comparator: function(b) {
     var sort = (b.newestAction()) ? moment().diff(b.newestAction().date, 'days') : null;
     return sort;
