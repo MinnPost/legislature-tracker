@@ -430,55 +430,59 @@
   margin-bottom: 1em;
 }
 /* line 404, ../../styles/style.scss */
+.ls .bill .custom-events {
+  margin-bottom: 1em;
+}
+/* line 408, ../../styles/style.scss */
 .ls .bill .osbills {
   margin-bottom: 1em;
 }
-/* line 407, ../../styles/style.scss */
+/* line 411, ../../styles/style.scss */
 .ls .bill .osbills.has-conference.has-primary.has-companion .osbill {
   float: left;
   width: 33.33333%;
 }
-/* line 414, ../../styles/style.scss */
+/* line 418, ../../styles/style.scss */
 .ls .bill .osbills.has-conference.has-primary .osbill, .ls .bill .osbills.has-conference.has-companion .osbill, .ls .bill .osbills.has-primary.has-companion .osbill {
   float: left;
   width: 50%;
 }
-/* line 419, ../../styles/style.scss */
+/* line 423, ../../styles/style.scss */
 .ls .bill .osbills .osbill-container {
   padding-right: 1em;
 }
-/* line 425, ../../styles/style.scss */
+/* line 429, ../../styles/style.scss */
 .ls .bill .osbills .osbill-container .primary-sponsors,
 .ls .bill .osbills .osbill-container .co-sponsors,
 .ls .bill .osbills .osbill-container .sources,
 .ls .bill .osbills .osbill-container .votes {
   margin-bottom: 1em;
 }
-/* line 429, ../../styles/style.scss */
+/* line 433, ../../styles/style.scss */
 .ls .bill .osbills .osbill-container .actions {
   margin-bottom: 1em;
 }
-/* line 432, ../../styles/style.scss */
+/* line 436, ../../styles/style.scss */
 .ls .bill .osbills .osbill-container .actions .actions-inner {
   font-size: .85em;
   color: #676767;
 }
-/* line 439, ../../styles/style.scss */
+/* line 443, ../../styles/style.scss */
 .ls .bill .osbills h4 {
   font-weight: normal;
 }
-/* line 444, ../../styles/style.scss */
+/* line 448, ../../styles/style.scss */
 .ls .bill .details-link {
   text-align: right;
 }
-/* line 447, ../../styles/style.scss */
+/* line 451, ../../styles/style.scss */
 .ls .bill .details-link img {
   max-height: 1em;
   max-width: 1em;
   margin-left: .25em;
 }
 @media screen and (max-width: 942) {
-  /* line 462, ../../styles/style.scss */
+  /* line 466, ../../styles/style.scss */
   .ls .ls-header.glued {
     left: 0;
     right: 0;
@@ -488,51 +492,51 @@
   }
 }
 @media screen and (max-width: 768px) {
-  /* line 472, ../../styles/style.scss */
+  /* line 476, ../../styles/style.scss */
   .ls .categories-container {
     background-position: bottom center;
     background-size: 100% auto;
   }
-  /* line 477, ../../styles/style.scss */
+  /* line 481, ../../styles/style.scss */
   .ls .ls-header .categories-nav {
     display: none;
   }
-  /* line 481, ../../styles/style.scss */
+  /* line 485, ../../styles/style.scss */
   .ls .categories-container .aggregate-stat {
     margin-right: 1em;
   }
-  /* line 485, ../../styles/style.scss */
+  /* line 489, ../../styles/style.scss */
   .ls .categories-container .aggregate-counts {
     margin-bottom: 3em;
   }
-  /* line 489, ../../styles/style.scss */
+  /* line 493, ../../styles/style.scss */
   .ls .categories-container {
     background-position: bottom center;
     background-size: 100% auto;
     padding-top: 3em;
   }
-  /* line 495, ../../styles/style.scss */
+  /* line 499, ../../styles/style.scss */
   .ls .categories-container ul li {
     width: 33.32222222%;
     text-align: center;
   }
-  /* line 502, ../../styles/style.scss */
+  /* line 506, ../../styles/style.scss */
   .ls .bill.ebill .osbills.clear-block.has-conference.has-primary.has-companion .osbill {
     width: 50%;
   }
-  /* line 505, ../../styles/style.scss */
+  /* line 509, ../../styles/style.scss */
   .ls .bill.ebill .osbills.clear-block.has-conference.has-primary.has-companion .conference-bill {
     width: 100%;
   }
 }
 @media screen and (max-width: 620px) {
-  /* line 514, ../../styles/style.scss */
+  /* line 518, ../../styles/style.scss */
   .ls .bill.ebill .osbills.clear-block .osbill {
     width: 100%;
   }
 }
 @media screen and (max-width: 520px) {
-  /* line 521, ../../styles/style.scss */
+  /* line 525, ../../styles/style.scss */
   .ls .bill .bill-status {
     float: none;
     display: block;
@@ -541,28 +545,28 @@
   }
 }
 @media screen and (max-width: 420px) {
-  /* line 532, ../../styles/style.scss */
+  /* line 536, ../../styles/style.scss */
   .ls .categories-container .aggregate-counts {
     margin-bottom: 2em;
   }
-  /* line 536, ../../styles/style.scss */
+  /* line 540, ../../styles/style.scss */
   .ls .categories-container {
     padding-top: 2em;
   }
-  /* line 540, ../../styles/style.scss */
+  /* line 544, ../../styles/style.scss */
   .ls .categories-container ul li {
     width: 50%;
     text-align: center;
   }
 }
 @media screen and (max-width: 375px) {
-  /* line 547, ../../styles/style.scss */
+  /* line 551, ../../styles/style.scss */
   .ls .categories-container .aggregate-counts .aggregate-stat {
     display: block;
   }
 }
 @media screen and (max-width: 280px) {
-  /* line 554, ../../styles/style.scss */
+  /* line 558, ../../styles/style.scss */
   .ls .categories-container ul li {
     width: 100%;
     text-align: center;

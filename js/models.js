@@ -334,6 +334,7 @@ LT.BillModel = LT.BaseModel.extend({
           newest_action.date.unix()) ?
           co.get('newest_action') : newest_action;
       }
+
       this.set('newest_action', newest_action);
     }
 

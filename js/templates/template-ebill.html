@@ -151,11 +151,9 @@
     {{#(bill.custom_events && bill.custom_events.length && bill.custom_events.length > 0)}}
       <div class="custom-events">
         <strong>Events</strong>
-        <ul class="custom-events-inner">
-          {{#bill.custom_events}}
-            <li><strong>{{ bill_id }} {{ action }}</strong> on  {{ date.format('MMM DD, YYYY') }}: {{ e.description }}</li>
-          {{/bill.custom_events}}
-        </ul>
+        {{#bill.custom_events}}
+          <div>{{ bill_id }} {{ action }} on  {{ date.format('MMM DD, YYYY') }}: {{ e.description }}</div>
+        {{/bill.custom_events}}
       </div>
     {{/()}}
 
