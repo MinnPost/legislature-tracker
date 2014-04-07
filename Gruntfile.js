@@ -81,11 +81,11 @@ module.exports = function(grunt) {
       },
       libs: {
         src: [
-          'bower_components/underscore/underscore-min.js',
+          'bower_components/underscore/underscore.js',
           'bower_components/jquery/jquery.min.js',
           'bower_components/backbone/backbone.js',
           'bower_components/tabletop/src/tabletop.js',
-          'bower_components/moment/moment.js',
+          'bower_components/moment/min/moment.min.js',
           'bower_components/ractive/build/Ractive-legacy.min.js',
           //'bower_components/ractive-backbone/Ractive-Backbone.min.js',
           'bower_components/Ractive-events-tap/Ractive-events-tap.min.js'

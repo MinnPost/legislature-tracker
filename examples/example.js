@@ -25,7 +25,6 @@
   // Make some default, default options
   options = $.extend(true, {}, LT.defaultOptions, {
     el: '#legislature-tracker-container',
-    templatePath: '../js/templates/',
     imagePath: '../styles/images/',
     tabletopOptions: {
       parameterize: 'http://gs-proxy.herokuapp.com/proxy?url='
@@ -80,11 +79,12 @@
       OSKey: '49c5c72c157d4b37892ddb52c63d06be',
       eKey: '0AjYft7IGrHzNdENILV9DU056SkxNQ2tIaHNGMnRlZUE',
       chamberLabel: true,
-      osBillParse: function(osBill) {
-        osBill.set('sources', _.map(osBill.get('sources'), function(s, i) {
-          s.text = 'SOURCE [' + i + ']';
+      osBillParse: function(billData, app) {
+        billData.sources = _.map(billData.sources, function(s, si) {
+          s.text = 'SOURCE [' + si + ']';
           return s;
-        }));
+        });
+        return billData;
       },
       wordTranslations: {
         chamber: {
@@ -97,9 +97,11 @@
     // the translation options for our custom field (and then update the template)
     //options['fieldTranslations']['eBills']['custom_field'] = 'customfield';
 
-    // Override bill template for custom field
-    LT.templates = LT.templates || {};
-    LT.templates['js/app/templates/template-ebill.html'] = _.template($('#custom-ebill-template').html());
+    // Override bill template for custom field.  This is a very crude way
+    // to do this.  This overrides GLOBALLY.
+    LT.LT.templates['template-ebill'] = LT.LT.templates['template-ebill'].replace(
+      '{{{ bill.description }}}',
+      '{{{ bill.description }}} {{#bill.customfield}}<strong>CUSTOM: {{ bill.customfield }}</strong>{{/bill.customfield}}');
 
   }
   else if (queryParts.example === 'MN14') {
@@ -111,8 +113,8 @@
       OSKey: '49c5c72c157d4b37892ddb52c63d06be',
       eKey: '0AjYft7IGrHzNdE1LbFhMU25zYVdoV0lCVDlDZXI1Tnc',
       legImageProxy: 'http://i-mage-proxerific.herokuapp.com/resize?size=100x100&url=',
-      osBillParse: function(billD, app) {
-        return billD;
+      osBillParse: function(billData, app) {
+        return billData;
       },
       wordTranslations: {
         sponsors: {

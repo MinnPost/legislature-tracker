@@ -34,14 +34,16 @@
     </div>
   </div>
 
-  <div class="co-sponsors">
-    <strong>{{ translate('sponsors', 'Co-sponsors') }}</strong>
-    <div>
-      {{#bill.sponsors}}
-        <sponsor sponsor="{{ this }}" type="cosponsor" compact="true">
-      {{/bill.sponsors}}
+  {{#(bill.sponsors && bill.sponsors.length && bill.sponsors.length > 0)}}
+    <div class="co-sponsors">
+      <strong>{{ translate('sponsors', 'Co-sponsors') }}</strong>
+      <div>
+        {{#bill.sponsors}}
+          <sponsor sponsor="{{ this }}" type="cosponsor" compact="true">
+        {{/bill.sponsors}}
+      </div>
     </div>
-  </div>
+  {{/()}}
 
   {{#(bill.votes && bill.votes.length && bill.votes.length > 0)}}
     <div class="votes">

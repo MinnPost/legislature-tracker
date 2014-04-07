@@ -11,7 +11,7 @@
   <link rel="stylesheet" href="example.css" type="text/css">
 
   <!-- Leg tracker CSS -->
-  <link rel="stylesheet" href="../dist/legislature-tracker.min.css" type="text/css">
+  <link rel="stylesheet" href="../dist/legislature-tracker.css" type="text/css">
 </head>
 
 <body>
@@ -22,18 +22,24 @@
           <a class="navbar-brand" href="/">Leg Tracker</a>
         </div>
 
-        <ul class="nav navbar-nav">
-          <li><p class="navbar-text">Examples:</p></li>
-          <li><a href="example.html?example=NY">NY</a></li>
-          <li><a href="example.html?example=MN">MN</a></li>
-          <li><a href="example-dev.html?example=MN14">MN14</a></li>
-          <li><a href="example.html?example=FL">FL</a></li>
-          <li><a href="example.html?example=MO">MO</a></li>
-          <li><a href="example.html?example=EDGE">Edge</a></li>
-          <li><a href="example-requirejs.html">RequireJS</a></li>
-          <li><p class="navbar-text">&nbsp;&nbsp;</p></li>
-          <li><a href="https://github.com/MinnPost/legislature-tracker">On Github</a></li>
-        </ul>
+        <div class="">
+          <ul class="nav navbar-nav">
+            <li class="dropdown">
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown">Examples <b class="caret"></b></a>
+              <ul class="dropdown-menu">
+                <li><a href="example.html?example=NY">NY 2013</a></li>
+                <li><a href="example.html?example=MN">MN 2013</a></li>
+                <li><a href="example.html?example=MN14">MN 2014</a></li>
+                <li><a href="example.html?example=FL">FL 2013</a></li>
+                <li><a href="example.html?example=MO">MO 2014</a></li>
+                <li><a href="example.html?example=EDGE">Edge cases</a></li>
+                <li><a href="example-requirejs.html">RequireJS</a></li>
+              </ul>
+            </li>
+
+            <li><a href="https://github.com/MinnPost/legislature-tracker">Github</a></li>
+          </ul>
+        </div>
       </div>
     </nav>
 
@@ -43,145 +49,15 @@
     </div>
   </div>
 
-
-  <!-- Custom templat to use custom field. -->
-  <script type="text/template" id="custom-ebill-template">
-    <% if (!expandable) { %>
-      <%= header %>
-    <% } %>
-    <div class="bill ebill <% if (expandable) { %>is-expandable<% } %> <% if (!bill.hasBill) { %>no-bill<% } %>">
-
-      <% if (typeof bill.customfield != 'undefined') { %>
-        <div><strong><%= bill.customfield %></strong></div>
-      <% } %>
-
-      <div class="bill-top">
-        <div class="bill-status">
-          <img class="lower <% if (bill.newest_action && Math.abs(parseInt(bill.newest_action.date.diff(moment(), 'days'))) < LT.options.recentChangeThreshold) { %>passed<% } %>" src="<%= LT.options.imagePath %>RecentChanges.png" title="<% if (bill.newest_action && Math.abs(parseInt(bill.newest_action.date.diff(moment(), 'days'))) < LT.options.recentChangeThreshold) { %>Recently changed<% } else { %>Not recently changed<% } %>" />
-
-          <img class="lower <% if (bill.actions && bill.actions.lower) { %>passed<% } %>" src="<%= LT.options.imagePath %>PassedHouse.png" title="<% if (bill.actions && bill.actions.lower) { %>Passed <%= LT.utils.translate('chamber', 'lower') %><% } else { %>Not passed <%= LT.utils.translate('chamber', 'lower') %><% } %>" />
-
-          <img class="upper <% if (bill.actions && bill.actions.upper) { %>passed<% } %>" src="<%= LT.options.imagePath %>PassedSenate.png" title="<% if (bill.actions && bill.actions.upper) { %>Passed <%= LT.utils.translate('chamber', 'upper') %><% } else { %>Not passed <%= LT.utils.translate('chamber', 'upper') %><% } %>" />
-
-          <% if (LT.options.conferenceBill) { %>
-            <img class="conference <% if (bill.bill_type && bill.bill_type.conference) { %>passed<% } %>" src="<%= LT.options.imagePath %>InConferenceCommittee.png" title="<% if (bill.bill_type && bill.bill_type.conference) { %>Conference bill created<% } else { %>Coinference bill not created<% } %>" />
-          <% } %>
-
-          <img class="signed <% if (bill.actions && bill.actions.signed) { %>passed<% } %>" src="<%= LT.options.imagePath %>SignedIntoLaw.png" title="<% if (bill.actions && bill.actions.signed) { %>Signed into law by the Governor<% } else { %>Not signed into law<% } %>" />
-        </div>
-
-        <% if (expandable) { %><h3><% } else { %><h2><% } %>
-          <%= bill.title %>
-          <a class="permalink" title="Permanent link to bill" href="#/bill/<%= encodeURI(bill.bill) %>"></a>
-        <% if (expandable) { %></h3><% } else { %></h2><% } %>
-
-        <% if (!bill.hasBill){ %>
-          <div class="latest-action">
-            <em>This bill has not been tracked by the legislature yet.</em>
-          </div>
-        <% } %>
-
-         <% if (bill.newest_action) { %>
-          <div class="latest-action">
-            Last action <%= bill.newest_action.date.fromNow() %>.
-          </div>
-        <% } %>
-
-        <div class="description">
-          <% if (bill.description.indexOf('<p') < 3) { %>
-            <%= _.ellipsisText(bill.description, 60) %>
-          <% } else { %>
-            <p><%= _.ellipsisText(bill.description, 60) %></p>
-          <% } %>
-        </div>
-
-        <div class="e-bill-categories">
-          <strong>Categories:</strong>
-          <% _.each(bill.categories, function(c, i) { %>
-            <a href="#/category/<%= c.get('id') %>">
-              <% if (c.get('image')) { %><img class="category-image" src="<%= LT.utils.imagePath(c.get('image')) %>" /><% } %>
-              <%= c.get('title') %></a><% if (i < bill.categories.length - 1) { %>,<% } %>
-          <% }) %>
-        </div>
-
-        <% if (expandable && !(!bill.hasBill && bill.description.split(' ').length < 60 && !(_.isArray(bill.links) && bill.links.length > 0))) { %>
-          <a href="#" class="bill-expand">More detail</a>
-          <a href="#/bill/<%= encodeURI(bill.bill) %>" class="bill-details-link">More detail</a>
-        <% } %>
-      </div>
-
-      <div class="bill-bottom">
-        <% if (_.isArray(bill.links) && bill.links.length > 0) { %>
-          <div class="e-links">
-            <h4>In the news</h4>
-            <ul class="e-links-list">
-              <% _.each(bill.links, function(l) { %>
-                <li><a href="<%= l.url %>"><%= l.title %></a></li>
-              <% }) %>
-            </ul>
-          </div>
-        <% } %>
-
-        <% if (_.isArray(bill.custom_events) && bill.custom_events.length > 0) { %>
-          <div class="custom-events">
-            <h4>Events</h4>
-            <ul class="custom-events-inner">
-              <% _.each(bill.custom_events, function(e) { %>
-                <li><strong><%= e.bill_id %> <%= e.action %></strong> on  <%= e.date.format('MMM DD, YYYY') %>: <%= e.description %></li>
-              <% }) %>
-            </ul>
-          </div>
-        <% } %>
-
-        <% if (_.isObject(bill.bill_conference)) { %>
-          <div class="conference-bill">
-            <div class="conference-bill-inner clear-block">
-              <%= templates.osbill({
-                title: 'Conference Bill',
-                bill: bill.bill_conference.toJSON(),
-                templates: templates
-              }) %>
-            </div>
-          </div>
-
-          <a class="expand-other-bills" href="#">Show other bills</a>
-        <% } %>
-
-        <div class="clear-block <% if (_.isObject(bill.bill_conference)) { %>has-conference-bill<% } %>">
-          <% if (_.isObject(bill.bill_primary)) { %>
-            <div class="primary-bill <% if (_.isObject(bill.bill_companion)) { %>with-companion<% } %>">
-              <div class="primary-bill-inner clear-block">
-                <%= templates.osbill({
-                  title: (LT.options.chamberLabel) ? LT.utils.translate('chamber', bill.bill_primary.get('chamber')) + ' Bill' : 'Primary Bill',
-                  bill: bill.bill_primary.toJSON(),
-                  templates: templates
-                }) %>
-              </div>
-            </div>
-          <% } %>
-
-          <% if (_.isObject(bill.bill_companion)) { %>
-            <div class="companion-bill">
-              <div class="companion-bill-inner clear-block">
-                <%= templates.osbill({
-                  title: (LT.options.chamberLabel) ? LT.utils.translate('chamber', bill.bill_companion.get('chamber')) + ' Bill' : 'Companion Bill',
-                  bill: bill.bill_companion.toJSON(),
-                  templates: templates
-                }) %>
-              </div>
-            </div>
-          <% } %>
-        </div>
-      </div>
-    </div>
-  </script>
-
+  <!-- Example Application libraries -->
+  <script type="text/javascript" src="../bower_components/jquery/jquery.min.js"></script>
+  <script type="text/javascript" src="../bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
 
   <!-- Application libraries -->
   <script type="text/javascript" src="../dist/legislature-tracker.libs.js"></script>
 
   <!-- Leg tracker JS -->
-  <script type="text/javascript" src="../dist/legislature-tracker.min.js"></script>
+  <script type="text/javascript" src="../dist/legislature-tracker.js"></script>
 
   <!-- Run application -->
   <script type="text/javascript" src="example.js"></script>

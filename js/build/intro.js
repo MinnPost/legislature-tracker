@@ -7,11 +7,11 @@
  (function(global, factory) {
   // Common JS (i.e. browserify) environment
   if (typeof module !== 'undefined' && module.exports && typeof require === 'function') {
-    factory(require('underscore'), require('jquery'), require('backbone'), require('moment'), require('tabletop'), require('ractive'));
+    factory(require('underscore'), require('jquery'), require('Backbone'), require('moment'), require('tabletop'), require('Ractive'));
   }
   // AMD
   else if (typeof define === 'function' && define.amd) {
-    define('LT', ['underscore', 'jquery', 'backbone', 'moment', 'tabletop', 'Ractive'], factory);
+    define('LT', ['underscore', 'jquery', 'Backbone', 'moment', 'tabletop', 'Ractive'], factory);
   }
   // Browser global
   else if (global._ && global.jQuery && global.Backbone && global.moment && global.Tabletop) {
@@ -28,4 +28,3 @@
 
   // Application "class"
   var App;
-

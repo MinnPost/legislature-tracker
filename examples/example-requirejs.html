@@ -10,16 +10,47 @@
   <link rel="stylesheet" href="example.css" type="text/css">
 
   <!-- Leg tracker CSS -->
-  <link rel="stylesheet" href="../dist/legislature-tracker.min.css" type="text/css">
+  <link rel="stylesheet" href="../dist/legislature-tracker.css" type="text/css">
 </head>
 
 <body>
+
   <div class="container">
+    <nav class="navbar navbar-default" role="navigation">
+      <div class="container-fluid">
+        <div class="navbar-header">
+          <a class="navbar-brand" href="/">Leg Tracker</a>
+        </div>
+
+        <div class="">
+          <ul class="nav navbar-nav">
+            <li class="dropdown">
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown">Examples <b class="caret"></b></a>
+              <ul class="dropdown-menu">
+                <li><a href="example.html?example=NY">NY 2013</a></li>
+                <li><a href="example.html?example=MN">MN 2013</a></li>
+                <li><a href="example.html?example=MN14">MN 2014</a></li>
+                <li><a href="example.html?example=FL">FL 2013</a></li>
+                <li><a href="example.html?example=MO">MO 2014</a></li>
+                <li><a href="example.html?example=EDGE">Edge cases</a></li>
+                <li><a href="example-requirejs.html">RequireJS</a></li>
+              </ul>
+            </li>
+
+            <li><a href="https://github.com/MinnPost/legislature-tracker">Github</a></li>
+          </ul>
+        </div>
+      </div>
+    </nav>
 
     <h1 class="page-title">Legislature Tracker RequireJS Example</h1>
 
     <div id="legislature-tracker-container"></div>
   </div>
+
+  <!-- Example Application libraries -->
+  <script type="text/javascript" src="../bower_components/jquery/jquery.min.js"></script>
+  <script type="text/javascript" src="../bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
 
   <!-- REquire JS and config file -->
   <script type="text/javascript" src="../bower_components/requirejs/require.js"></script>

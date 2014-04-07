@@ -58,7 +58,15 @@ The following are common options you may want to override.
 
 These are functions that are called during processing to allow for you to override data and other functionality.  Do note that if you alter certain data, you may break things.
 
-* `osBillParse`: A function that is called when parsing open states bill.  The single argument is a OS Bill Model.
+`osBillParse`: A function that is called when parsing open states bill data.  It passes the data at the pointer after it has been fetched from Open States and after the model parsing, but before it is loaded into the model.  For, instance, this adds text names to sources:
+
+    osBillParse: function(billData, app) {
+      billData.sources = _.map(billData.sources, function(s, si) {
+        s.text = 'SOURCE [' + si + ']';
+        return s;
+      });
+      return billData;
+    },
 
 #### Label translations
 

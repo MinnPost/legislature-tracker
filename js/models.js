@@ -264,7 +264,7 @@ LT.BillModel = LT.BaseModel.extend({
       _.isObject(this.get('bill_primary')) && _.isArray(this.get('bill_primary').get('companions')) &&
         _.isObject(this.get('bill_primary').get('companions')[0])) {
 
-      match = LT.parse.detectCompanionBill(this.get('bill_primary').get('companions')[0], this.app.options);
+      match = LT.parsers.detectCompanionBill(this.get('bill_primary').get('companions')[0], this.app.options);
       if (match) {
         this.set('bill_companion', this.app.getModel('OSBillModel', 'bill_id', { bill_id : match }));
         defers.push(this.app.fetchModel(this.get('bill_companion')));

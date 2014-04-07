@@ -7,11 +7,11 @@
  (function(global, factory) {
   // Common JS (i.e. browserify) environment
   if (typeof module !== 'undefined' && module.exports && typeof require === 'function') {
-    factory(require('underscore'), require('jquery'), require('backbone'), require('moment'), require('tabletop'), require('ractive'));
+    factory(require('underscore'), require('jquery'), require('Backbone'), require('moment'), require('tabletop'), require('Ractive'));
   }
   // AMD
   else if (typeof define === 'function' && define.amd) {
-    define('LT', ['underscore', 'jquery', 'backbone', 'moment', 'tabletop', 'Ractive'], factory);
+    define('LT', ['underscore', 'jquery', 'Backbone', 'moment', 'tabletop', 'Ractive'], factory);
   }
   // Browser global
   else if (global._ && global.jQuery && global.Backbone && global.moment && global.Tabletop) {
@@ -30,7 +30,6 @@
   var App;
 
 
-
 this.LTTemplates = {
   'template-application' : '<div class="ls">\n\n  {{#(!!categories)}}\n    <div class="ls-header-container {{#menuOff}}menu-off{{/menuOff}}">\n      <div class="ls-header">\n\n        <a class="all-categories-link" href="#/">\n          <img src="{{ imagePath(\'back-100-85.png\') }}" />\n          All Categories\n        </a>\n\n        <span class="categories-nav">\n          &nbsp;&nbsp;|&nbsp;&nbsp;\n\n          {{#categories}}\n            <a class="" href="#/category/{{ id }}" title="{{ title }}">\n              {{ (short_title) ? short_title : title.split(\' \')[0] }}\n            </a>\n            &nbsp;&nbsp;\n          {{/categories}}\n        </span>\n      </div>\n    </div>\n  {{/()}}\n\n  {{#options.title}}\n    <h2>{{ options.title }}</h2>\n  {{/options.title}}\n\n  <div class="ls-content-container">\n    {{>loading}}\n  </div>\n</div>\n',
   'template-categories' : '\n{{^categories}}\n  {{>loading}}\n{{/categories}}\n\n<div class="categories-container">\n  <ul class="category-list clear-block">\n    {{#categories:i}}\n      <li class="category-item category-item-{{ i }}">\n        <div class="category-inner category-{{ _.cssClass(id) }}">\n          <a href="#/category/{{ encodeURI(id) }}">\n            {{#image}}\n              <img class="category-image" src="{{ imagePath(image) }}" />\n            {{/image}}\n\n            <span class="category-item-link">{{ title }}</span>\n          </a>\n\n          <div>\n            Watching <strong>{{ bills.length }}</strong> bills.\n          </div>\n        </div>\n      </li>\n    {{/categories}}\n  </ul>\n</div>\n',
@@ -39,7 +38,7 @@ this.LTTemplates = {
   'template-error' : '<div class="error-container">\n  <div class="error"><span>There was an error.</span></div>\n</div>',
   'template-legislator' : '\n<div class="legislator">\n  <% if (LT.options.legImageProxy) { %>\n    <img src="<%= LT.options.legImageProxy %><%= encodeURI(photo_url) %>" />\n  <% } else { %>\n    <img src="<%= photo_url %>" />\n  <% } %>\n  \n  <div class="legislator-info">\n    <%= full_name %><br />\n    <% if (typeof district != \'undefined\') { %>\n      District <%= district %>\n    <% } %>\n    <% if (typeof party != \'undefined\') { %>\n      (<%= LT.utils.translate(\'partyAbbr\', party) %>) \n    <% } %> <br />\n    <% if (typeof chamber != \'undefined\') { %>\n      <%= LT.utils.translate(\'chamber\', chamber) %>\n    <% } %>\n  </div>\n</div>',
   'template-loading' : '<div class="loading-general-container">\n  <div class="loading-general"><span>Loading...</span></div>\n</div>',
-  'template-osbill' : '\n<div class="osbill-container {{ type }}-bill">\n  <h4>\n    {{#(!!bill.title)}}\n      {{ bill.title }}\n    {{/()}}\n\n    {{^(!!bill.title)}}\n      {{ bill.bill_id }}\n    {{/()}}\n  </h4>\n\n  <div class="primary-sponsors">\n    <strong>{{ translate(\'sponsors\', \'Primary sponsors\') }}</strong>\n    <div class="clear-block">\n      {{#bill.sponsors}}\n        <sponsor sponsor="{{ this }}" type="primary">\n      {{/bill.sponsors}}\n    </div>\n  </div>\n\n  <div class="actions">\n    <strong>Actions</strong>\n    <div class="actions-inner">\n      {{#bill.actions}}\n        {{#(!!date)}}\n          <div>\n            {{ date.format(\'MMM DD, YYYY\') }}:\n            {{ action }}\n            ({{ translate(\'chamber\', actor) }})\n          </div>\n        {{/())}}\n      {{/bill.actions}}\n    </div>\n  </div>\n\n  <div class="co-sponsors">\n    <strong>{{ translate(\'sponsors\', \'Co-sponsors\') }}</strong>\n    <div>\n      {{#bill.sponsors}}\n        <sponsor sponsor="{{ this }}" type="cosponsor" compact="true">\n      {{/bill.sponsors}}\n    </div>\n  </div>\n\n  {{#(bill.votes && bill.votes.length && bill.votes.length > 0)}}\n    <div class="votes">\n      <strong>Votes</strong>\n      <div>\n        {{#bill.votes}}\n          {{ date.format(\'MMM DD, YYYY\') }}\n          {{ motion }} {{ (passed) ? \'passed\' : \'failed\' }}\n          {{ yes_count }} Y -\n          {{ no_count }} N <br />\n        {{/bill.votes}}\n      </div>\n    </div>\n  {{/()}}\n\n  <div class="sources">\n    <strong>Sources</strong>\n    <div>\n      {{#bill.sources}}\n        <a href="{{ url }}" target="_blank">\n          {{#(!!text)}}\n            {{ text }}\n          {{/()}}\n          {{#(!text)}}\n            {{ url }}\n          {{/()}}\n        </a> <br />\n      {{/bill.sources}}\n    </div>\n  </div>\n</div>\n',
+  'template-osbill' : '\n<div class="osbill-container {{ type }}-bill">\n  <h4>\n    {{#(!!bill.title)}}\n      {{ bill.title }}\n    {{/()}}\n\n    {{^(!!bill.title)}}\n      {{ bill.bill_id }}\n    {{/()}}\n  </h4>\n\n  <div class="primary-sponsors">\n    <strong>{{ translate(\'sponsors\', \'Primary sponsors\') }}</strong>\n    <div class="clear-block">\n      {{#bill.sponsors}}\n        <sponsor sponsor="{{ this }}" type="primary">\n      {{/bill.sponsors}}\n    </div>\n  </div>\n\n  <div class="actions">\n    <strong>Actions</strong>\n    <div class="actions-inner">\n      {{#bill.actions}}\n        {{#(!!date)}}\n          <div>\n            {{ date.format(\'MMM DD, YYYY\') }}:\n            {{ action }}\n            ({{ translate(\'chamber\', actor) }})\n          </div>\n        {{/())}}\n      {{/bill.actions}}\n    </div>\n  </div>\n\n  {{#(bill.sponsors && bill.sponsors.length && bill.sponsors.length > 0)}}\n    <div class="co-sponsors">\n      <strong>{{ translate(\'sponsors\', \'Co-sponsors\') }}</strong>\n      <div>\n        {{#bill.sponsors}}\n          <sponsor sponsor="{{ this }}" type="cosponsor" compact="true">\n        {{/bill.sponsors}}\n      </div>\n    </div>\n  {{/()}}\n\n  {{#(bill.votes && bill.votes.length && bill.votes.length > 0)}}\n    <div class="votes">\n      <strong>Votes</strong>\n      <div>\n        {{#bill.votes}}\n          {{ date.format(\'MMM DD, YYYY\') }}\n          {{ motion }} {{ (passed) ? \'passed\' : \'failed\' }}\n          {{ yes_count }} Y -\n          {{ no_count }} N <br />\n        {{/bill.votes}}\n      </div>\n    </div>\n  {{/()}}\n\n  <div class="sources">\n    <strong>Sources</strong>\n    <div>\n      {{#bill.sources}}\n        <a href="{{ url }}" target="_blank">\n          {{#(!!text)}}\n            {{ text }}\n          {{/()}}\n          {{#(!text)}}\n            {{ url }}\n          {{/()}}\n        </a> <br />\n      {{/bill.sources}}\n    </div>\n  </div>\n</div>\n',
   'template-sponsor' : '\n{{#(((!!type && sponsor.type === type) || !type) && !compact)}}\n\n  <div class="sponsor clear-block">\n    {{#sponsor.leg.photo_url}}\n      <div class="sponsor-image">\n        {{#options.legImageProxy}}\n          <img src="{{ options.legImageProxy }}{{ encodeURI(sponsor.leg.photo_url) }}" />\n        {{/options.legImageProxy}}\n        {{^options.legImageProxy}}\n          <img src="{{ sponsor.leg.photo_url }}" />\n        {{/options.legImageProxy}}\n      </div>\n    {{/sponsor.leg.photo_url}}\n\n    <div class="sponsor-info">\n      {{#sponsor.leg.full_name}}\n        {{ sponsor.leg.full_name }} <br />\n        District {{ sponsor.leg.district }}\n        ({{ translate(\'chamber\', sponsor.leg.chamber) }}) <br />\n        {{ translate(\'partyAbbr\', sponsor.leg.party) }}\n      {{/sponsor.leg.full_name}}\n\n      {{^sponsor.leg.full_name}}\n        {{ sponsor.name }}\n      {{/sponsor.leg.full_name}}\n    </div>\n  </div>\n{{/()}}\n\n\n{{#(((!!type && sponsor.type === type) || !type) && !!compact)}}\n  <div class="sponsor">\n    {{#sponsor.leg.full_name}}\n      {{ sponsor.leg.full_name }},\n      {{ translate(\'partyAbbr\', sponsor.leg.party) }}\n    {{/sponsor.leg.full_name}}\n\n    {{^sponsor.leg.full_name}}\n      {{ sponsor.name }}\n    {{/sponsor.leg.full_name}}\n  </div>\n{{/()}}\n',
 };
 
@@ -790,7 +789,7 @@ LT.BillModel = LT.BaseModel.extend({
       _.isObject(this.get('bill_primary')) && _.isArray(this.get('bill_primary').get('companions')) &&
         _.isObject(this.get('bill_primary').get('companions')[0])) {
 
-      match = LT.parse.detectCompanionBill(this.get('bill_primary').get('companions')[0], this.app.options);
+      match = LT.parsers.detectCompanionBill(this.get('bill_primary').get('companions')[0], this.app.options);
       if (match) {
         this.set('bill_companion', this.app.getModel('OSBillModel', 'bill_id', { bill_id : match }));
         defers.push(this.app.fetchModel(this.get('bill_companion')));
@@ -1767,6 +1766,9 @@ _.extend(App.prototype, {
 
   // Templates get attached to this which makes them global
   LT.templates = this.LTTemplates;
+
+  // Attache the global LT parts for reference later if needed
+  App.LT = LT;
 
   return App;
 });
