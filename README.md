@@ -1,6 +1,6 @@
 # State Legislature/Bill Tracker
 
-An application to keep track of what is going on in a state legislature.  Using editorial expertise and the Sunlight Lab's Open States API, this application creates a curated view of what is going on in a state's legislature session.
+Using editorial expertise and the Sunlight Lab's Open States API, this application creates a curated view of what is going on in a state's legislature session.
 
 It combines data from [Open States](http://openstates.org/) and editorial data collected with [Google Docs](https://docs.google.com/).  You can see some examples at [minnpost.github.io/legislature-tracker](http://minnpost.github.io/legislature-tracker/).
 
@@ -14,32 +14,32 @@ It combines data from [Open States](http://openstates.org/) and editorial data c
 
 ## Installation and configuration
 
-This is a frontend application.  It is meant to be used as a library; it is not suggested that you fork this repository unless you need to fix a bug or alter the code.
+This is a frontend application.  It is meant to be used as a library; it is not suggested that you fork this repository unless you need to fix a bug or alter the code.  It is recommended that you install the code with [Bower](http://bower.io]):
 
-It is recommended that you install the code with [Bower](http://bower.io]):
+    bower install legislature-tracker
 
-    bower install https://github.com/MinnPost/legislature-tracker.git
-
-Include the relevant `.js` and `.css` files found in the `dist` folder in your HTML page.  The `.libs.js` is included for convienence but you can include the dependencies from the `bower` folder as well.
+Include the relevant `.js` and `.css` files found in the `dist` folder in your HTML page.  The `.libs.js` is included for convenience but you can include the dependencies from the `bower` folder as well.  The application also supports module loading with RequireJS, AMD, or Browserify.
 
 Initialize the tracker with the following:
 
-    var app = new LT.Application({
+    var app = new LT({
       el: '.container-for-leg-tracker',
       OSKey: 'open-states-key-here',
       eKey: 'google-spreadsheet-key-here',
+      state: 'MN',
+      session: '2013-2014',
       // more options see below ...
     });
 
 ### Options
 
-When creating a new Legislature Tracker object, you can set the following options.  All default options are in `js/app/core.js`.
+When creating a new Legislature Tracker object, you can set the following options.  All default options are in `js/app.js`.
 
 #### Required options
 
 The following are required for the application to work correctly
 
-* `el`: The element selector that will hold the application.
+* `el`: The element selector that will hold the application.  This can be a CSS selector or jQuery object.
 * `state`: The two character state code as used by Open States.
 * `session`: The session key as used on Open States, like `'2013-2014'`.
 * `OSKey`: Your Open States API Key.  You can get one at [services.sunlightlabs.com](http://services.sunlightlabs.com/).
@@ -49,13 +49,10 @@ The following are required for the application to work correctly
 
 The following are common options you may want to override.
 
-* `conferenceBill`: This should be `true` or `false` to enable the handling of conference bills.  A conference bill is a third bill (other than the primary or companion) that is used often when the two bills are diverging significantly.
-* `substituteMatch`: Some legislatures will substitute the companion bill, meaning it gets dropped and the primary bill is only used.  This option sets the regular expression to match actions to determine if it substituted.  Define as `false` to turn off completely.
+* `conferenceBill`: This should be true or false whether to enable the handling of conference bills.  A conference bill is a third bill (other than the primary or companion) that is used often when the two bills are diverging significantly.
 * `recentImage`: The name of the image file to use for the recent category.  Make blank to not have an image for the recent category.
 * `recentChangeThreshold`: The number of days to determine if a bill will be put in the recent category.  The default is `7` days.
 * `imagePath`:  The place to find images.  This path is simply prepended to images and should have a trailing slash.  For instance `'https://example.com/images/'`, or `'./images/'`.  To customize images, the ideal is to copy the images found in `css/images/` to your new directory and add or replace images as needed.
-* `templatePath`:  The place to find templates.  This is only really needed if you are not using the built version.
-* `detectCompanionBill`: A function or a regular expression to parse OpenStates' companion bill IDs into a bill number for automatically pairing bills with their companions in the other chamber. For regex, it will use the first match group.  The default regex, `/([A-Z]+ [1-9][0-9]*)$/`, will find valid bills at the end of the string.  If false, Legislature Tracker will not attempt to find companion bills.
 
 #### Hook options
 
@@ -63,30 +60,31 @@ These are functions that are called during processing to allow for you to overri
 
 * `osBillParse`: A function that is called when parsing open states bill.  The single argument is a OS Bill Model.
 
-#### Translation options
+#### Label translations
 
-To override the naming of certain things, you can update the the translations config object.  To do this without overwriting or completely redefining the translation object, you should get the default options first, like so:
+To override the naming of certain things, like labels, you can update the the translations config object.  The `wordTranslations` is just another options; the following are the defaults:
 
-    var options = _(LT.defaultOptions).extend({
-      el: '#legislature-tracker-container',
-      state: 'NY',
-      session: '2013-2014',
-      OSKey: 'abc',
-      eKey: 'abc'
-    });
-    options['wordTranslations']['chamber']['lower'] = 'Assembly';
-
-The default options are similar to:
-
-    chamber: {
-      'upper': 'Senate',
-      'lower': 'House'
+    wordTranslations: {
+      chamber: {
+        'upper': 'Senate',
+        'lower': 'House'
+      },
+      partyAbbr: {
+        'Democratic-Farmer-Labor': 'DFL',
+        'Democratic': 'D',
+        'Republican': 'R'
+      },
+      sponsors: {
+        'Primary sponsors': 'Primary sponsors',
+        'primary sponsors': 'primary sponsors',
+        'Primary sponsor': 'Primary sponsor',
+        'primary sponsor': 'primary sponsor',
+        'Co-sponsors': 'Co-sponsors',
+        'co-sponsors': 'co-sponsors',
+        'Co-sponsor': 'Co-sponsor',
+        'co-sponsor': 'co-sponsor'
+      }
     },
-    partyAbbr: {
-      'Democratic-Farmer-Labor': 'DFL',
-      'Democratic': 'D',
-      'Republican': 'R'
-    }
 
 #### Advanced options
 
@@ -95,10 +93,16 @@ These options are set the same as basic options, but their default setting will 
 * `chamberLabel`: When `false`, the default, the label for the primary and companion bills will be Primary and Companion, respectively.  When set to `true` the labels will be based on the bill's chambers.
 * `legImageProxy`: If you want to proxy images from Open States, use an URL prefix, like `'http://proxy.com/?url='`.  For instance MinnPost made [this custom proxy](https://github.com/MinnPost/i-mage-proxerific).
 * `maxBills`: By default, `30`; the maximum number of bills that will be loaded from your Google Spreadsheet. Since each bill requires a call to OpenStates, your app may become slow if you raise this (especially on slow connections and/or older browsers).
-* `scrollOffset`: This turns on auto scrolling which will scroll the view window to the top of the application after the first click.  This is helpful if it is embedded in larger content or if there are long categories.  This will be an integer of pixels to offset where the top; for instance `15` equals 15 pixels above the application.
 * `tabletopOptions`: An object to override any of the [Tabletop.js](https://github.com/jsoma/tabletop) options.
+* `fieldTranslations`: An object that translates the field names coming in from Tabletop into the field names that the Legislature Tracker expects them as.  See `js/app.js` for defaults.
 * `aggregateURL`: An API JSON feed to get some aggregate bill counts.  This is specific to MinnPost (MN) and is NOT fully supported at the moment.
 * `billNumberFormat`: A regex for detecting if a bill number is valid for your state. The default, `/[A-Z]+ [1-9][0-9]*/` works well for most states, matching bill numbers like `H 1234`, `S 1234` or `SB 1234`.
+* `substituteMatch`: Some legislatures will substitute the companion bill, meaning it gets dropped and the primary bill is only used.  This option sets the regular expression to match actions to determine if it substituted.  Define as `false` to turn off completely.
+* `detectCompanionBill`: A function or a regular expression to parse OpenStates' companion bill IDs into a bill number for automatically pairing bills with their companions in the other chamber. For regex, it will use the first match group.  The default regex, `/([A-Z]+ [1-9][0-9]*)$/`, will find valid bills at the end of the string.  If false, Legislature Tracker will not attempt to find companion bills.
+* `stickMenu`: True or false whether the top menu will stick to the window when scrolling.  Default is `true`.
+* `scollFocus`: True or false whether the window will scroll to the top of the application when a new page is loaded.  Default is `true`.
+* `scollFocusOffset`: The number of pixels to offset when scroll focus is called; a negative number is more towards the top of the page.  Default is `-15`.
+* `scollFocusTime`: The amount in milliseconds that animation to scroll focus takes.  Default is `500`.
 
 ### Google spreadsheets setup
 
@@ -135,12 +139,15 @@ There are a few fields that are a list of links.  You should use this format so 
 
     "Link text title|http://www.example.com/123", "Another link text title|http://www.example.com/154"
 
-### Overriding templates
+### Changing the look
 
-You can override the HTML templates that are used in the application and thus change any of the wording or outputs.  Templates are using the [Backbone](http://backbonejs.org/) template system.  You can see the current templates in the `js/app/templates/` directory.  The compiled templates are stored in the `LT.templates` object.  You can override them with something like the following:
+All styling is provided with CSS.  The CSS with the application is a bit specific, so be sure to know how [CSS specificity](https://developer.mozilla.org/en-US/docs/Web/CSS/Specificity) works.  If you must, you can override the output as well.
 
-    LT.templates = LT.templates || {};
-    LT.templates['js/app/templates/template-header.html'] = _.template($('#new-template').html());
+#### Overriding templates
+
+You can override the HTML templates that are used in the application and change wording as well as any HTML output.  Templates are using [Ractive](http://www.ractivejs.org/).  You can see the current templates in the `js/templates/` directory.  The templates are managed in the `LT.LT.templates` object.  It is suggested to copy the template and then make alterations from there.  For instance:
+
+    LT.templates['template-ebill'] = 'Your template content here';
 
 ## How does your legislature work?
 
@@ -207,11 +214,7 @@ Each editorial (or meta) bill refers to one or more Open States (or actual) bill
 
 ### Cross-browser compatibility
 
-The goal of this project is to be compatible with all major modern browsers including IE8.  The application should work fine in IE7, but it may be a bit slow.
-
-### Frameworks and libraries
-
-This applications uses Tableop.js, jQuery, jQuery.jsonp, Underscore, Backbone, Moment.js, es5-shim.
+The goal of this project is to be compatible with all major modern browsers including IE8.
 
 ### Caching
 
@@ -219,28 +222,16 @@ To ensure that both memory and network usage is minimized, there is some basic c
 
 For model instances, we wrap the creation of models in the following method:
 
-    LT.utils.getModel('ModelName', 'identifying_attribute', attributes)
+    LT.getModel('ModelName', 'identifying_attribute', attributes)
 
-For fetching models, specifically Open States data, we wrap fetching:
+For fetching models we wrap fetchings so that it only happens once:
 
-    $.when(LT.utils.fetchModel(model)).then(
-      successFunction,
-      errorFunction
-    );
+    LT.fetchModel(model));
+    // Returns a jQuery promise object
 
 #### Google Spreadsheets
 
 This application uses [Tabletop.js](https://github.com/jsoma/tabletop) to read in data from Google Spreadsheets.  Due to the fact that Google does not guarantee up time or ability to handle requests, it is good practice to cache the outputs for production.  Tabletop has some recent additions to handle proxy via saving the outputs to a place like S3, as well as more traditional proxy like [gs-proxy](https://github.com/MinnPost/gs-proxy).  Use the `tabletopOptions` option to set any of the [tabletop options](https://github.com/jsoma/tabletop#the-moving-parts).
-
-### Data Models
-
-There are currently models for each Open States object.  This aids in easily filling in the data when needed.
-
-The editorial categories contain editorial bills (like meta bills), which refer to one or more actual, Open States bills.
-
-### Hacks
-
-Currently, Tabletop.js extends Array so that indexOf is available.  This has some implications in browsers, especially in the context of for..in loops.  Because of bad code may be in your site that is not easily updatable, we are using a [custom version of Tabletop.js](https://github.com/zzolo/tabletop).  See [pull request](https://github.com/jsoma/tabletop/pull/15).
 
 ## Attribution
 
