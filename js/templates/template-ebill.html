@@ -11,15 +11,15 @@
     <img
       class="lower {{#bill.actions.lower}}passed{{/bill.actions.lower}}"
       src="{{ imagePath('PassedHouse.png') }}"
-      title="{{#bill.actions.lower}}Passed{{/bill.actions.lower}}
-        {{^bill.actions.lower}}Not passed (yet){{/bill.actions.lower}} {{ translate('chamber', 'lower') }}"
+      title="{{#bill.actions.lower}}Passed {{ translate('chamber', 'lower') }}{{/bill.actions.lower}}
+        {{^bill.actions.lower}}Not passed {{ translate('chamber', 'lower') }} (yet){{/bill.actions.lower}}"
      />
 
     <img
       class="lower {{#bill.actions.upper}}passed{{/bill.actions.upper}}"
       src="{{ imagePath('PassedSenate.png') }}"
-      title="{{#bill.actions.upper}}Passed{{/bill.actions.upper}}
-        {{^bill.actions.upper}}Not passed (yet){{/bill.actions.upper}} {{ translate('chamber', 'upper') }}"
+      title="{{#bill.actions.upper}}Passed {{ translate('chamber', 'upper') }}{{/bill.actions.upper}}
+        {{^bill.actions.upper}}Not passed {{ translate('chamber', 'upper') }} (yet){{/bill.actions.upper}}"
      />
 
     {{#options.conferenceBill}}
@@ -27,7 +27,7 @@
         class="conference {{#bill.bill_type.conference}}passed{{/bill.bill_type.conference}}"
         src="{{ imagePath('InConferenceCommittee.png') }}"
         title="{{#bill.bill_type.conference}}Conference bill created{{/bill.bill_type.conference}}
-          {{#bill.bill_type.conference}}Conference bill not created (yet){{/bill.bill_type.conference}}"
+          {{^bill.bill_type.conference}}No conference bill{{/bill.bill_type.conference}}"
        />
     {{/options.conferenceBill}}
 
@@ -35,7 +35,7 @@
      class="signed {{#bill.actions.signed}}passed{{/bill.actions.signed}}"
      src="{{ imagePath('SignedIntoLaw.png') }}"
      title="{{#bill.actions.signed}}Signed into law by the Governor{{/bill.actions.signed}}
-       {{#bill.actions.signed}}Not signed into law (yet){{/bill.actions.signed}}"
+       {{^bill.actions.signed}}Not signed into law (yet){{/bill.actions.signed}}"
     />
   </div>
 

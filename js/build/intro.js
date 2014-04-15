@@ -7,7 +7,7 @@
  (function(global, factory) {
   // Common JS (i.e. browserify) environment
   if (typeof module !== 'undefined' && module.exports && typeof require === 'function') {
-    factory(require('underscore'), require('jquery'), require('Backbone'), require('moment'), require('tabletop'), require('Ractive'));
+    module.exports = factory(require('underscore'), require('jquery'), require('Backbone'), require('moment'), require('tabletop'), require('Ractive'));
   }
   // AMD
   else if (typeof define === 'function' && define.amd) {
