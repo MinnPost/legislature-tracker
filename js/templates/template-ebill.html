@@ -74,6 +74,26 @@
     {{/bill.categories}}
   </div>
 
+  {{#(compact == true && bill.custom_events && bill.custom_events.length && bill.custom_events.length > 0)}}
+    <div class="custom-events">
+      <strong>Latest updates:</strong>
+      {{#bill.custom_events.0}}
+        {{ date.format('MMM DD, YYYY') }}, {{ bill_id }}, {{{ description }}} ({{ translate('chamber', chamber) }})
+      {{/bill.custom_events.0}}
+    </div>
+  {{/()}}
+
+  {{#(compact != true && bill.custom_events && bill.custom_events.length && bill.custom_events.length > 0)}}
+    <div class="custom-events">
+      <strong>Latest updates:</strong>
+      {{#bill.custom_events}}
+        <div>
+          {{ date.format('MMM DD, YYYY') }}: {{ bill_id }}, {{{ description }}} ({{ translate('chamber', chamber) }})
+        </div>
+      {{/bill.custom_events}}
+    </div>
+  {{/()}}
+
   {{#(bill.links && bill.links.length && bill.links.length > 0)}}
     <div class="elinks">
       <strong>In the news</strong>
@@ -148,14 +168,6 @@
 
 
   {{#(compact != true)}}
-    {{#(bill.custom_events && bill.custom_events.length && bill.custom_events.length > 0)}}
-      <div class="custom-events">
-        <strong>Events</strong>
-        {{#bill.custom_events}}
-          <div>{{ bill_id }} {{ action }} on  {{ date.format('MMM DD, YYYY') }}: {{ e.description }}</div>
-        {{/bill.custom_events}}
-      </div>
-    {{/()}}
 
     <div class="osbills clear-block
       {{#bill.bill_conference}}has-conference{{/bill.bill_conference}}

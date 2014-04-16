@@ -282,8 +282,8 @@ _.extend(App.prototype, {
       },
       eEvents: {
         'bill_id': 'bill',
-        'actor': 'chamber',
-        'action': 'title'
+        'chamber': 'chamber',
+        'description': 'description'
       }
     },
     wordTranslations: {

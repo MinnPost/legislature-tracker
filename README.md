@@ -122,7 +122,7 @@ First make sure you have 3 sheets with the following columns:
     * `category_id`: the identifier that will be used in URL linking.  Should be something like `social_issues`.
     * `title`: The text title.
     * `short_title`: Used for the top menu list.  If none is given, the first word from the category title will be used.
-    * `description`: The full description.
+    * `description`: The full description.  Feel free to use HTML here, but do note that the content will be wrapped in a paragragh tag.
     * `links`: Links field, see below.
     * `image`: Name of image for the category.  By default, these pull from the images directory, which is configurable in the `imagePath` option.  Or if you use a full URL, starting with `http` it will use that directly.
 * `Bills`
@@ -133,13 +133,11 @@ First make sure you have 3 sheets with the following columns:
     * `title`
     * `description`: Descriptions get split up when in the category list view and have a "more details" link.  By default, this is based on the number of words.  To handle longer texts with HTML, you can use `<!-- break -->` to define that break point.  Also note that is no description is given, then the application will use the primary bill summary which may or may not be useful and significant.
     * `links`: Links field, see below.
-* `Events`: Events are custom events like the stalling of a bill or committee that would otherwise not show up in the data from Open States.  This shows up as part of the overall bill information below the description.
+* `Events`: Events are custom events like the stalling of a bill or committee that would otherwise not show up in the data from Open States.  This shows up as part of the overall editorial bill information below the description.
     * `bill`: The primary bill ID.
     * `date`: A date in a format like `'YYYY-MM-DD'`
     * `chamber`: This should be `upper` or `lower`.
-    * `title`: A title for the event.
-    * `description`: A short description for the event.
-    * `links`: Any links associated with the event.
+    * `description`: A short description for the event.  Feel free to use HTML here for things like links.
 
 #### Link field formatting
 

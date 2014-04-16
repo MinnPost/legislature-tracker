@@ -97,14 +97,15 @@ LT.parsers.eCategories = function(categories, options) {
 };
 
 LT.parsers.eEvents = function(events, options) {
-  return _.map(events, function(row) {
+  return _.sortBy(_.map(events, function(row) {
     LT.parsers.translateFields(options.fieldTranslations.eEvents, row);
-    row.links = LT.parsers.eLinks(row.links);
     row.date = moment(row.date);
 
     // Add some things to fit format of Open States actions
     row.type = ['custom'];
     return row;
+  }), function(e, ei) {
+    return e.date.unix * -1;
   });
 };
 
